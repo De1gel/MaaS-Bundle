@@ -1,0 +1,40 @@
+name: maas-bundle
+
+channels:
+  - gurobi
+  - conda-forge
+
+dependencies:
+  # Python
+  - python=3.12
+  - pip
+  - setuptools
+
+  # Numerical computing
+  - numpy
+  - scipy
+  - pandas
+
+  # Network algorithms
+  - networkx
+
+  # Optimization
+  - gurobi
+  - cddlib
+
+  # Data and configuration
+  - pyyaml
+
+  # Visualization and notebooks
+  - matplotlib
+  - ipykernel
+  - jupyterlab
+
+  # Testing and development
+  - pytest
+  - pytest-cov
+  - ruff
+
+  # cddlib's Python binding is not available as a conda package on every platform.
+  - pip:
+      - pycddlib>=3.0

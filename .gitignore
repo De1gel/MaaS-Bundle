@@ -1,0 +1,229 @@
+# ============================================================
+# Python
+# ============================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+
+# ============================================================
+# Python packaging / build artifacts
+# ============================================================
+
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PEP 517 / setuptools artifacts
+pip-wheel-metadata/
+
+
+# ============================================================
+# Virtual environments / Conda
+# ============================================================
+
+.env
+.env.*
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Conda environments created inside the project
+.conda/
+
+# Do NOT ignore environment.yml
+# It should be committed for reproducibility.
+
+
+# ============================================================
+# Testing
+# ============================================================
+
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.tox/
+.nox/
+
+
+# ============================================================
+# Ruff / type checking / linting
+# ============================================================
+
+.ruff_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+.dmypy.json
+dmypy.json
+
+
+# ============================================================
+# Jupyter
+# ============================================================
+
+.ipynb_checkpoints/
+
+# Jupyter runtime files
+.jupyter/
+
+
+# ============================================================
+# IDE / Editor
+# ============================================================
+
+# VS Code
+# Keep project-level settings and recommended extensions
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# JetBrains / PyCharm
+.idea/
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+\#*\#
+.\#*
+
+
+# ============================================================
+# macOS
+# ============================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon files
+Icon?
+
+# Spotlight
+.Spotlight-V100
+
+# Trash
+.Trashes
+
+# Finder metadata
+._*
+
+
+# ============================================================
+# Windows
+# ============================================================
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+
+# ============================================================
+# Logs / temporary files
+# ============================================================
+
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+
+tmp/
+temp/
+
+
+# ============================================================
+# Local configuration / secrets
+# ============================================================
+
+.env
+.env.*
+*.env
+
+# Local secrets / credentials
+secrets/
+credentials/
+*.key
+*.pem
+
+# Keep example environment files if added later
+!.env.example
+
+
+# ============================================================
+# Gurobi
+# ============================================================
+
+# Local Gurobi license files must never be committed
+gurobi.lic
+*.lic
+
+# Solver logs / solution dumps
+gurobi.log
+*.sol
+*.mst
+*.bas
+
+
+# ============================================================
+# Profiling / debugging
+# ============================================================
+
+.prof/
+*.prof
+*.lprof
+
+
+# ============================================================
+# Generated documentation
+# ============================================================
+
+docs/_build/
+
+
+# ============================================================
+# Project-specific generated outputs
+# ============================================================
+
+# Temporary computational results
+results/tmp/
+results/cache/
+
+# Temporary experiment files
+experiments/tmp/
+experiments/cache/
