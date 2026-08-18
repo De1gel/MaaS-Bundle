@@ -19,13 +19,11 @@ def sorted_vertices():
 
 
 def test_sorts_vertices_once_by_pi(sorted_vertices) -> None:
-    assert sorted_vertices.vertex_count == 4
-    np.testing.assert_allclose(sorted_vertices.slopes, [0.0, 0.0, 2.0, 7.0])
     np.testing.assert_allclose(
-        sorted_vertices.omega,
-        [[5.0], [0.0], [0.0], [5.0]],
+        sorted_vertices,
+        [[0.0, 5.0], [0.0, 0.0], [2.0, 0.0], [7.0, 5.0]],
     )
-    np.testing.assert_array_equal(sorted_vertices.original_indices, [1, 3, 2, 0])
+    assert not sorted_vertices.flags.writeable
 
 
 def test_builds_expected_upper_envelope(sorted_vertices) -> None:
@@ -34,7 +32,7 @@ def test_builds_expected_upper_envelope(sorted_vertices) -> None:
     np.testing.assert_allclose(phi.breakpoints, [0.0, 3.0])
     np.testing.assert_allclose(phi.slopes, [2.0, 7.0])
     np.testing.assert_allclose(phi.intercepts, [0.0, -15.0])
-    np.testing.assert_array_equal(phi.active_vertex_indices, [2, 0])
+    np.testing.assert_array_equal(phi.active_vertex_indices, [2, 3])
     np.testing.assert_allclose(phi.cumulative_integrals, [0.0, 9.0])
     np.testing.assert_allclose(phi([0.0, 1.0, 3.0, 5.0]), [0.0, 2.0, 6.0, 20.0])
     assert phi(5.0) == pytest.approx(20.0)
@@ -108,6 +106,11 @@ def test_sort_rejects_invalid_vertices(vertices, message) -> None:
 def test_build_rejects_invalid_input(sorted_vertices, allowance, arguments, message) -> None:
     with pytest.raises(ValueError, match=message):
         build_piecewise_phi(sorted_vertices, allowance, **arguments)
+
+
+def test_build_rejects_unsorted_vertices() -> None:
+    with pytest.raises(ValueError, match="sorted_vertices must be ordered by pi"):
+        build_piecewise_phi([[2.0, 0.0], [1.0, 0.0]], allowance=[1.0])
 
 
 @pytest.mark.parametrize("mu", [-1.0, np.nan, np.inf])

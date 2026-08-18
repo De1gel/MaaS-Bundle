@@ -8,13 +8,11 @@ import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
 from maas_bundle.oracle.dual_polytope import (
-    DualPolytope,
     build_dual_polytope,
     enumerate_vertices,
 )
 from maas_bundle.oracle.piecewise_linear import (
     PiecewiseLinearFunction,
-    SortedDualVertices,
     build_piecewise_phi,
     sort_dual_vertices,
 )
@@ -29,21 +27,36 @@ class RouteValueOracle:
     one-dimensional upper envelope.
     """
 
-    polytope: DualPolytope
     vertices: NDArray[np.float64]
-    sorted_vertices: SortedDualVertices
+
+    def __post_init__(self) -> None:
+        """Enforce the sorted, immutable vertex-cache invariant."""
+
+        object.__setattr__(self, "vertices", sort_dual_vertices(self.vertices))
 
     @property
     def vertex_count(self) -> int:
         """Return the number of vertices in the dual feasible region."""
 
-        return self.sorted_vertices.vertex_count
+        return self.vertices.shape[0]
 
     @property
     def mode_count(self) -> int:
         """Return the number of allowance dimensions."""
 
-        return self.sorted_vertices.mode_count
+        return self.vertices.shape[1] - 1
+
+    @property
+    def slopes(self) -> NDArray[np.float64]:
+        """Return a read-only view of the sorted ``pi`` coordinates."""
+
+        return self.vertices[:, 0]
+
+    @property
+    def omega(self) -> NDArray[np.float64]:
+        """Return a read-only view of the sorted shadow-price coordinates."""
+
+        return self.vertices[:, 1:]
 
     def for_allowance(
         self,
@@ -55,7 +68,7 @@ class RouteValueOracle:
         """Return the complete piecewise-linear value function for an allowance."""
 
         return build_piecewise_phi(
-            self.sorted_vertices,
+            self.vertices,
             allowance,
             domain_start=domain_start,
             tolerance=tolerance,
@@ -99,9 +112,4 @@ def build_route_value_oracle(
         payg_tariff=payg_tariff,
     )
     vertices = enumerate_vertices(polytope)
-    sorted_vertices = sort_dual_vertices(vertices)
-    return RouteValueOracle(
-        polytope=polytope,
-        vertices=vertices,
-        sorted_vertices=sorted_vertices,
-    )
+    return RouteValueOracle(vertices=vertices)

@@ -9,27 +9,6 @@ from numpy.typing import ArrayLike, NDArray
 
 
 @dataclass(frozen=True)
-class SortedDualVertices:
-    """Dual vertices sorted once by their ``pi`` coordinate."""
-
-    slopes: NDArray[np.float64]
-    omega: NDArray[np.float64]
-    original_indices: NDArray[np.int64]
-
-    @property
-    def vertex_count(self) -> int:
-        """Return the number of cached dual vertices."""
-
-        return self.slopes.size
-
-    @property
-    def mode_count(self) -> int:
-        """Return the number of allowance dimensions."""
-
-        return self.omega.shape[1]
-
-
-@dataclass(frozen=True)
 class PiecewiseLinearFunction:
     """Upper envelope on ``[breakpoints[0], infinity)``.
 
@@ -80,35 +59,19 @@ class PiecewiseLinearFunction:
         return float(self.cumulative_integrals[segment] + remainder)
 
 
-def sort_dual_vertices(vertices: ArrayLike) -> SortedDualVertices:
-    """Sort ``(pi, omega)`` vertices by ``pi`` for repeated allowance queries."""
+def sort_dual_vertices(vertices: ArrayLike) -> NDArray[np.float64]:
+    """Return an immutable vertex matrix sorted by its ``pi`` coordinate."""
 
-    array = np.asarray(vertices, dtype=float)
-    if array.ndim != 2:
-        raise ValueError(f"vertices must be two-dimensional, got shape {array.shape}")
-    if array.shape[0] == 0:
-        raise ValueError("vertices must contain at least one vertex")
-    if array.shape[1] == 0:
-        raise ValueError("vertices must contain a pi coordinate")
-    if not np.all(np.isfinite(array)):
-        raise ValueError("vertices must contain only finite values")
+    array = _as_vertex_matrix(vertices)
 
     order = np.argsort(array[:, 0], kind="stable")
-    slopes = array[order, 0].copy()
-    omega = array[order, 1:].copy()
-    original_indices = order.astype(np.int64, copy=True)
-    for result in (slopes, omega, original_indices):
-        result.setflags(write=False)
-
-    return SortedDualVertices(
-        slopes=slopes,
-        omega=omega,
-        original_indices=original_indices,
-    )
+    result = array[order].copy()
+    result.setflags(write=False)
+    return result
 
 
 def build_piecewise_phi(
-    vertices: SortedDualVertices,
+    sorted_vertices: ArrayLike,
     allowance: ArrayLike,
     *,
     domain_start: float = 0.0,
@@ -123,16 +86,21 @@ def build_piecewise_phi(
     if tolerance < 0:
         raise ValueError("tolerance must be nonnegative")
 
+    vertices = _as_vertex_matrix(sorted_vertices)
+    if np.any(np.diff(vertices[:, 0]) < 0):
+        raise ValueError("sorted_vertices must be ordered by pi")
+
+    mode_count = vertices.shape[1] - 1
     allowance_array = np.asarray(allowance, dtype=float)
-    if allowance_array.shape != (vertices.mode_count,):
-        msg = f"allowance must have shape ({vertices.mode_count},), got {allowance_array.shape}"
+    if allowance_array.shape != (mode_count,):
+        msg = f"allowance must have shape ({mode_count},), got {allowance_array.shape}"
         raise ValueError(msg)
     if not np.all(np.isfinite(allowance_array)):
         raise ValueError("allowance must contain only finite values")
     if np.any(allowance_array < 0):
         raise ValueError("allowance must be nonnegative")
 
-    intercepts = -(vertices.omega @ allowance_array)
+    intercepts = -(vertices[:, 1:] @ allowance_array)
     unique_lines = _best_line_per_slope(vertices, intercepts, tolerance=tolerance)
     hull = _build_upper_hull(unique_lines, tolerance=tolerance)
 
@@ -185,24 +153,32 @@ def _cumulative_integrals(
 
 
 def _best_line_per_slope(
-    vertices: SortedDualVertices,
+    vertices: NDArray[np.float64],
     intercepts: NDArray[np.float64],
     *,
     tolerance: float,
 ) -> list[tuple[float, float, int]]:
     lines: list[tuple[float, float, int]] = []
-    for slope, intercept, vertex_index in zip(
-        vertices.slopes,
-        intercepts,
-        vertices.original_indices,
-        strict=True,
-    ):
-        candidate = (float(slope), float(intercept), int(vertex_index))
+    for vertex_index, (vertex, intercept) in enumerate(zip(vertices, intercepts, strict=True)):
+        candidate = (float(vertex[0]), float(intercept), vertex_index)
         if not lines or abs(candidate[0] - lines[-1][0]) > tolerance:
             lines.append(candidate)
         elif candidate[1] > lines[-1][1] + tolerance:
             lines[-1] = candidate
     return lines
+
+
+def _as_vertex_matrix(vertices: ArrayLike) -> NDArray[np.float64]:
+    array = np.asarray(vertices, dtype=float)
+    if array.ndim != 2:
+        raise ValueError(f"vertices must be two-dimensional, got shape {array.shape}")
+    if array.shape[0] == 0:
+        raise ValueError("vertices must contain at least one vertex")
+    if array.shape[1] == 0:
+        raise ValueError("vertices must contain a pi coordinate")
+    if not np.all(np.isfinite(array)):
+        raise ValueError("vertices must contain only finite values")
+    return array
 
 
 def _build_upper_hull(

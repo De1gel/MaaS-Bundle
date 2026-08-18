@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from maas_bundle import build_route_value_oracle
+from maas_bundle import RouteValueOracle, build_route_value_oracle
 
 
 @pytest.fixture
@@ -18,7 +18,6 @@ def oracle():
 def test_builds_and_preprocesses_complete_oracle(oracle) -> None:
     assert oracle.vertex_count == 4
     assert oracle.mode_count == 1
-    assert oracle.polytope.dimension == 2
     np.testing.assert_allclose(
         oracle.vertices,
         [
@@ -28,6 +27,16 @@ def test_builds_and_preprocesses_complete_oracle(oracle) -> None:
             [7.0, 5.0],
         ],
     )
+    np.testing.assert_allclose(oracle.slopes, [0.0, 0.0, 2.0, 7.0])
+    np.testing.assert_allclose(oracle.omega, [[0.0], [5.0], [0.0], [5.0]])
+    assert not oracle.vertices.flags.writeable
+
+
+def test_direct_construction_enforces_sorted_read_only_vertices() -> None:
+    oracle = RouteValueOracle(vertices=np.array([[2.0, 1.0], [1.0, 0.0]]))
+
+    np.testing.assert_allclose(oracle.vertices, [[1.0, 0.0], [2.0, 1.0]])
+    assert not oracle.vertices.flags.writeable
 
 
 def test_returns_complete_function_for_each_allowance(oracle) -> None:
@@ -51,11 +60,11 @@ def test_integrates_through_convenience_interface(oracle) -> None:
 
 
 def test_reuses_sorted_vertices_across_allowances(oracle) -> None:
-    cached_vertices = oracle.sorted_vertices
+    cached_vertices = oracle.vertices
 
     first = oracle.for_allowance([1.0])
     second = oracle.for_allowance([3.0])
 
-    assert oracle.sorted_vertices is cached_vertices
+    assert oracle.vertices is cached_vertices
     np.testing.assert_allclose(first.breakpoints, [0.0, 1.0])
     np.testing.assert_allclose(second.breakpoints, [0.0, 3.0])

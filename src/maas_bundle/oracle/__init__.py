@@ -8,7 +8,6 @@ from maas_bundle.oracle.dual_polytope import (
 )
 from maas_bundle.oracle.piecewise_linear import (
     PiecewiseLinearFunction,
-    SortedDualVertices,
     build_piecewise_phi,
     sort_dual_vertices,
 )
@@ -18,7 +17,6 @@ __all__ = [
     "DualPolytope",
     "PiecewiseLinearFunction",
     "RouteValueOracle",
-    "SortedDualVertices",
     "UnboundedPolytopeError",
     "build_piecewise_phi",
     "build_route_value_oracle",
