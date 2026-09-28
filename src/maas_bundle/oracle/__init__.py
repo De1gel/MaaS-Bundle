@@ -1,5 +1,11 @@
 """Public API for route-value oracle components."""
 
+from maas_bundle.oracle.demand_distribution import (
+    DiscreteDemandDistribution,
+    TriangularDemandDistribution,
+    TripFrequencyDistribution,
+    UniformDemandDistribution,
+)
 from maas_bundle.oracle.dual_polytope import (
     DualPolytope,
     UnboundedPolytopeError,
@@ -11,12 +17,21 @@ from maas_bundle.oracle.piecewise_linear import (
     build_piecewise_phi,
     sort_dual_vertices,
 )
-from maas_bundle.oracle.route_value import RouteValueOracle, build_route_value_oracle
+from maas_bundle.oracle.route_value import (
+    RouteValuation,
+    RouteValueOracle,
+    build_route_value_oracle,
+)
 
 __all__ = [
     "DualPolytope",
+    "DiscreteDemandDistribution",
     "PiecewiseLinearFunction",
+    "RouteValuation",
     "RouteValueOracle",
+    "TripFrequencyDistribution",
+    "TriangularDemandDistribution",
+    "UniformDemandDistribution",
     "UnboundedPolytopeError",
     "build_piecewise_phi",
     "build_route_value_oracle",

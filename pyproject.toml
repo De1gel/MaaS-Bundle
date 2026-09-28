@@ -20,6 +20,9 @@ dependencies = [
     "pycddlib>=3.0",
 ]
 
+[project.scripts]
+maas-bundle = "maas_bundle.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
@@ -28,6 +31,12 @@ testpaths = ["tests"]
 addopts = [
     "-ra",
     "--strict-markers",
+]
+markers = [
+    "regional_scale: opt-in regional NLP tests with 100 and 1000 critical constraints",
+    "enumeration_scale: opt-in exhaustive assignment-enumeration comparisons",
+    "multistart_scale: opt-in repeated primal solves from multiple initial menus",
+    "sioux_falls_scale: opt-in full 1,056-traveler Sioux Falls runs",
 ]
 
 [tool.ruff]

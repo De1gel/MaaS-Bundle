@@ -1,501 +1,297 @@
-# MaaS bundle design
+# Optimistic and Pessimistic Mobility-as-a-Service Bundle Design
 
-# immediate
+> 本文件是 2026-09-24 最新修订稿（一般供给成本与 PAYG 利润上界版） [MaaS_bundle_design.tex](./MaaS_bundle_design.tex) 的中文 Markdown 阅读版，归纳模型、重构和算法，并非逐段翻译。公式与证明以 LaTeX 为准；草稿待统一内容见 [文件说明](./README.md)，代码完成情况见 [软件架构](../docs/software_architecture.md)。
 
-# July 27, 2026
+## 1. 问题与选择规则
 
-## 1 Model
+平台联合设计订阅价格和多方式额度。旅行者在随机出行频率实现之前选择套餐，在频率实现之后分配路径。旅客类型由各自的频率分布、OD、可行路径及方式使用特征共同决定，一般不存在适用于所有套餐比较的统一类型排序。
 
-## 1.1 Main ideas
+新稿同时考虑两种平台设计问题：
 
-• Finite number of user classes, while each class features a continuous trip frequency distribution, e.g., daily commuters vs flexible working schedules
+- **OBD（optimistic bundle design）**：在旅客成本最低的选项中，选择平台利润最大的响应。
+- **PBD（pessimistic bundle design）**：在旅客成本最低的选项中，选择平台利润最小的响应。
 
-• Travelers in each class make bundle choice based on some statistical metric of generalized path cost (e.g., expectation).
+两者仅在旅客的最低成本选项并列时产生差别。本文为两种模型给出单层表示，并为 OBD 构造利用 assignment regions 和 critical travelers 的区域搜索。
 
-• Expected travel flows are constrained by bundle-specific link capacity constraints, while the shadow price of each constraint is included in the generalized path cost.
+## 2. MaaS Bundle Design under Uncertainty
 
-• Design variables of each bundle are the bundle price and maximum usage of each mode, $\mathrm { i . e . , }$ the set of link capacities.
+### 2.1 套餐和可行菜单
 
-• Expected outcomes: travelers with different trip frequency distributions and feasible paths vary in their bundle preferences. Hence, bundle design introduces a form of service personalization instead of simply price discrimination.
+令 \(i\in\mathcal I\) 为旅客类型，权重为 \(Q_i\)；\(b\in\mathcal B\) 为订阅套餐；\(m\in\mathcal M\) 为交通方式。记 \(B=|\mathcal B|\)、\(\mathcal B_0=\{0\}\cup\mathcal B\)，其中 \(b=0\) 是纯 PAYG。
 
-## 1.2 Notations
+菜单决策为 \(x=(C,\varepsilon)\)。所有套餐共享外生、严格为正的方式超额费率 \(\rho\)；平台只优化订阅价格 \(C_b\) 和额度 \(\varepsilon_b\)。可行域为
 
-• Traveler class i, traveler class set I, traveler class number $I = | \mathcal { I } |$
+\[
+\mathcal D=\{(C,\varepsilon):
+C_b\ge0,\ \varepsilon_b\ge0\ (b\in\mathcal B),\quad
+C_{b+1}\ge C_b\ (b=1,\ldots,B-1),\quad
+C_0=0,\ \varepsilon_0=0\}.
+\]
 
-• Path $k ,$ path set $\kappa ,$ path number $K = | { \cal { K } } |$ , (optimal) path flow $f \left( f ^ { \ast } \right)$ , (min) path cost $c \left( \pi ^ { * } \right)$
+该定义没有有限价格/额度上界，也没有额度单调性。最新第 4.3 节利用 PAYG outside option 给出利润上界，不再假设菜单域紧。利润有界并不意味着菜单变量有界。
 
-• Link-path incidence matrix ∆
+### 2.2 事后路径分配
 
-• Link $^ { a , }$ link set A, link number $A = | { \mathcal { A } } |$ , (optimal) link flow $x \left( x ^ { * } \right)$ , link cost t
+类型 \(i\) 的频率 \(\mu\sim F_i\)。对选项 \(b\)，\(P_{ib}\) 为路径集合，\(\bar c_{ib}=\Delta_{ib}^{\top}t\) 为固定路径时间，\(N_{ib}\) 为方式—路径使用矩阵。给定 \(\mu\) 后，解
 
-• Bundle-specific link capacity ε and shadow price ω
+\[
+\begin{aligned}
+\Phi_{ib}(\mu;\varepsilon_b,\rho)
+=\min_{f,z}\quad&\beta\bar c_{ib}^{\top}f+\rho^{\top}z\\
+\text{s.t.}\quad&\mathbf1^{\top}f=\mu,\\
+&N_{ib}f\le\varepsilon_b+z,\qquad f,z\ge0.
+\end{aligned}
+\]
 
-• Bundle $b ,$ bundle set $B ,$ bundle number $B = | \boldsymbol { B } |$ , bundle price $C ,$ (min) generalized bundle cost e (Π<sup>∗</sup>)
+额度约束划分已包含的使用量与另付费的超额使用量，不禁止旅客使用路径，也不是物理路网容量。严格正的 \(\rho\) 使超额量取最小可行值。
 
-• Path choice probability p, (optimal) bundle choice probability $q \ ( q ^ { * } )$
+### 2.3 事前选择与平台利润
 
-• Value of time $\beta$
+定义
 
-• Bundle horizon T, total demand Q
+\[
+G_{ib}(\varepsilon_b)=\mathbb E_{F_i}[\Phi_{ib}(\mu;\varepsilon_b,\rho)],
+\qquad e_{ib}=C_b+G_{ib}(\varepsilon_b),
+\]
 
-## 1.3 Route choice with soft constraints
+\[
+\Pi_i=\min_{b\in\mathcal B_0}e_{ib},\qquad
+\mathcal B_i^*=\arg\min_{b\in\mathcal B_0}e_{ib}.
+\]
 
-Suppose travelers of class $i \in I$ share a trip-frequency distribution $F _ { i } .$ For a given trip-frequency realization $\mu \sim F _ { i }$ and bundle $b \in B ,$ , let $P _ { i b }$ denote the set of feasible paths. Define
+旅客最优响应集合为
 
-• path choice probability vector $p _ { i b } ( \mu ) \in \mathbb { R } _ { + } ^ { | P _ { i b } | }$ with
+\[
+\mathcal S_i(x)=\{q_i\ge0:\ \sum_bq_{ib}=1,\quad
+q_{ib}>0\Rightarrow b\in\mathcal B_i^*\}.
+\]
 
-$$
-\mathbb {1} ^ {\top} p _ {i b} (\mu) = 1,
-$$
+等价互补表示是
 
-• path usage vector
+\[
+q_{ib}\ge0,\quad \sum_bq_{ib}=1,\quad
+e_{ib}-\Pi_i\ge0,\quad q_{ib}(e_{ib}-\Pi_i)=0.
+\]
 
-$$
-f _ {i b} (\mu) = \mu p _ {i b} (\mu),
-$$
+每个订阅套餐的每位订阅者供给成本为 \(K_b(\varepsilon_b)\)，假设其非负、连续，满足 \(K_b(0)=0\)，并在使用导数的地方连续可微。平台单位利润为
 
-• link usage vector
+\[
+M_b=C_b-K_b(\varepsilon_b),\qquad K_0(0)=0,\quad M_0=0.
+\]
 
-$$
-x _ {i b} (\mu) = \Delta f _ {i b} (\mu),
-$$
+共享线性成本 \(K_b(\varepsilon_b)=k^\top\varepsilon_b\)、\(k\ge0\) 是特例，也是当前默认算例使用的形式；代码已支持一般成本接口。新稿未额外要求一般 \(K_b\) 凸或单调。
 
-• mode usage vector
+两种设计目标分别为
 
-$$
-M _ {i b} (\mu) = N _ {i b} f _ {i b} (\mu),
-$$
+\[
+\max_{x\in\mathcal D}\sum_iQ_i\max_{q_i\in\mathcal S_i(x)}
+\sum_bq_{ib}M_b
+\quad\text{(OBD)},
+\]
 
-where $N _ { i b } \in \mathbb { R } _ { + } ^ { M \times | P _ { i b } | }$ is the mode-usage matrix, and its $( m , r )$ -entry records the number of times mode m is used on path $r ,$
+\[
+\max_{x\in\mathcal D}\sum_iQ_i\min_{q_i\in\mathcal S_i(x)}
+\sum_bq_{ib}M_b
+\quad\text{(PBD)}.
+\]
 
-• excess-usage vector
+对固定菜单，内层目标关于 \(q_i\) 线性，两种规则都可选择极点响应，即把整类旅客分配给一个最低成本选项；无需依赖分数分配。
 
-$$
-z _ {i b} (\mu) \in \mathbb {R} _ {+} ^ {M},
-$$
+## 3. Bundle Valuation and Segmentation
 
-where $z _ { i b , m } ( \mu )$ denotes the number of pay-as-you-go trips exceeding the bundle allowance on mode m.
+### 3.1 固定对偶几何与额度边际价值
 
-Let $t \in \mathbb { R } _ { + } ^ { | A | }$ be the vector of link travel times. Let $ { \varepsilon } _ { b } \in \mathbb { R } _ { + } ^ { M }$ denote the allowance vector of bundle $b ,$ and let $\rho _ { b } \in \mathbb { R } _ { + } ^ { M }$ denote the pay-as-you-go tariff vector, where $\rho _ { b , m }$ is the unit charge for excess usage of mode m.
+路径问题的对偶可行域为
 
-Define the baseline path travel time vector
+\[
+\mathcal V_{ib}=\{(\pi,\omega):
+\pi\mathbf1-N_{ib}^{\top}\omega\le\beta\bar c_{ib},\quad
+\pi\ge0,\quad 0\le\omega\le\rho\}.
+\]
 
-$$
-\bar {c} _ {i b} := \Delta^ {\top} t \in \mathbb {R} _ {+} ^ {| P _ {i b} |}.
-$$
+原对偶中的 \(\pi\) 是自由变量；在非负频率、成本和额度下，可不损失最优值地取 \(\pi\ge0\)。有至少一条有限成本路径时，\(\mathcal V_{ib}\) 有界，而且与 \(\mu\)、\(\varepsilon_b\) 无关。令其极点为 \((\pi_{ib}^j,\omega_{ib}^j)\)，则
 
-For a given bundle b and realization $\mu ,$ the lower-level route-choice problem with fixed link travel time is
+\[
+\Phi_{ib}(\mu;\varepsilon_b,\rho)
+=\max_j\{\pi_{ib}^j\mu-(\omega_{ib}^j)^{\top}\varepsilon_b\}.
+\]
 
-$$
-\Phi_ {i b} (\mu ; \varepsilon_ {b}, \rho_ {b}) := \min _ {f \in \mathbb {R} _ {+} ^ {| P _ {i b} |}, z \in \mathbb {R} _ {+} ^ {M}} \beta   \bar {c} _ {i b} ^ {\top} f + \rho_ {b} ^ {\top} z\tag{1}
-$$
+因此 \(\Phi_{ib}\) 关于 \((\mu,\varepsilon_b)\) 联合凸且分段线性，关于 \(\mu\) 非减，关于额度逐分量非增。
 
-$$
-\mathrm{s.t.} \quad \mathbb {1} ^ {\top} f = \mu ,\tag{2}
-$$
+当 \(F_i\) 有有限均值时，\(G_{ib}\) 有限、凸、逐分量非增，并满足
 
-$$
-N _ {i b} f \leq \varepsilon_ {b} + z.\tag{3}
-$$
+\[
+|G_{ib}(\varepsilon_b')-G_{ib}(\varepsilon_b)|
+\le\rho^{\top}|\varepsilon_b'-\varepsilon_b|.
+\]
 
-where $\beta > 0$ is the weight placed on expected travel expenditure.
+对任意可测的最优影子价格选择，令 \(\bar\omega_{ib}=\mathbb E_{F_i}[\omega_{ib}^*(\mu;\varepsilon_b)]\)。则 \(-\bar\omega_{ib}\in\partial G_{ib}\)；在可微点，\(\nabla G_{ib}=-\bar\omega_{ib}\)。期望额度边际价值被对应 PAYG 费率所界定。
 
-Problem (1)–(3) minimizes the total realized travel cost, consisting of baseline travel time cost and pay-as-you-go charges for excess mode usage.
+### 3.2 无序异质性
 
-Let $\overline { { \omega _ { i b } ( \mu ) } } \in \mathbb { R } _ { + } ^ { M }$ be the shadow price vector associated with (3), and let $\pi _ { i b } ( \mu ) \in \mathbb { R }$ be the dual variable associated with (2). The generalized path-cost vector is
+对不同选项 \(a,b\in\mathcal B_0\)，定义
 
-$$
-c _ {i b} (\mu) = \beta \bar {c} _ {i b} + N _ {i b} ^ {\top} \omega_ {i b} (\mu).\tag{4}
-$$
+\[
+\delta_{iba}=G_{ia}(\varepsilon_a)-G_{ib}(\varepsilon_b).
+\]
 
-Accordingly, the lower-level equilibrium for a given bundle b and realization $\mu$ can be characterized by the KKT system: find $( f _ { i b } ^ { * } ( \mu ) , z _ { i b } ^ { * } ( \bar { \mu } ) , \omega _ { i b } ^ { * } ( \mu ) , \pi _ { i b } ^ { * } ( \mu ) )$ such that
+\(\delta_{iba}\) 是旅客从 \(a\) 转向 \(b\) 愿意支付的最高价格溢价。无差异条件为 \(C_b-C_a=\delta_{iba}\)。不同类型的 \(\delta\) 排序可随套餐对变化，因此每个套餐对有自身的标量阈值，但通常不存在共同旅客排序。
 
-$$
-0 \leq \omega_ {i b} ^ {*} (\mu) \perp \varepsilon_ {b} + z _ {i b} ^ {*} (\mu) - N _ {i b} f _ {i b} ^ {*} (\mu) \geq 0,\tag{5}
-$$
+### 3.3 两种选择规则的单层重构
 
-$$
-0 \leq f _ {i b} ^ {*} (\mu) \perp \beta \bar {c} _ {i b} + N _ {i b} ^ {\top} \omega_ {i b} ^ {*} (\mu) - \pi_ {i b} ^ {*} (\mu) \mathbb {1} \geq 0,\tag{6}
-$$
+**OBD：MPEC。** 将 \(q,\Pi\) 作为上层变量，最大化 \(\sum_iQ_i\sum_bq_{ib}M_b\)，施加第 2.3 节的 simplex、最低成本及互补约束和 \(x\in\mathcal D\)。上层对 \(q\) 的最大化实现乐观选择。
 
-$$
-0 \leq z _ {i b} ^ {*} (\mu) \perp \rho_ {b} - \omega_ {i b} ^ {*} (\mu) \geq 0,\tag{7}
-$$
+**PBD：内层 LP 的原始—对偶重构。** 对固定菜单，最不利响应解
 
-subject to
+\[
+\min_{q_i\ge0}\sum_bM_bq_{ib}
+\quad\text{s.t.}\quad
+\sum_bq_{ib}=1,\qquad \sum_be_{ib}q_{ib}\le\Pi_i,
+\]
 
-$$
-\mathbb {1} ^ {\top} f _ {i b} ^ {*} (\mu) = \mu .\tag{8}
-$$
+其中同时要求 \(\Pi_i\le e_{ib}\) 对所有 \(b\) 成立。这些条件把 \(q_i\) 限定在最低成本响应集合。
 
-RY:Or just write everything as complementarity
+令 \(\lambda_i\in\mathbb R\)、\(\eta_i\ge0\)，对应内层对偶为
 
-$$
-\pi_ {i b} ^ {*} (\mu) \perp \mu - \mathbb {1} ^ {\top} f _ {i b} ^ {*} (\mu) = 0\tag{9}
-$$
+\[
+\max_{\lambda_i,\eta_i}\lambda_i-\eta_i\Pi_i
+\quad\text{s.t.}\quad
+\lambda_i-\eta_i e_{ib}\le M_b\quad(\forall b).
+\]
 
-Here $\pi _ { i b } ^ { * } ( \mu )$ denotes the marginal generalized path cost associated with the realized trip frequency µ under bundle b. Condition (7) implies that the shadow price of any mode allowance is capped by its pay-as-you-go tariff. In particular, whenever excess usage of mode m is strictly positive, the corresponding shadow price equals the tariff, i.e., $\omega _ { i b , m } ^ { * } ( \mu ) = \rho _ { b , m }$
+PBD 的单层模型最大化 \(\sum_iQ_i\sum_bq_{ib}M_b\)，同时施加菜单可行性、上述原始/对偶可行性及强对偶等式
 
-JL: I think soft capacity is good because it is compatible with PAYG, or with hard capacity the PAYG passenger (or passengers that have more trips) will be forbidden to travel unless you set a different route choice rule.
+\[
+\sum_bq_{ib}M_b=\lambda_i-\eta_i\Pi_i\qquad(\forall i).
+\]
 
-RY:To me, this can be considered as hard bundle usage constraint. Since the routing objective is linear, this is separable: one part corresponds to only with bundle and another for PAYG. To see this, notice that the objective can be written as
+这个表示通过强对偶消去了内层最不利响应优化，得到非凸单层重构。即使供给成本为非线性的，一旦菜单固定，margin 仍是响应变量的固定系数，因此上述 OBD/PBD 重构仍成立。新稿将 PBD 更准确地称为“基于强对偶的非凸重构”，并未增加光滑性或凸性保证。
 
-$$
-\Phi_ {i b} (\mu ; \varepsilon_ {b}, \rho_ {b}) := \min _ {f \in \mathbb {R} _ {+} ^ {| P _ {i b} |}, z \in \mathbb {R} _ {+} ^ {M}} \quad \beta   \bar {c} _ {i b} ^ {\top} (f - z) + [ \beta   \bar {c} _ {i b} ^ {\top} + \rho_ {b} ^ {\top} ] z,\tag{10}
-$$
+### 3.4 Assignment regions 与 critical travelers
 
-where $f - z$ is the bundle usage and it is alway $\dot { \mathbf { \rho } } \leq \varepsilon _ { b }$
+固定 \(\alpha_i\in\mathcal B_0\)，定义
 
-KZ:An different interpretation of the same problem and decision variable: $f - z$ is the bundle trip flow and z is the PAYG trip flow.
+\[
+\mathcal I_b(\alpha)=\{i:\alpha_i=b\},\quad
+D_b(\alpha)=\sum_{i\in\mathcal I_b(\alpha)}Q_i,\quad
+\Pi_\alpha(x)=\sum_bD_b(\alpha)M_b(x).
+\]
 
-## 1.4 Bundle choice
+弱选择区域为
 
-At the upper level, travelers choose among bundles on the basis of the expected realized travel expenditure induced by the lower-level route-choice problem RY:(Self notes: for now, we use expectations, but later we can incorporate measures other than expectation (risk neutral)). For example, different traveler classes can have different risk preferences.. Under the pay-as-you-go scheme, the lower-level problem yields the realized total cost function $\Phi _ { i b } \big ( \mu ; \varepsilon _ { b } , \rho _ { b } \big )$ for traveler class i under bundle b and trip-frequency realization $\mu .$ Accordingly, for traveler class $i \in I$ and bundle $b \in B .$ , define the generalized bundle cost as
+\[
+\mathcal R_\alpha=\{x\in\mathcal D:
+C_b-C_a\le\delta_{iba},\quad
+i\in\mathcal I_b(\alpha),\ a\ne b\},
+\]
 
-$$
-e _ {i b} = C _ {b} + \mathbb {E} _ {\mu \sim F _ {i}} [ \Phi_ {i b} (\mu ; \varepsilon_ {b}, \rho_ {b}) ],\tag{11}
-$$
+区域问题为
 
-where $C _ { b }$ is the bundle price.
+\[
+\max_{x\in\mathcal R_\alpha}\Pi_\alpha(x)
+=\max_{x\in\mathcal R_\alpha}\sum_bD_b(\alpha)
+\bigl(C_b-K_b(\varepsilon_b)\bigr).
+\]
 
-JL:Here I change the shortest path cost to the cumulated path cost, because the user should compare the whole trip cost over the bundle cycle rather than the cost of one single trip.
+一般成本下，目标关于额度也可以非线性；只有在线性成本特例中目标才是线性的。旅客选择约束仍由 \(G\) 决定。
 
-RY:Side note: it seems Φ is convex in $\mu .$ This can become handy when we try to optimize the whole bundle choice problem. We might be able to exploit convex hull to identify the vertex and solve it. JL:
+在同一个菜单 \(x\in\mathcal R_\alpha\) 上，乐观响应
 
-## For hard constraints version
+\[
+\alpha_i^+\in\arg\max_{b\in\mathcal B_i^*(x)}M_b(x)
+\]
 
-At the same time, if we really want a hard constraint at the route level, I would suggest using the idea of chance constraints (Das and Lee (2021)), then we may get a different interpretation of traveler behavior.
+满足 \(\Pi_{\alpha^+}(x)\ge\Pi_\alpha(x)\)。若某个正权重旅客切换至严格更高利润的并列最低成本选项，则严格增利。这是 optimistic boundary dominance；它比较的是同一菜单下的两个 assignment。
 
-To be specific, the bundle choice can follow a rule like
+对每个非空 \(\mathcal I_b\)，定义
 
-$$
-\tilde {e} _ {i b} = \left\{ \begin{array}{l l} C _ {b} + \beta   \Gamma_ {i b}, & \text { if } R _ {i b} (\varepsilon_ {b}) \geq \alpha_ {i}, \\ + \infty , & \text { otherwise }. \end{array} \right.
-$$
+\[
+\Gamma_{ba}(\varepsilon;\alpha)
+=\min_{i\in\mathcal I_b(\alpha)}\delta_{iba},\qquad
+\mathcal I_{ba}^{\mathrm{crit}}=\arg\min_{i\in\mathcal I_b(\alpha)}\delta_{iba}.
+\]
 
-where $R _ { i b } ( \varepsilon _ { b } )$ is the coverage probability of bundle b for class i:
+该 pair 的全部旅客约束等价于 \(C_b-C_a\le\Gamma_{ba}\)。等号成立时，critical travelers 对 \(a,b\) 无差异，其他严格超过该最小值的类型仍严格偏好 \(b\)。critical 身份会随菜单变化，因此约束应动态生成，不能预先固定一组 critical classes。
 
-$$
-R _ {i b} (\varepsilon_ {b}) := \mathbb {P} _ {\mu \sim F _ {i}} \left(\exists f \geq 0: \mathbf {1} ^ {\top} f = \mu , N _ {i b} f \leq \varepsilon_ {b}\right).
-$$
+## 4. Solution Approach
 
-Here $\Gamma _ { i b }$ is a representative route-side cost metric. For example, it can be taken as the minimum feasible route cost (cumulated) evaluated at the class-specific quantile demand level
+### 4.1 Bundle valuation oracle
 
-$$
-\mu_ {i} ^ {\alpha} := F _ {i} ^ {- 1} (\alpha_ {i}).
-$$
+对每个 \((i,b)\)，使用 double-description 方法枚举 \(\mathcal V_{ib}\) 极点一次，按斜率 \(\pi\) 排序并缓存。每次额度更新：
 
-This has some spirit of robustness mentioned by Prof. Zhang, although it is not standard robust optimization. The interpretation is that travelers choose bundles that have a high enough probability of covering their trips. In this way, the hard constraint is reasonable and we may avoid working with the full distribution explicitly in the bundle-choice metric.
+1. 更新直线截距 \(-\omega_j^{\top}\varepsilon_b\)。
+2. 删除相同斜率的被支配直线，并扫描构造 \(\mu\ge0\) 上的上包络。
+3. 对每个活跃区间读取 \(F_i\) 的区间概率和未归一化一阶矩。
+4. 汇总得到 \(G_{ib}\) 和 \(\bar\omega_{ib}\)。
 
-Let $q _ { i b }$ denote the probability that a traveler of class i chooses bundle $b ,$ and let $\Pi _ { i } ^ { * }$ denote the minimum generalized bundle cost attained by class i. Then the bundle-choice equilibrium is characterized by
+设缓存极点数为 \(J\)、方式数为 \(M\)，更新截距需要 \(O(JM)\)，已按斜率排序时包络扫描需要 \(O(J)\)。重复上层评估无需重新求解路径 LP。
 
-$$
-q _ {i} \geq 0, \qquad \mathbb {1} ^ {\top} q _ {i} = 1, \qquad \forall i \in I,\tag{12}
-$$
+当前 Sioux Falls 实验在初始化阶段使用每个 OD 的全部简单路径构造对偶约束，不再按自由流时间截取前 5 条路径。路段成本为正、方式使用量非负，因此含环路径的约束由去环路径蕴含。全部对偶极点按 OD 和旅客类型在进程内缓存，套餐及多初值共享；此前采用 5 条路径截断的实验结果不代表此完整路径配置。
 
-and
+当前实验参数版本为 `sioux-falls-monthly-usd-v1`：TNTP 原时间单位 0.01 小时转换为分钟，价格与归一化利润单位为 USD/人·月，额度单位为分模式路段通行次数/人·月，出行频次为单向 OD 次数/人·月。两个类型的分布分别为 Uniform(8,20) 和 Triangular(20,32,44)。经济参数为合成设置，OD 源流量仅用于归一化权重，不解释为月度人数。完整参数表与结果见[月度实验配置](../docs/sioux_falls_experiment.md)。
 
-$$
-0 \leq q _ {i b} ^ {*} \perp e _ {i b} - \Pi_ {i} ^ {*} \geq 0, \quad \forall i \in I, b \in \mathcal {B}.\tag{13}
-$$
+### 4.2 乐观选择下的区域搜索
 
-Condition (13) implies that a bundle can be chosen with positive probability only if it attains the minimum generalized bundle cost for the corresponding traveler class. Conversely, any bundle with strictly higher generalized cost is assigned zero choice probability.
+从满足 \(\Pi^{\mathrm{opt}}(x^0)>0\) 的可行菜单开始。每次进入区域，初始化 critical sets，并在整个约束生成过程中保留该可行 entry menu 作为 incumbent。固定 assignment 时，对每个 ordered pair 维护 \(S_{ba}\subseteq\mathcal I_b(\alpha)\)，只加入这些旅客的选择约束。每轮 restricted NLP 后执行 full separation：
 
-Together, (11)–(13) define the upper-level bundle-choice equilibrium induced by the lower-level payas-you-go route-choice model.
+\[
+s_{iba}=\delta_{iba}-(C_b-C_a).
+\]
 
-## 1.5 Flow-independent case
+对存在负 slack 的 pair，加入最违反且未加入的旅客，再解 NLP。固定 assignment 内约束只增不删，直到完整区域可行。
 
-RY:I would suggest first to focus on the flow-independent case. If we can solve this efficiently, and at scale, we can extend this to equilibrium or bundle design. See some initial ideas below:
+得到区域解 \(x^*\) 后，外层按以下规则处理：
 
-For each class of the traveler i, we assume they solve the following choice problem: (or maybe make it a logit will have better properties?)
+1. **严格利润改善的乐观切换**：同时更新获得更高 margin 的并列最低成本响应，以 \(x^*\) 为新区域 warm start，并在下一次区域求解中保留该可行 incumbent（当前可行解）及其目标值。
+2. **Double tie 邻域检查**：若 \(e_{ia}=e_{ib}\) 且 \(M_a=M_b\)，切换在当前菜单处不改变利润。以同一 \(x^*\) 为 incumbent，用相同的约束生成流程求解相邻 assignment region；找到严格改善则退出邻区循环并继续区域搜索，没有改善时必须先认证 \(x^*\) 在该邻区局部最优，才能标记为 resolved。
+3. **组合检查与终止**：多个 double ties 同时活跃时，检查它们生成的所有局部相邻 assignment 组合。当前区域和所需相邻区域全部在 \(x^*\) 处 resolved 后，才能使用局部最优定理。
 
-$$
-\min _ {q _ {i} \in \Delta} q _ {i} ^ {\top} [ C _ {b} + \mathbb {E} _ {\mu \sim F _ {i}} [ \Phi_ {i} (\mu ; \varepsilon_ {b}, \rho) ] ],\tag{14}
-$$
+单个一般边界上的 double tie 只需一个额外邻区求解。仅仅“未找到改善”或 solver 失败，不等价于局部最优证据；若 incumbent 改变，旧点处的 resolved 记录不能直接用于新点。
 
-where ∆ denote the probability simplex.
+### 4.3 收敛与局部最优性
 
-Observe that the objective is linear in $q .$ Hence, the optimal choice occurs at a vertex of ∆ (one of the bundles). This means, we need only to evaluate the terms in the bracket for each bundle in parallel.
+新版第 4.3 节区分三项结论：
 
-We now need to deal with $\Phi _ { i b } \big ( \mu ; \varepsilon _ { b } , \rho _ { b } \big )$ over a continuous distribution $\mu \sim F$ . Recall this is a parametric LP, the issue now is that $\mu$ enters into the constraint. If it is in the objective, we can simply apply convex hull and check all vertex of the feasible region easily. One trick we used (for another problem I worked on, and perhaps also well-known in outer approximation literature) is to use the dual LP (and strong duality holds trivially). In our case, this becomes:
+| 结论 | 条件与含义 |
+|---|---|
+| 内层有限约束生成 | 固定 assignment、每次加入新的违反约束且不删除；终点完整区域可行。若最终 restricted NLP 的解是局部极大点，则也是完整 regional problem 的局部极大点。 |
+| 外层利润单调收敛 | 有限 PAYG 成本、非负供给/出行成本、区域局部求解且不劣于可行 entry incumbent；已接受利润满足 \(P^{k+1}\ge P^k\) 并收敛到有限值。 |
+| Resolved terminal point 的局部最优性 | 当前点是自身区域的局部极大点，assignment 乐观一致，所有活跃 double ties 生成的局部邻区也已在该点 resolved；可推出原 OBD 的局部最优性。 |
 
-$$
-\Phi_ {i} (\mu ; \varepsilon , \rho) = \max _ {\pi , \omega} \pi \mu - \omega^ {\top} \varepsilon\tag{15}
-$$
+利润上界来自选择 PAYG 的可能性。对完整 assignment region 中被分配到 \(b=\alpha_i^k\) 的类型 \(i\)，有
 
-$$
-s. t. \pi \mathbf {1} - N _ {i} ^ {\top} \omega \leq \beta \bar {c} _ {i}\tag{16}
-$$
+\[
+C_b+G_{ib}(\varepsilon_b)\le e_{i0},\qquad
+M_b=C_b-K_b(\varepsilon_b)\le C_b\le e_{i0},
+\]
 
-$$
-0 \leq \omega \leq \rho .\tag{17}
-$$
+故
 
-$$
-\pi \geq 0\tag{18}
-$$
+\[
+0<P^0\le P^k\le\sum_{i\in\mathcal I}Q_i e_{i0}<\infty.
+\]
 
-Importantly, the feasible region is a polytope that is independent of $\mu$ (we will need to show $\pi \geq 0$ without loss of generality; it should, so that it is bounded and form a polytope)! It is exactly the H-representation of a convex hull. This means we can run convex hull algorithm (e.g., we used cdd) to transforxm the H-representation of the feasible region into V-representation (all the vertex), namely $( \pi _ { j } , \omega _ { j } ) _ { j }$ . Then, the optimal value is attained at one of the vertex (may have tie, but it is fine to break tie arbitrarily); so we just check over all vertex
+这给出无需紧性的利润收敛论证，也说明每个已接受迭代均不会落入全 PAYG 区域。该上界适用于完整选择约束可行的响应，不应直接套用到尚未通过 full separation 的 restricted NLP 试探点。
 
-$$
-\Phi_ {i} (\mu ; \varepsilon_ {b}, \rho) = \max _ {j = 1, \dots} (\pi_ {j} \mu - \omega_ {j} \varepsilon_ {b}).\tag{19}
-$$
+局部最优证明也进一步明确：若相邻 assignment 把某个类型切换至严格更低 margin 的并列选项，其利润在足够小邻域内低于终点利润 \(\Pi_{\alpha^*}(x^*)\)；等 margin 的 double-tie 邻区则需要在同一个 \(x^*\) 上认证局部极大性。
 
-This requires only a simple sorting for any $\mu ,$ and the vertex needs only computed once.
+外层结论是**目标值收敛**，不直接保证有限次区域切换、菜单序列收敛或全局最优。仅有一阶 KKT 检查也不足以证明非凸区域问题的局部极大性。
 
-For each vertex $j ,$ the function $\left( \pi _ { j } \mu - \omega _ { j } \varepsilon _ { b } \right)$ is affine in $\mu , { \mathrm { s o } } , \Phi _ { i } ( \mu ; \varepsilon _ { b } , \rho _ { b } )$ as the max over a set of affine functions is piece-wise linear in $\mu ;$ and also convex.
+## 5. Numerical Results 与实现状态
 
-Then, the expectaction $\mathbb { E } _ { \mu \sim F _ { i } } [ \Phi _ { i } ( \mu ; \varepsilon _ { b } , \rho ) ]$ is the integral over a piece-wise linear function, which is also convex (expectation of convex function). This means, we need only to find the break points, and do integral for each segment. But the break points are exactly when the optimal value is equal for both vertex. (Similar to your idea in the bundle paper).
+最新稿已删除 Numerical Results 中旧的算法批注、no-double-tie 有限切换讨论及重复公式；该节目前为空，待补充实验设计和结果。算法依据为第 4.2–4.3 节。
 
-Recall that ω are the shadow prices of the capacity $\varepsilon _ { b }$ .
+仓库已有 two-route 单次求解、81-assignment 穷举比较、多初值实验，以及 Sioux Falls 单次/多初值实验，运行方式见 [项目 README](../README.md)。它们目前运行的是线性成本特例下的 optimistic consistency finder，不能作为非线性供给成本扩展的实验结果。
 
-## 1.6 Network loading
+| 部分 | 当前代码状态 |
+|---|---|
+| 对偶极点缓存、上包络、期望与影子价格 | 已实现，供给成本推广不改变路径 oracle |
+| 一般供给成本及其导数 | 已实现 `ProvisionCost` / `CallableProvisionCost`，可提供解析梯度或使用数值差分；兼容共享线性参数，见 [接口说明](../docs/provision_cost.md) |
+| Optimistic assignment、区域 NLP、full separation | 已实现 |
+| Assignment 更新、warm start、候选诊断 | 已实现 |
+| 正利润初值、外层 incumbent 的利润保护与单调接受 | 已实现；下降或求解失败时保留旧菜单并报告未收敛；内层保留 entry 可行锚点，未逐次设置 restricted NLP 目标下限 |
+| 边界 assignment 切换 | 普通 tie 按 optimistic rule 切换，double tie 额外探索；异点继续优化，同点双方检查完成后才结束往返；未独立认证二阶最优性或多重交点联合方向，见 [边界搜索](../docs/boundary_assignment_search.md) |
+| PBD 单层 NLP、直接 OBD MPEC 求解器 | 未实现 |
+| 通用 regional local-optimality 证书 | 未实现；现有 adapter 验证可行性和一阶 KKT |
 
-Suppose each traveler class is sufficiently large, then we can use the expected path flow to represent the traffic flow aggregated over a bundle horizon. The traffic averaged on each day is thus
-
-$$
-x = \frac {Q}{T} \sum_ {i \in \mathcal {I}} \sum_ {b \in \mathcal {B}} q _ {i b} \mathbb {E} _ {\mu} [ \Delta f _ {i b} ^ {*} (\mu) ]\tag{20}
-$$
-
-JL: If congestion and mode-specific capacity constraints are considered, a path-based formulation becomes necessary, but the resulting path-flow solution is generally not unique. If link flows are defined as the expectation over a stochastic distribution of such non-unique path flows, are the resulting link flows unique, and how can they be computed?
-
-## 1.7 Equilibrium
-
-JL:Should the goal of this section be a coupled equilibrium definition in its original form, or a further reduced single-object formulation such as a VI/fixed-point representation? What is the minimum level of theoretical properties that needs to be established before moving on to the bundle design problem?
-
-## 1.8 Bundle design
-
-Assume that the subscription bundles are indexed in increasing order of service tier, i.e., $b = 1 , \dots , B ,$ where a larger index corresponds to a weakly higher-tier bundle. We also introduce a pay-as-you-go option, indexed by $b = 0$ , as the outside option of the subscription menu. Let
-
-$$
-\mathcal {B} _ {0} := \{0 \} \cup \mathcal {B}.
-$$
-
-The pay-as-you-go option has no subscription fee and no included allowance:
-
-$$
-C _ {0} = 0, \qquad \varepsilon_ {0} = 0.
-$$
-
-It provides a benchmark against which travelers compare the subscription bundles. In this way, travelers are not forced to subscribe to a bundle.
-
-Traveler class i chooses an option with the minimum generalized cost; if multiple options attain the same minimum cost, the highest-index option is selected. Formally,
-
-$$
-\mathcal {B} _ {i} ^ {*} (C, \varepsilon) := \arg \min _ {b \in \mathcal {B} _ {0}} e _ {i b} (C, \varepsilon),\tag{21}
-$$
-
-$$
-b _ {i} ^ {*} (C, \varepsilon) := \max \mathcal {B} _ {i} ^ {*} (C, \varepsilon).\tag{22}
-$$
-
-Define the induced choice indicator
-
-$$
-y _ {i b} (C, \varepsilon) = \left\{ \begin{array}{l l} 1, & \text { if } b = b _ {i} ^ {*} (C, \varepsilon), \\ 0, & \text { otherwise }, \end{array} \right. \qquad i \in \mathcal {I},   b \in \mathcal {B} _ {0}.\tag{23}
-$$
-
-The platform earns revenue only from subscription fees. The expected subscription profit is
-
-$$
-\Pi (C, \varepsilon) = \sum_ {i \in \mathcal {I}} Q _ {i} \sum_ {b \in \mathcal {B}} y _ {i b} (C, \varepsilon) \left(C _ {b} - k ^ {\top} \varepsilon_ {b}\right).\tag{24}
-$$
-
-The bundle design problem is
-
-$$
-\max _ {C, \varepsilon} \Pi (C, \varepsilon)\tag{25}
-$$
-
-$$
-\begin{array}{l l} \text {s.t.} & C _ {b} \geq 0, \quad \varepsilon_ {b} \geq 0, \end{array} \qquad \qquad b \in \mathcal {B},\tag{26}
-$$
-
-$$
-C _ {b + 1} \geq C _ {b}, \quad b = 1, \dots , B - 1,\tag{27}
-$$
-
-$$
-\varepsilon_ {b + 1, m} \geq \varepsilon_ {b, m}, \quad b = 1, \ldots , B - 1, m = 1, \ldots , M,\tag{28}
-$$
-
-$$
-C _ {0} = 0, \qquad \varepsilon_ {0} = 0.\tag{29}
-$$
-
-The monotonicity constraints impose a weak tier structure on the subscription menu: a higher-tier bundle has a weakly higher subscription price and weakly larger allowances in every mode. The pay-as-you-go option plays the role of an outside option and prevents the platform from increasing all subscription prices without changing travelers’ choices.
-
-## Bundle choice with logit
-
-Here we treat the zero-allowance bundle as the outside option, so there is no need to introduce an additional alternative outside B.
-
-For each traveler class $i \in \mathcal { T }$ , define the generalized bundle cost of bundle $b \in B$ by
-
-$$
-e _ {i b} = C _ {b} + \mathbb {E} _ {\mu \sim F _ {i}} [ \Phi_ {i b} (\mu ; \varepsilon_ {b}, \rho_ {b}) ].\tag{30}
-$$
-
-Instead of the deterministic minimum-cost rule, we consider an entropy-regularized bundle-choice problem:
-
-$$
-\min _ {q _ {i} \in \Delta (\mathcal {B})} \quad \sum_ {b \in \mathcal {B}} e _ {i b} q _ {i b} + \frac {1}{\theta_ {i}} \sum_ {b \in \mathcal {B}} q _ {i b} \ln q _ {i b},\tag{31}
-$$
-
-where
-
-$$
-\Delta (\mathcal {B}) := \left\{q _ {i} \geq 0: \sum_ {b \in \mathcal {B}} q _ {i b} = 1 \right\},
-$$
-
-and $\theta _ { i } > 0$ is the bundle-choice sensitivity parameter.
-
-The first-order condition yields the logit bundle shares
-
-$$
-q _ {i b} = \frac {\exp (- \theta_ {i} e _ {i b})}{\sum_ {b ^ {\prime} \in \mathcal {B}} \exp (- \theta_ {i} e _ {i b ^ {\prime}})}, \quad \forall i \in \mathcal {I}, b \in \mathcal {B}.\tag{32}
-$$
-
-So the lower-level route-choice LP is unchanged for each bundle, and the bundle-choice layer is smoothed by the entropy term. In this way, bundle choice becomes unique and no separate tie-breaking rule is needed.
-
-The bundle design problem with logit bundle choice is therefore
-
-$$
-\max _ {C, \varepsilon} \quad \Pi (C, \varepsilon)\tag{33}
-$$
-
-$$
-\text { s.t. } \quad e _ {i b} = C _ {b} + \mathbb {E} _ {\mu \sim F _ {i}} [ \Phi_ {i b} (\mu ; \varepsilon_ {b}, \rho_ {b}) ]  , \qquad \forall i \in \mathcal {I},   b \in \mathcal {B},\tag{34}
-$$
-
-$$
-q _ {i b} = \frac {\exp (- \theta_ {i} e _ {i b})}{\sum_ {b ^ {\prime} \in \mathcal {B}} \exp (- \theta_ {i} e _ {i b ^ {\prime}})}, \quad \forall i \in \mathcal {I}, b \in \mathcal {B},\tag{35}
-$$
-
-$$
-C _ {b} \geq 0, \quad \varepsilon_ {b} \geq 0, \quad \forall b \in \mathcal {B},\tag{36}
-$$
-
-$$
-C _ {b + 1} \geq C _ {b}, \quad \forall b = 1, \dots , B - 1,\tag{37}
-$$
-
-$$
-\varepsilon_ {b + 1, m} \geq \varepsilon_ {b, m}, \quad \forall b = 1, \dots , B - 1, \forall m = 1, \dots , M.\tag{38}
-$$
-
-## 1.9 Solution Algorithm
-
-## For lexicographic version
-
-## 1.9.1 Branch-and-Bound over Allowance Menus with Region-Enumeration Pricing
-
-For the lexicographic version, we discretize each allowance component and restrict
-
-$$
-\varepsilon_ {b, m} \in \mathcal {E} _ {m}, \quad \forall b \in \mathcal {B}, m = 1, \ldots , M,
-$$
-
-where each ${ \mathcal { E } } _ { m }$ is a finite candidate set. Together with the monotonicity constraints (27)–(28), the design problem (25) becomes a finite search over feasible allowance menus.
-
-For a fixed allowance menu ε, the route-choice problem does not depend on the subscription price vector C. Hence, for each traveler class $i \in \mathcal { Z }$ and option $b \in B _ { 0 }$ , define
-
-$$
-\bar {\Phi} _ {i b} ^ {\varepsilon} := \mathbb {E} _ {\mu \sim F _ {i}} [ \Phi_ {i b} (\mu ; \varepsilon_ {b}, \rho_ {b}) ].
-$$
-
-This quantity is a constant in the pricing problem. By (11),
-
-$$
-e _ {i b} (C; \varepsilon) = C _ {b} + \bar {\Phi} _ {i b} ^ {\varepsilon}, \qquad i \in \mathcal {I}, b \in \mathcal {B} _ {0}.
-$$
-
-Hence, the generalized bundle cost is affine in the price vector C. Under the lexicographic choice rule (21)–(22), traveler class i switches between two options b and $b ^ { \prime }$ only when
-
-$$
-e _ {i b} (C; \varepsilon) = e _ {i b ^ {\prime}} (C; \varepsilon) \iff C _ {b} - C _ {b ^ {\prime}} = \bar {\Phi} _ {i b ^ {\prime}} ^ {\varepsilon} - \bar {\Phi} _ {i b} ^ {\varepsilon}.
-$$
-
-Therefore, all pairwise bundle-indifference conditions induce a finite collection of hyperplanes in the feasible price region. These hyperplanes partition the price space into polyhedral faces, and on the relative interior of each face the bundle-selection indicator $y _ { i b } ( C , \varepsilon )$ in (23) is fixed.
-
-Once the bundle assignment is fixed, say $b _ { i } ^ { * } ( C , \varepsilon ) = \alpha _ { i }$ on a given face, the profit function (24) reduces to a linear function of C. The corresponding regional pricing problem can be written, in its closed form, as
-
-$$
-\begin{array}{l l l} V _ {\alpha} (\varepsilon) := \max _ {C} & \sum_ {i \in \mathcal {I}: \alpha_ {i} \in \mathcal {B}} Q _ {i} \left(C _ {\alpha_ {i}} - k ^ {\top} \varepsilon_ {\alpha_ {i}}\right) \\ \text {s.t.} & C _ {\alpha_ {i}} + \bar {\Phi} _ {i \alpha_ {i}} ^ {\varepsilon} \leq C _ {b} + \bar {\Phi} _ {i b} ^ {\varepsilon}, & i \in \mathcal {I},   b \in \mathcal {B} _ {0}, \\ & C _ {b} \geq 0, & b \in \mathcal {B}, \\ & C _ {b + 1} \geq C _ {b}, & b = 1, \ldots , B - 1, \\ & C _ {0} = 0. \end{array}\tag{39}
-$$
-
-Thus, for each supportable assignment pattern α, the regional pricing problem is a linear program.
-
-For the lexicographic rule, the strict assignment region is obtained by allowing ties with lower-index options but not with higher-index options. Equivalently, after solving the closed LP (39), the induced assignment is verified using the tie-breaking rule in (22). Candidate solutions that do not induce the prescribed assignment are assigned to the corresponding lexicographic face.
-
-This yields an exact pricing oracle for any fixed allowance menu: enumerate all relevant faces of the induced price partition, or equivalently all supportable bundle-assignment patterns $\alpha ,$ solve (39) for each of them, verify lexicographic consistency when needed, and select the best feasible solution. Since each fixed-menu pricing problem is solved globally in this way, the overall discretized lexicographic design problem can be solved globally by combining the pricing oracle with either exhaustive menu enumeration or branch-and-bound over feasible menus.
-
-The role of branch-and-bound is to avoid enumerating all allowance menus explicitly. Each node of the search tree corresponds to a partially specified allowance menu satisfying the monotonicity conditions in (28). Bounds are computed from valid relaxations of the corresponding pricing value, while a complete menu is evaluated exactly by the fixed-menu pricing oracle above. Since the discretized menu space is finite and every complete menu can be evaluated globally, the resulting algorithm returns a globally optimal solution to the discretized lexicographic bundle design problem. JL:
-
-## Ordered structure
-
-If, in addition, traveler classes can be ordered by first-order stochastic dominance of trip-frequency distributions, and this ordering implies an ordered segmentation structure in bundle choice, then the inner pricing oracle can be accelerated further. In that case, it suffices to enumerate ordered assignment patterns rather than arbitrary ones, which can substantially reduce the number of candidate faces while preserving exactness under the ordering assumptions.
-
-## Problem of tie-breaking
-
-The regional LP analysis also reveals a technical issue with the current lexicographic tie-breaking rule. Although the rule makes bundle choice single-valued, some assignment regions become half-open. Hence, the supremum of the upper-level profit over one assignment region may be attained only on a boundary hyperplane, while that boundary is assigned to another assignment under the tie-breaking rule. As a result, the upper-level profit may fail to attain its supremum.
-
-To ensure existence of an optimal solution without changing the tie-breaking rule, one may impose compactness of the menu-design set together with a profit-compatibility condition for the lexicographic rule, requiring that the bundle selected on any tie boundary yields a weakly larger platform margin than the other tied bundles.
-
-Or we can replace the lexicographic rule with a platform-favorable tie-breaking rule. Under this rule, when a traveler class is indifferent among several minimum-cost options, the platform selects the one that yields the largest platform margin. This can be modeled by keeping the bundle-choice variables in the upper-level problem and imposing only the minimum-cost support condition:
-
-$$
-\max _ {C, \varepsilon , q, \Pi} \sum_ {i \in \mathcal {I}} Q _ {i} \sum_ {b \in \mathcal {B}} q _ {i b} \left(C _ {b} - k ^ {\top} \varepsilon_ {b}\right)\tag{40}
-$$
-
-$$
-\begin{array}{l l} \text { s   .   t   . } & q _ {i} \in \Delta (\mathcal {B}), \end{array}
-$$
-
-$$
-\forall i \in \mathcal {I},\tag{41}
-$$
-
-$$
-e _ {i b} - \Pi_ {i} \geq 0,
-$$
-
-$$
-\forall i \in \mathcal {I}, b \in \mathcal {B},\tag{42}
-$$
-
-$$
-q _ {i b} \left(e _ {i b} - \Pi_ {i}\right) = 0,
-$$
-
-$$
-\forall i \in \mathcal {I}, b \in \mathcal {B},\tag{43}
-$$
-
-$$
-\text { menu   feasibility   constraints. }\tag{44}
-$$
-
-The complementarity condition ensures that a class can be assigned only to bundles attaining its minimum generalized cost. Since the assignment variables are chosen in the platform’s objective, any tie among minimum-cost bundles is resolved in favor of the bundle with the largest platform margin.
-
-For a fixed allowance menu, this rule is also compatible with the regional LP oracle: one may enumerate class-to-bundle assignments and impose only that the assigned bundle is minimum-cost. Each candidate assignment then yields a linear pricing problem.
-
-## 1.9.2 Alternating Optimization
-
-## JL: For logit version
-
-## Multi-Start Projected Gradient Method
-
-## Epigraph Outer Approximation with Sequential Nonlinear Programming
-
-## 1.10 Notes
-
-• Although path and bundle choice probabilities are introduced, the optimality conditions are based on the simple setting of mixed strategies, without considering random utility.
-
-• The statistical metric in bundle choice is set to expectation for the baseline case, while it’s more interesting to explore metrics reflecting robustness/reliability, e.g., ensuring that the bundle is sufficient to cover most possibly realized trips.
-
-• Aggregate link flow to be double-checked.
-
-• The equilibrium condition to be derived. Not sure if it corresponds to or can be transformed into any existing one.
-
-## References
-
-A. Das and G. M. Lee. A multi-objective stochastic solid transportation problem with the supply, demand, and conveyance capacity following the weibull distribution. Mathematics, 9(15), 2021. ISSN 2227-7390. doi: 10.3390/ math9151757. URL https://www.mdpi.com/2227-7390/9/15/1757.
+因此当前 `CONSISTENT_CANDIDATE` 表示通过已有检查的分配一致候选，并不自动等价于新稿的 resolved terminal point。
