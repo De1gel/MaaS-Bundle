@@ -94,30 +94,35 @@ bundle_demand             shape (B0,)         # D_b
 total_profit
 minimum_cost_gaps         shape (I, B0)       # e_ib - min_a e_ia
 numerical_tie_mask        shape (I, B0)       # gap <= tau_choice
+numerical_optimistic_mask shape (I, B0)       # cost tie and within tau_margin of best margin
 optimistic_margin_gaps    shape (I,)           # selected margin - best tied competitor
 ```
 
-`route_values` 和 `expected_omega` 通过 `valuation` 暴露，不再复制保存。assignment evaluator 显式保存 `choice_tolerance` 和 `profit_tolerance`；没有其他 tied bundle 时 margin gap 为 `+inf`，double tie 则表现为 numerical cost tie 且 margin gap 不超过 `profit_tolerance`。
+`route_values` 和 `expected_omega` 通过 `valuation` 暴露，不再复制保存。assignment evaluator 显式保存成本与 margin 容差；低层 `profit_tolerance` 是 margin 容差的兼容名称。数值 optimistic 集合相对最低成本和最高 margin 统一构造，集合中多于一个选项即为 double tie，搜索与诊断复用同一集合。详见[数值容差](numerical_tolerances.md)。
 
 ## 3. 固定的依赖方向
 
+箭头表示调用或依赖：
+
 ```text
-oracle/*
-   ↓
-design/menu.py + design/valuation.py + design/assignment.py
-   ↓
-design/problem.py
-   ↓
-design/boundary.py
-   ↓
-design/regional.py
-   ↓
-design/primal.py
-   ↓
-design/validation.py
+cli.py → benchmarks/具体实验入口 → examples/数据与构造
+                   ↓                    ↓
+          benchmarks/通用实验方法       problem / menu / oracle
+                   ↓
+              design/primal
+               ├─ boundary（约束与分离）
+               ├─ regional → problem → oracle / cost / assignment
+               └─ validation（读取结果）
 ```
 
-下层模块不得反向导入上层模块。例如 `oracle/route_value.py` 不得导入 `BundleMenu`，`assignment.py` 不得调用 regional solver。
+`examples/` 不导入 `benchmarks/`、`primal.py` 或区域求解器。
+通用 benchmark 接收 `BundleDesignProblem`、`BundleMenu` 和 `RegionalNlpSolver`，
+具体 benchmark 负责选择网络、初值和求解预算。`design/` 与 `oracle/` 不依赖实验模块。
+依赖方向由 `tests/test_architecture.py` 检查。
+
+网络数据与经济参数在 `examples/`，运行预算在 `benchmarks/settings.py`。
+具体入口为 `benchmarks/two_route.py` 和 `benchmarks/sioux_falls.py`；CLI 负责命令解析与输出。
+Python 导入迁移和调用示例见[实验分工](benchmark_experiments.md)。
 
 ## 4. 现有模块职责与扩展边界
 
@@ -192,7 +197,7 @@ pytest tests/design/test_regional.py --run-regional-scale \
 find_assignment_consistent_menu(problem, initial_menu, solver, ...)
 ```
 
-它先优化 assignment region，再试探每个选择 tie 的另一侧；搜索维护边界栈、未尝试的切换和返回记录，复用原有区域求解器，详见 [边界搜索](./boundary_assignment_search.md)。
+它先优化 assignment region，按 optimistic rule 切换，响应一致后再试探 double tie 替代项；搜索维护边界栈、未尝试的切换和返回记录，复用原有区域求解器，详见 [边界搜索](./boundary_assignment_search.md)。
 
 当前公共函数 `solve_fixed_assignment(...)` 已实现内层 constraint-generation loop：初始化 critical constraints、求解 restricted regional NLP、full traveler separation、按 ordered pair 单调加入最违反约束，并区分 `converged`、`solver_failed`、`iteration_limit` 和 `stalled`。测试包括纯合成的基本控制流分支，以及调用 SLSQP 的 10/1000-traveler 已知最优算例；后者检查最终价格、额度、固定 assignment 利润、full separation 和 KKT，并在非静默 pytest 中输出 generation metrics。与一次性加入全部 traveler constraints 的数值对照测试暂未加入。
 
@@ -254,7 +259,7 @@ assignment = problem.evaluate_assignment(menu)
 
 - **incumbent**：保存不降利的 incumbent；等利润异点可更新菜单，同点复核通过则保留原菜单。
 - **边界栈**：保存已优化的菜单、原 assignment、来源区域编号和尚未尝试的 tie。
-  普通 tie 按 optimistic rule 切换；从 `numerical_tie_mask` 中选取 margin 相同的替代项作额外邻区求解，不预先枚举笛卡尔积。
+  普通 tie 按 optimistic rule 切换；从 `numerical_optimistic_mask` 中选取替代项作额外邻区求解。当前一次只切换一个旅客；多旅客同时切换组合的按需扩展尚未实现。
 - **邻区求解**：每次复用 `solve_fixed_assignment`，重建 critical sets 并执行 full separation。
 - **返回记录**：同点、无实质利润变化且双方区域检查完成时才结束往返；数值近点须在保留点复核邻区。
   不同菜单（包括等利润）清空旧点检查记录并继续优化；返回旧 assignment 也须从新菜单重新求解。
@@ -292,7 +297,7 @@ PBD 施加 simplex、\(\sum_be_{ib}q_{ib}\le\Pi_i\)、\(\Pi_i\le e_{ib}\)，再�
 
 ## 10. 初值采样职责
 
-`benchmarks/initialization.py` 的 `sample_profitable_menus` 负责有上限的正利润拒绝采样；`examples/` 提供各网络的菜单抽样范围，并传入同一完整 `BundleDesignProblem`，避免为每次抽样重建 oracle。`solve_primal` 再检查实际初始 profit 大于 `profit_tolerance`，覆盖用户直接传入的菜单。
+`examples/` 的 `draw_*_menu` 提供各网络的单个候选菜单；`benchmarks/` 的 `generate_*_initial_menus` 管理随机种子、数量及问题复用，并调用 `benchmarks/initialization.py` 的 `sample_profitable_menus` 进行有上限的正利润拒绝采样。`solve_primal` 再检查实际初始 profit 大于 `profit_tolerance`，覆盖用户直接传入的菜单。
 
 初值筛选和外层 incumbent 保护共同保证返回利润不低于严格正的初始利润，全 PAYG 因利润为零而不可被接受。`PROFIT_DECREASE` 对应失败诊断，不得计入 validated 或 consistent runs。逐 tie 边界搜索已实现，独立局部最优认证与 PBD 模型仍属于待实现部分。
 

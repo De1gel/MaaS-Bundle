@@ -2,7 +2,7 @@
 
 import pytest
 
-from maas_bundle.examples.two_route import run_two_route_multistart
+from maas_bundle.benchmarks.two_route import run_two_route_multistart
 
 
 @pytest.mark.multistart_scale

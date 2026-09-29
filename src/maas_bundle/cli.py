@@ -10,14 +10,21 @@ from time import perf_counter
 
 import numpy as np
 
-from maas_bundle.benchmarks import enumerate_assignment_regions
-from maas_bundle.design.primal import solve_primal
-from maas_bundle.design.regional import ScipyRegionalSolver
+from maas_bundle.benchmarks import (
+    run_sioux_falls_example,
+    run_sioux_falls_multistart,
+    run_two_route_example,
+    run_two_route_multistart,
+)
+from maas_bundle.benchmarks.settings import (
+    DEFAULT_RANDOM_SEED,
+    DEFAULT_SIOUX_FALLS_SETTINGS,
+    DEFAULT_START_COUNT,
+)
+from maas_bundle.benchmarks.two_route import compare_two_route as _compare_two_route
 from maas_bundle.examples.sioux_falls import (
     DIRECTED_LINK_COUNT,
     NODE_COUNT,
-    run_sioux_falls_example,
-    run_sioux_falls_multistart,
     sioux_falls_od_matrix,
 )
 from maas_bundle.examples.sioux_falls import (
@@ -27,10 +34,6 @@ from maas_bundle.examples.sioux_falls_config import DEFAULT_SIOUX_FALLS_CONFIG
 from maas_bundle.examples.two_route import (
     SOURCE_AM_DEMAND,
     SOURCE_URL,
-    build_two_route_problem,
-    initial_two_route_menu,
-    run_two_route_example,
-    run_two_route_multistart,
 )
 
 
@@ -48,8 +51,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="run a reproducible multi-start region experiment",
     )
     multistart.add_argument("name", choices=("two-route", "sioux-falls", "souxf"))
-    multistart.add_argument("--starts", type=int, default=30)
-    multistart.add_argument("--seed", type=int, default=20260901)
+    multistart.add_argument("--starts", type=int, default=DEFAULT_START_COUNT)
+    multistart.add_argument("--seed", type=int, default=DEFAULT_RANDOM_SEED)
     arguments = parser.parse_args(argv)
 
     if arguments.command == "example" and arguments.name == "two-route":
@@ -65,9 +68,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "assignment": candidate.assignment.tolist(),
             "normalized_profit": candidate.true_profit,
             "am_profit_at_source_demand": (
-                None
-                if candidate.true_profit is None
-                else SOURCE_AM_DEMAND * candidate.true_profit
+                None if candidate.true_profit is None else SOURCE_AM_DEMAND * candidate.true_profit
             ),
             "region_iterations": candidate.region_iteration_count,
             "boundary_search_complete": candidate.boundary_search_complete,
@@ -100,45 +101,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     raise AssertionError("argparse accepted an unsupported command")  # pragma: no cover
 
 
-def _compare_two_route() -> dict[str, object]:
-    problem = build_two_route_problem()
-    initial_menu = initial_two_route_menu()
-    solver = ScipyRegionalSolver(
-        "SLSQP",
-        options={"maxiter": 2_000, "ftol": 1e-10},
-    )
-    primal = solve_primal(problem, initial_menu, solver, max_region_iterations=20)
-    enumeration = enumerate_assignment_regions(problem, initial_menu, solver)
-    best = enumeration.best_candidate
-    primal_profit = primal.candidate.true_profit
-    best_profit = None if best is None else best.true_profit
-    profit_gap = (
-        None
-        if primal_profit is None or best_profit is None
-        else best_profit - primal_profit
-    )
-    return {
-        "example": "two-route",
-        "warning": "enumeration compares local regional solves; it is not a global proof",
-        "primal": {
-            "status": primal.status.value,
-            "assignment": primal.candidate.assignment.tolist(),
-            "true_profit": primal_profit,
-            "region_iterations": primal.candidate.region_iteration_count,
-            "boundary_search_complete": primal.candidate.boundary_search_complete,
-        },
-        "enumeration": {
-            **enumeration.metrics(),
-            "best_assignment": None if best is None else best.assigned_bundles.tolist(),
-            "best_prices": None if best is None else best.true_assignment.menu.prices.tolist(),
-            "best_allowances": (
-                None if best is None else best.true_assignment.menu.allowances.tolist()
-            ),
-        },
-        "enumerated_minus_primal_profit": profit_gap,
-    }
-
-
 def _multistart_two_route(start_count: int, seed: int) -> dict[str, object]:
     result = run_two_route_multistart(start_count, seed=seed)
     best = result.best_run
@@ -162,6 +124,7 @@ def _run_sioux_falls() -> dict[str, object]:
         "example": "sioux-falls",
         "source": SIOUX_FALLS_SOURCE_URL,
         "experiment": DEFAULT_SIOUX_FALLS_CONFIG.metadata(),
+        "benchmark_settings": DEFAULT_SIOUX_FALLS_SETTINGS.metadata(),
         "synthetic_extension": True,
         "nodes": NODE_COUNT,
         "directed_links": DIRECTED_LINK_COUNT,
@@ -200,6 +163,7 @@ def _multistart_sioux_falls(start_count: int, seed: int) -> dict[str, object]:
         "example": "sioux-falls",
         "source": SIOUX_FALLS_SOURCE_URL,
         "experiment": DEFAULT_SIOUX_FALLS_CONFIG.metadata(),
+        "benchmark_settings": DEFAULT_SIOUX_FALLS_SETTINGS.metadata(),
         "synthetic_extension": True,
         "seed": seed,
         "traveler_classes": 2 * int(np.count_nonzero(sioux_falls_od_matrix())),
@@ -208,9 +172,7 @@ def _multistart_sioux_falls(start_count: int, seed: int) -> dict[str, object]:
         "end_to_end_seconds": perf_counter() - started,
         "all_consistent_starts_same_region": result.distinct_region_count == 1,
         "best_assignment_counts": (
-            None
-            if best is None
-            else np.bincount(best.final_assignment, minlength=3).tolist()
+            None if best is None else np.bincount(best.final_assignment, minlength=3).tolist()
         ),
         "best_start": None if best is None else best.number,
         "regions": regions,

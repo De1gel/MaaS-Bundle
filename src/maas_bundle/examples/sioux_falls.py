@@ -19,13 +19,8 @@ import networkx as nx
 import numpy as np
 from numpy.typing import NDArray
 
-from maas_bundle.benchmarks.initialization import sample_profitable_menus
-from maas_bundle.benchmarks.multistart import MultiStartResult, run_multistart
 from maas_bundle.design.menu import BundleMenu
-from maas_bundle.design.primal import solve_primal
 from maas_bundle.design.problem import BundleDesignProblem
-from maas_bundle.design.regional import ScipyRegionalSolver
-from maas_bundle.design.validation import CandidateDiagnostics
 from maas_bundle.examples.sioux_falls_config import (
     DEFAULT_SIOUX_FALLS_CONFIG,
     TNTP_TIME_TO_MINUTES,
@@ -201,81 +196,6 @@ def initial_sioux_falls_menu(
     )
 
 
-def generate_sioux_falls_initial_menus(
-    start_count: int = DEFAULT_SIOUX_FALLS_CONFIG.default_starts,
-    *,
-    seed: int | None = DEFAULT_SIOUX_FALLS_CONFIG.default_seed,
-    problem: BundleDesignProblem | None = None,
-    config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
-) -> tuple[BundleMenu, ...]:
-    """Generate monotone, positive-profit starts at Sioux Falls credit scales."""
-
-    if not isinstance(start_count, (int, np.integer)) or start_count <= 0:
-        raise ValueError("start_count must be a positive integer")
-    random = np.random.default_rng(seed)
-    if problem is None:
-        problem = build_sioux_falls_problem(config=config)
-
-    def draw_menu() -> BundleMenu:
-        prices = np.concatenate(
-            ([0.0], np.sort(random.uniform(*config.sampled_price_bounds_usd_per_month, size=2)))
-        )
-        basic = random.uniform(*config.sampled_basic_allowance_bounds_link_uses_per_month, size=2)
-        premium = basic + random.uniform(
-            *config.sampled_premium_increment_bounds_link_uses_per_month, size=2
-        )
-        return BundleMenu(
-            prices=prices,
-            allowances=np.vstack((np.zeros(2), basic, premium)),
-        )
-
-    return sample_profitable_menus(
-        problem,
-        draw_menu,
-        start_count,
-        minimum_profit=config.minimum_profit_usd_per_person_month,
-    )
-
-
-def run_sioux_falls_example(
-    *,
-    config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
-) -> CandidateDiagnostics:
-    """Run the full primal pipeline on the large Sioux Falls instance."""
-
-    solver = ScipyRegionalSolver(
-        "SLSQP", options={"maxiter": config.nlp_max_iterations, "ftol": config.nlp_ftol}
-    )
-    return solve_primal(
-        build_sioux_falls_problem(config=config),
-        initial_sioux_falls_menu(config=config),
-        solver,
-        max_region_iterations=config.max_region_iterations,
-        profit_tolerance=config.minimum_profit_usd_per_person_month,
-    )
-
-
-def run_sioux_falls_multistart(
-    start_count: int = DEFAULT_SIOUX_FALLS_CONFIG.default_starts,
-    *,
-    seed: int | None = DEFAULT_SIOUX_FALLS_CONFIG.default_seed,
-    config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
-) -> MultiStartResult:
-    """Run the reproducible multi-start benchmark on Sioux Falls."""
-
-    solver = ScipyRegionalSolver(
-        "SLSQP", options={"maxiter": config.nlp_max_iterations, "ftol": config.nlp_ftol}
-    )
-    problem = build_sioux_falls_problem(config=config)
-    return run_multistart(
-        problem,
-        generate_sioux_falls_initial_menus(start_count, seed=seed, problem=problem, config=config),
-        solver,
-        max_region_iterations=config.max_region_iterations,
-        profit_tolerance=config.minimum_profit_usd_per_person_month,
-    )
-
-
 @lru_cache(maxsize=2 * NODE_COUNT * (NODE_COUNT - 1))
 def _od_route_oracles(
     origin: int,
@@ -340,3 +260,20 @@ def _od_path_data(
             mode = 0 if edge["capacity"] >= trunk_capacity_threshold else 1
             mode_usage[mode, path_index] += 1.0
     return path_costs, mode_usage
+
+
+def draw_sioux_falls_menu(
+    random: np.random.Generator,
+    *,
+    config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
+) -> BundleMenu:
+    """Draw one candidate at the instance's monthly scales, without screening."""
+
+    prices = np.concatenate(
+        ([0.0], np.sort(random.uniform(*config.sampled_price_bounds_usd_per_month, size=2)))
+    )
+    basic = random.uniform(*config.sampled_basic_allowance_bounds_link_uses_per_month, size=2)
+    premium = basic + random.uniform(
+        *config.sampled_premium_increment_bounds_link_uses_per_month, size=2
+    )
+    return BundleMenu(prices=prices, allowances=np.vstack((np.zeros(2), basic, premium)))

@@ -1,3 +1,20 @@
+## Code organization and Python experiments
+
+`examples/` defines networks, economic parameters, problem objects and menu
+proposals. `benchmarks/` owns positive-start screening, solver settings,
+single-start runs, multi-start runs and enumeration comparisons. `design/`
+implements the optimization algorithms; `oracle/` evaluates route costs.
+
+```python
+from maas_bundle.benchmarks import run_sioux_falls_multistart
+
+result = run_sioux_falls_multistart(30, seed=20260901)
+```
+
+Run and profitable-menu generation functions have moved from `examples` to
+`benchmarks`. Use `config=` for instance data and `settings=` for solver
+budgets. CLI commands are unchanged. See [experiment interfaces and migration](docs/benchmark_experiments.md).
+
 ## Running the bundled example
 
 The algorithm entry point is `maas_bundle.solve_primal(...)`. The installed
@@ -72,7 +89,8 @@ count mode-specific passenger-link traversals per person per month. A link
 traversal is not a whole OD trip or a boarding. All economic parameters are
 synthetic. See the [complete parameters and units](docs/sioux_falls_experiment.md)
 and [configuration object](src/maas_bundle/examples/sioux_falls_config.py).
-CLI results include the configuration and unit metadata in `experiment`.
+CLI results include the configuration and unit metadata in `experiment`,
+and solver budgets and precision in `benchmark_settings`.
 
 Every simple OD path contributes a constraint to the route-choice dual
 polytope; there is no fixed path-count cutoff. All dual vertices are enumerated
@@ -111,7 +129,7 @@ must not be compared as if it used the current sampling protocol.
 The full single-start integration test is opt-in:
 
 ```bash
-pytest tests/examples/test_sioux_falls.py --run-sioux-falls
+pytest tests/benchmarks/test_sioux_falls_experiments.py --run-sioux-falls
 ```
 
 ## Positive-profit starts and incumbent protection

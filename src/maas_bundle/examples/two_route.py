@@ -16,13 +16,8 @@ from __future__ import annotations
 import networkx as nx
 import numpy as np
 
-from maas_bundle.benchmarks.initialization import sample_profitable_menus
-from maas_bundle.benchmarks.multistart import MultiStartResult, run_multistart
 from maas_bundle.design.menu import BundleMenu
-from maas_bundle.design.primal import solve_primal
 from maas_bundle.design.problem import BundleDesignProblem
-from maas_bundle.design.regional import ScipyRegionalSolver
-from maas_bundle.design.validation import CandidateDiagnostics
 from maas_bundle.oracle.demand_distribution import (
     TriangularDemandDistribution,
     UniformDemandDistribution,
@@ -117,60 +112,13 @@ def initial_two_route_menu() -> BundleMenu:
     )
 
 
-def run_two_route_example() -> CandidateDiagnostics:
-    """Run the complete primal pipeline on the small open-data instance."""
+def draw_two_route_menu(random: np.random.Generator) -> BundleMenu:
+    """Draw one candidate at the instance's scales, without profit screening."""
 
-    solver = ScipyRegionalSolver(
-        "SLSQP",
-        options={"maxiter": 2_000, "ftol": 1e-10},
-    )
-    return solve_primal(
-        build_two_route_problem(),
-        initial_two_route_menu(),
-        solver,
-        max_region_iterations=20,
-    )
-
-
-def generate_two_route_initial_menus(
-    start_count: int = 30,
-    *,
-    seed: int | None = 20260901,
-    problem: BundleDesignProblem | None = None,
-) -> tuple[BundleMenu, ...]:
-    """Generate monotone, positive-profit starts outside the all-PAYG plateau."""
-
-    if not isinstance(start_count, (int, np.integer)) or start_count <= 0:
-        raise ValueError("start_count must be a positive integer")
-    random = np.random.default_rng(seed)
-    if problem is None:
-        problem = build_two_route_problem()
-
-    def draw_menu() -> BundleMenu:
-        prices = np.concatenate(([0.0], np.sort(random.uniform(0.2, 8.0, size=2))))
-        basic_allowance = random.uniform(0.0, 6.0, size=2)
-        premium_allowance = basic_allowance + random.uniform(0.0, 6.0, size=2)
-        allowances = np.vstack((np.zeros(2), basic_allowance, premium_allowance))
-        return BundleMenu(prices=prices, allowances=allowances)
-
-    return sample_profitable_menus(problem, draw_menu, start_count)
-
-
-def run_two_route_multistart(
-    start_count: int = 30,
-    *,
-    seed: int | None = 20260901,
-) -> MultiStartResult:
-    """Run a reproducible multi-start experiment on the two-route instance."""
-
-    solver = ScipyRegionalSolver(
-        "SLSQP",
-        options={"maxiter": 2_000, "ftol": 1e-10},
-    )
-    problem = build_two_route_problem()
-    return run_multistart(
-        problem,
-        generate_two_route_initial_menus(start_count, seed=seed, problem=problem),
-        solver,
-        max_region_iterations=20,
+    prices = np.concatenate(([0.0], np.sort(random.uniform(0.2, 8.0, size=2))))
+    basic_allowance = random.uniform(0.0, 6.0, size=2)
+    premium_allowance = basic_allowance + random.uniform(0.0, 6.0, size=2)
+    return BundleMenu(
+        prices=prices,
+        allowances=np.vstack((np.zeros(2), basic_allowance, premium_allowance)),
     )

@@ -12,7 +12,7 @@ TNTP_TIME_TO_MINUTES = 0.6
 
 @dataclass(frozen=True)
 class SiouxFallsExperimentConfig:
-    """Immutable settings; physical units are part of the parameter names.
+    """Immutable instance parameters; physical units are part of the names.
 
     Editing route costs, tariffs, or mode classification changes the oracle
     cache key. Prices and allowances are totals for one person's billing month.
@@ -40,12 +40,6 @@ class SiouxFallsExperimentConfig:
     sampled_basic_allowance_bounds_link_uses_per_month: tuple[float, float] = (0.0, 48.0)
     sampled_premium_increment_bounds_link_uses_per_month: tuple[float, float] = (0.0, 72.0)
     trunk_capacity_threshold_source_flow_units: float = 10000.0
-    default_starts: int = 30
-    default_seed: int = 20260901
-    max_region_iterations: int = 30
-    nlp_max_iterations: int = 2000
-    nlp_ftol: float = 1e-9
-    minimum_profit_usd_per_person_month: float = 1e-9
 
     def metadata(self) -> dict[str, object]:
         """Return a fresh JSON-compatible record with units and all settings."""

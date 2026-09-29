@@ -2,7 +2,9 @@
 
 配置版本：`sioux-falls-monthly-usd-v1`。参数集中在
 [sioux_falls_config.py](../src/maas_bundle/examples/sioux_falls_config.py)，
-单次和多初值入口使用同一配置。命令行 JSON 的 `experiment` 字段记录实际默认参数、
+单次和多初值入口位于 `benchmarks/sioux_falls.py`，使用同一数据配置；
+运行预算独立定义于 `benchmarks/settings.py`。命令行 JSON 的 `benchmark_settings`
+记录求解预算和精度，`experiment` 字段记录实际默认数据参数、
 单位、模式顺序及版本。经济参数是合成设定，不是 Sioux Falls 的实测价格或调查估计。
 
 ## 单位与网络
@@ -101,6 +103,9 @@ Python 调用可用 `dataclasses.replace(DEFAULT_SIOUX_FALLS_CONFIG, ...)` 创�
 `build_sioux_falls_problem(config=...)`、`run_sioux_falls_example(config=...)` 或
 `run_sioux_falls_multistart(..., config=...)`。oracle 缓存键包含配置，避免修改时间价值、
 费率或模式划分后误用旧极点。缓存仅在当前进程内复用。
+运行函数现在从 `maas_bundle.benchmarks` 导入；通过 `settings=` 传入修改后的
+`DEFAULT_SIOUX_FALLS_SETTINGS` 可调整区域和 NLP 预算，且不改变 oracle 缓存键。
+完整调用和迁移说明见[实验分工](benchmark_experiments.md)。
 
 本次重新设定月度出行频次、月费和额度（这些数值为旧设置的 4 倍），同时纠正源时间
 到分钟的换算；旧设置没有明确计费周期，不能将此次调整称为已知周数据到月数据的换算。

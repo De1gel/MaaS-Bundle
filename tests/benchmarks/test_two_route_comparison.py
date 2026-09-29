@@ -2,12 +2,12 @@
 
 import pytest
 
-from maas_bundle.cli import _compare_two_route
+from maas_bundle.benchmarks.two_route import compare_two_route
 
 
 @pytest.mark.enumeration_scale
 def test_two_route_enumeration_finds_better_consistent_candidate() -> None:
-    result = _compare_two_route()
+    result = compare_two_route()
 
     assert result["primal"]["region_iterations"] == 2
     assert result["enumeration"]["assignments"] == 81

@@ -42,47 +42,6 @@ def test_compare_cli_reports_helper_payload(
     assert json.loads(capsys.readouterr().out) == payload
 
 
-def test_compare_payload_uses_primal_and_enumeration_results(monkeypatch) -> None:
-    menu = SimpleNamespace(
-        prices=np.array([0.0, 2.0]),
-        allowances=np.array([[0.0], [3.0]]),
-    )
-    primal_candidate = SimpleNamespace(
-        true_profit=3.0,
-        assignment=np.array([1]),
-        region_iteration_count=2,
-        boundary_search_complete=True,
-    )
-    primal = SimpleNamespace(
-        status=SimpleNamespace(value="consistent_candidate"),
-        candidate=primal_candidate,
-    )
-    best = SimpleNamespace(
-        true_profit=4.0,
-        assigned_bundles=np.array([1]),
-        true_assignment=SimpleNamespace(menu=menu),
-    )
-    enumeration = SimpleNamespace(
-        best_candidate=best,
-        metrics=lambda: {"assignments": 2, "best_true_profit": 4.0},
-    )
-    monkeypatch.setattr(cli_module, "build_two_route_problem", lambda: object())
-    monkeypatch.setattr(cli_module, "initial_two_route_menu", lambda: object())
-    monkeypatch.setattr(cli_module, "ScipyRegionalSolver", lambda *args, **kwargs: object())
-    monkeypatch.setattr(cli_module, "solve_primal", lambda *args, **kwargs: primal)
-    monkeypatch.setattr(
-        cli_module,
-        "enumerate_assignment_regions",
-        lambda *args, **kwargs: enumeration,
-    )
-
-    payload = cli_module._compare_two_route()
-
-    assert payload["primal"]["assignment"] == [1]
-    assert payload["enumeration"]["best_assignment"] == [1]
-    assert payload["enumerated_minus_primal_profit"] == pytest.approx(1.0)
-
-
 @pytest.mark.parametrize("consistent_starts", [3, 0])
 def test_multistart_cli_reports_helper_payload(
     monkeypatch,
@@ -92,9 +51,7 @@ def test_multistart_cli_reports_helper_payload(
     payload = {"consistent_starts": consistent_starts, "distinct_regions": 2}
     monkeypatch.setattr(cli_module, "_multistart_two_route", lambda starts, seed: payload)
 
-    exit_status = main(
-        ["multistart", "two-route", "--starts", "3", "--seed", "17"]
-    )
+    exit_status = main(["multistart", "two-route", "--starts", "3", "--seed", "17"])
 
     assert exit_status == (0 if consistent_starts else 1)
     assert json.loads(capsys.readouterr().out) == payload
@@ -206,6 +163,8 @@ def test_sioux_falls_example_payload_is_compact(monkeypatch) -> None:
     assert payload["end_to_end_seconds"] >= 0
     assert payload["experiment"]["units"]["prices"] == "USD/person/month"
     assert payload["experiment"]["source_time_to_minutes"] == 0.6
+    assert payload["benchmark_settings"]["max_region_iterations"] == 30
+    assert "max_region_iterations" not in payload["experiment"]["parameters"]
 
 
 def test_sioux_falls_multistart_payload_compacts_assignment_vectors(monkeypatch) -> None:

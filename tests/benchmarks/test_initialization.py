@@ -4,11 +4,11 @@ import numpy as np
 import pytest
 
 from maas_bundle.benchmarks.initialization import sample_profitable_menus
+from maas_bundle.benchmarks.two_route import generate_two_route_initial_menus
 from maas_bundle.design.menu import BundleMenu
 from maas_bundle.design.primal import solve_primal
 from maas_bundle.examples.two_route import (
     build_two_route_problem,
-    generate_two_route_initial_menus,
     initial_two_route_menu,
 )
 
