@@ -26,6 +26,13 @@ from maas_bundle.design.regional import (
     RestrictedRegionalProblem,
     backtrack_to_feasible_menu,
 )
+from maas_bundle.design.tolerances import (
+    DEFAULT_COST_TOLERANCE,
+    DEFAULT_MARGIN_TOLERANCE,
+    DEFAULT_PROFIT_TOLERANCE,
+    effective_cost_tolerance,
+    validate_tolerance,
+)
 from maas_bundle.design.validation import CandidateDiagnostics, validate_candidate
 
 
@@ -58,10 +65,12 @@ class FixedAssignmentResult:
     active_constraints: tuple[ChoiceConstraintIndex, ...]
     iterations: tuple[CriticalGenerationIteration, ...]
     solve_time_seconds: float
+    feasibility_tolerance: float = DEFAULT_COST_TOLERANCE
 
     def __post_init__(self) -> None:
         """Protect the fixed assignment and validate the recorded outcome."""
 
+        validate_tolerance(self.feasibility_tolerance, name="feasibility_tolerance")
         assignments = np.asarray(self.assigned_bundles)
         if assignments.ndim != 1 or not np.issubdtype(assignments.dtype, np.integer):
             raise ValueError("assigned_bundles must be a one-dimensional integer array")
@@ -323,7 +332,7 @@ def solve_fixed_assignment(
     *,
     initial_per_pair: int = 1,
     tie_tolerance: float = 1e-12,
-    violation_tolerance: float = 1e-9,
+    violation_tolerance: float = DEFAULT_COST_TOLERANCE,
     max_iterations: int | None = None,
 ) -> FixedAssignmentResult:
     """Solve one fixed-assignment region by finite constraint generation.
@@ -339,6 +348,9 @@ def solve_fixed_assignment(
     ):
         raise ValueError("max_iterations must be a positive integer or None")
 
+    violation_tolerance = effective_cost_tolerance(
+        solver, choice_tolerance=violation_tolerance, violation_tolerance=violation_tolerance
+    )
     initial_valuation = problem.evaluate_valuations(initial_menu)
     critical = initialize_critical_constraints(
         initial_menu,
@@ -375,7 +387,10 @@ def solve_fixed_assignment(
         regional = RestrictedRegionalProblem(problem, critical)
         solve_result = solver.solve(regional, menu)
 
-        if not solve_result.success:
+        if (
+            not solve_result.success
+            or solve_result.maximum_constraint_violation > violation_tolerance
+        ):
             history.append(
                 CriticalGenerationIteration(
                     number=number,
@@ -389,23 +404,16 @@ def solve_fixed_assignment(
                 critical,
                 history,
                 started,
+                violation_tolerance,
             )
 
         menu = solve_result.menu
         valuation = problem.evaluate_valuations(menu)
-        # Separation cannot reliably enforce a tighter residual than the NLP
-        # solve itself certifies.  Using one effective tolerance prevents an
-        # already-active constraint with harmless floating-point residue from
-        # being reported as an unresolvable generation stall.
-        effective_violation_tolerance = max(
-            violation_tolerance,
-            solve_result.first_order_certificate.feasibility_tolerance,
-        )
         separation = separate_choice_constraints(
             menu,
             valuation,
             critical,
-            violation_tolerance=effective_violation_tolerance,
+            violation_tolerance=violation_tolerance,
         )
         additions = tuple(violation.index for violation in separation.additions)
         added_count = critical.add_all(additions)
@@ -425,6 +433,7 @@ def solve_fixed_assignment(
                 critical,
                 history,
                 started,
+                violation_tolerance,
             )
         if not separation.can_add_constraints or added_count == 0:
             return _fixed_assignment_result(
@@ -432,6 +441,7 @@ def solve_fixed_assignment(
                 critical,
                 history,
                 started,
+                violation_tolerance,
             )
         if number == iteration_limit:
             return _fixed_assignment_result(
@@ -439,6 +449,7 @@ def solve_fixed_assignment(
                 critical,
                 history,
                 started,
+                violation_tolerance,
             )
 
         if feasible_anchor is not None:
@@ -465,15 +476,11 @@ class _BoundaryFrame:
 
 
 def _boundary_neighbors(assignment: AssignmentResult) -> Iterator[NDArray[np.int64]]:
-    for traveler, alternative in zip(*np.nonzero(assignment.numerical_tie_mask), strict=True):
+    for traveler, alternative in zip(
+        *np.nonzero(assignment.numerical_optimistic_mask), strict=True
+    ):
         selected = assignment.bundle_indices[traveler]
         if alternative == selected:
-            continue
-        double_tie = (
-            abs(assignment.bundle_margins[selected] - assignment.bundle_margins[alternative])
-            <= assignment.profit_tolerance
-        )
-        if not double_tie:
             continue
         neighbor = assignment.bundle_indices.copy()
         neighbor[traveler] = alternative
@@ -481,12 +488,21 @@ def _boundary_neighbors(assignment: AssignmentResult) -> Iterator[NDArray[np.int
         yield neighbor
 
 
-def _same_menu(left: BundleMenu, right: BundleMenu, atol: float, rtol: float) -> bool:
+def _same_menu(
+    left: BundleMenu,
+    right: BundleMenu,
+    atol: float,
+    rtol: float,
+    allowance_atol: float = 1e-7,
+) -> bool:
     """Symmetric componentwise absolute + relative menu comparison."""
 
     return all(
-        np.all(np.abs(a - b) <= atol + rtol * np.maximum(np.abs(a), np.abs(b)))
-        for a, b in ((left.prices, right.prices), (left.allowances, right.allowances))
+        np.all(np.abs(a - b) <= absolute + rtol * np.maximum(np.abs(a), np.abs(b)))
+        for a, b, absolute in (
+            (left.prices, right.prices, atol),
+            (left.allowances, right.allowances, allowance_atol),
+        )
     )
 
 
@@ -513,16 +529,16 @@ def _regional_checks_at_menu(
         menu,
         valuation,
         critical,
-        violation_tolerance=certificate.feasibility_tolerance,
+        violation_tolerance=result.feasibility_tolerance,
     )
     if not separation.is_feasible:
         return False
     regional = RestrictedRegionalProblem(problem, critical)
     checked = regional.first_order_certificate(
         regional.layout.pack(menu),
-        feasibility_tolerance=certificate.feasibility_tolerance,
+        feasibility_tolerance=result.feasibility_tolerance,
         stationarity_tolerance=certificate.stationarity_tolerance,
-        active_tolerance=certificate.feasibility_tolerance,
+        active_tolerance=result.feasibility_tolerance,
     )
     return checked.satisfies_kkt
 
@@ -532,16 +548,18 @@ def find_assignment_consistent_menu(
     initial_menu: BundleMenu,
     solver: RegionalNlpSolver,
     *,
-    choice_tolerance: float = 1e-9,
-    profit_tolerance: float = 1e-9,
+    choice_tolerance: float = DEFAULT_COST_TOLERANCE,
+    profit_tolerance: float = DEFAULT_PROFIT_TOLERANCE,
+    margin_tolerance: float = DEFAULT_MARGIN_TOLERANCE,
     max_region_iterations: int = 100,
     stop_on_assignment_revisit: bool = False,
     initial_per_pair: int = 1,
     critical_tie_tolerance: float = 1e-12,
-    violation_tolerance: float = 1e-9,
+    violation_tolerance: float = DEFAULT_COST_TOLERANCE,
     max_generation_iterations: int | None = None,
     boundary_tolerance: float = 1e-7,
     boundary_relative_tolerance: float = 1e-6,
+    allowance_boundary_tolerance: float = 1e-7,
 ) -> AssignmentConsistencyResult:
     """Follow optimistic transitions and check equal-margin neighboring regions.
 
@@ -558,15 +576,21 @@ def find_assignment_consistent_menu(
     for name, value in (
         ("boundary_tolerance", boundary_tolerance),
         ("boundary_relative_tolerance", boundary_relative_tolerance),
+        ("allowance_boundary_tolerance", allowance_boundary_tolerance),
     ):
         if not np.isfinite(value) or value < 0:
             raise ValueError(f"{name} must be finite and nonnegative")
 
+    choice_tolerance = violation_tolerance = effective_cost_tolerance(
+        solver, choice_tolerance=choice_tolerance, violation_tolerance=violation_tolerance
+    )
+    validate_tolerance(profit_tolerance, name="profit_tolerance")
+    validate_tolerance(margin_tolerance, name="margin_tolerance")
     started = perf_counter()
     initial_assignment = problem.evaluate_assignment(
         initial_menu,
         choice_tolerance=choice_tolerance,
-        profit_tolerance=profit_tolerance,
+        profit_tolerance=margin_tolerance,
     )
     incumbent = initial_assignment
     menu = initial_menu
@@ -619,14 +643,10 @@ def find_assignment_consistent_menu(
             )
             return finish(AssignmentConsistencyStatus.FIXED_ASSIGNMENT_FAILED)
 
-        effective_choice_tolerance = max(
-            choice_tolerance,
-            fixed_result.final_solve_result.first_order_certificate.feasibility_tolerance,
-        )
         response = problem.evaluate_assignment(
             fixed_result.menu,
-            choice_tolerance=effective_choice_tolerance,
-            profit_tolerance=profit_tolerance,
+            choice_tolerance=choice_tolerance,
+            profit_tolerance=margin_tolerance,
         )
         objective = fixed_result.final_solve_result.objective_value
         if frames:
@@ -646,6 +666,7 @@ def find_assignment_consistent_menu(
             frames[-1].assignment.menu,
             boundary_tolerance,
             boundary_relative_tolerance,
+            allowance_boundary_tolerance,
         )
         returned = False
         if same_point and not improved and not decreased:
@@ -696,6 +717,7 @@ def find_assignment_consistent_menu(
                         visited_menus[signature],
                         boundary_tolerance,
                         boundary_relative_tolerance,
+                        allowance_boundary_tolerance,
                     )
                 ):
                     return finish(AssignmentConsistencyStatus.ASSIGNMENT_REVISIT)
@@ -727,17 +749,18 @@ def solve_primal(
     initial_menu: BundleMenu,
     solver: RegionalNlpSolver,
     *,
-    choice_tolerance: float = 1e-9,
-    profit_tolerance: float = 1e-9,
+    choice_tolerance: float = DEFAULT_COST_TOLERANCE,
+    profit_tolerance: float = DEFAULT_PROFIT_TOLERANCE,
+    margin_tolerance: float = DEFAULT_MARGIN_TOLERANCE,
     max_region_iterations: int = 100,
     stop_on_assignment_revisit: bool = False,
     initial_per_pair: int = 1,
     critical_tie_tolerance: float = 1e-12,
-    violation_tolerance: float = 1e-9,
+    violation_tolerance: float = DEFAULT_COST_TOLERANCE,
     max_generation_iterations: int | None = None,
-    margin_tolerance: float = 1e-8,
     boundary_tolerance: float = 1e-7,
     boundary_relative_tolerance: float = 1e-6,
+    allowance_boundary_tolerance: float = 1e-7,
 ) -> CandidateDiagnostics:
     """Search from a profitable menu and validate the resulting candidate.
 
@@ -746,12 +769,17 @@ def solve_primal(
     trials cannot replace the positive-profit menu returned to the caller.
     """
 
+    choice_tolerance = violation_tolerance = effective_cost_tolerance(
+        solver, choice_tolerance=choice_tolerance, violation_tolerance=violation_tolerance
+    )
+    validate_tolerance(profit_tolerance, name="profit_tolerance")
+    validate_tolerance(margin_tolerance, name="margin_tolerance")
     if np.any(np.diff(initial_menu.prices) < 0):
         raise ValueError("initial menu prices must be nondecreasing")
     initial_assignment = problem.evaluate_assignment(
         initial_menu,
         choice_tolerance=choice_tolerance,
-        profit_tolerance=profit_tolerance,
+        profit_tolerance=margin_tolerance,
     )
     if initial_assignment.total_profit <= profit_tolerance:
         raise ValueError(
@@ -765,6 +793,7 @@ def solve_primal(
         solver,
         choice_tolerance=choice_tolerance,
         profit_tolerance=profit_tolerance,
+        margin_tolerance=margin_tolerance,
         max_region_iterations=max_region_iterations,
         stop_on_assignment_revisit=stop_on_assignment_revisit,
         initial_per_pair=initial_per_pair,
@@ -773,8 +802,9 @@ def solve_primal(
         max_generation_iterations=max_generation_iterations,
         boundary_tolerance=boundary_tolerance,
         boundary_relative_tolerance=boundary_relative_tolerance,
+        allowance_boundary_tolerance=allowance_boundary_tolerance,
     )
-    return validate_candidate(candidate, margin_tolerance=margin_tolerance)
+    return validate_candidate(candidate)
 
 
 def _fixed_assignment_result(
@@ -782,6 +812,7 @@ def _fixed_assignment_result(
     critical: CriticalConstraintSet,
     history: list[CriticalGenerationIteration],
     started: float,
+    feasibility_tolerance: float,
 ) -> FixedAssignmentResult:
     return FixedAssignmentResult(
         status=status,
@@ -789,6 +820,7 @@ def _fixed_assignment_result(
         active_constraints=critical.indices(),
         iterations=tuple(history),
         solve_time_seconds=perf_counter() - started,
+        feasibility_tolerance=feasibility_tolerance,
     )
 
 

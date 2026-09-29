@@ -84,9 +84,12 @@ PAYG 平台 margin 为零，超额 PAYG 支出进入旅客成本，不另加到�
 
 SLSQP：每次最多 2000 次迭代，`ftol=1e-9`，失败后重启及回退 trust-constr；
 每个初值最多 30 个区域。区域可行性容差 `1e-7`，独立归一化 KKT 容差 `1e-5`。
-选择成本差、利润容差分别为 `1e-9 USD/人·月`；求解后有效选择/分离容差与 NLP
-可行性容差协调为 `1e-7`。同菜单比较使用坐标绝对容差 `1e-7` 和无量纲相对容差
-`1e-6`，价格坐标按 USD/人·月、额度坐标按路段次/人·月解释绝对容差。
+成本 tie、选择约束分离及可行锚点检查从初值起统一为 `1e-7 USD/人·月`。
+`margin_tolerance=1e-9 USD/人·月` 统一控制 optimistic 选择、double tie 邻区和最终诊断；
+总利润使用独立的 `profit_tolerance=1e-9 USD/人·月`。同菜单比较中，价格绝对容差
+`boundary_tolerance=1e-7 USD/人·月`，额度绝对容差
+`allowance_boundary_tolerance=1e-7 路段次/人·月`，相对容差为无量纲 `1e-6`。
+完整规则及兼容接口说明见[数值容差](numerical_tolerances.md)。
 普通 tie 和 double tie 的流程见[边界搜索](boundary_assignment_search.md)。
 
 ```bash
@@ -127,3 +130,10 @@ Python 调用可用 `dataclasses.replace(DEFAULT_SIOUX_FALLS_CONFIG, ...)` 创�
 | 5 | 1 | 0 | 10.16182917 |
 
 完整 Sioux Falls 的 30 初值优化实验尚未按本配置运行；不能沿用旧参数的多初值统计。
+
+## 容差统一后的复验（2026-09-29）
+
+采用上述统一容差重新运行全部 opt-in 测试：424 项通过、0 失败、0 跳过，
+171.52 秒。Sioux Falls 完整网络单初值仍通过，终点利润和 5 次区域求解结果保持一致。
+新增 20 项容差回归及完整命令见[数值容差](numerical_tolerances.md#回归覆盖)。
+本次未另外运行 Sioux Falls 的 30 初值优化。

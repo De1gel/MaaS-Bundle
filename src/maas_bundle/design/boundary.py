@@ -8,6 +8,9 @@ import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
 from maas_bundle.design.menu import BundleMenu
+from maas_bundle.design.tolerances import (
+    DEFAULT_COST_TOLERANCE,
+)
 from maas_bundle.design.valuation import ValuationTable
 
 
@@ -253,7 +256,7 @@ def separate_choice_constraints(
     valuation: ValuationTable,
     critical_constraints: CriticalConstraintSet,
     *,
-    violation_tolerance: float = 1e-9,
+    violation_tolerance: float = DEFAULT_COST_TOLERANCE,
 ) -> SeparationResult:
     """Scan all travelers and propose one omitted violation per ordered pair."""
 

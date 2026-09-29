@@ -70,12 +70,17 @@ class CandidateDiagnostics:
 def validate_candidate(
     candidate: AssignmentConsistencyResult,
     *,
-    margin_tolerance: float = 1e-8,
+    margin_tolerance: float | None = None,
 ) -> CandidateDiagnostics:
     """Validate the final outer, separation, regional, and tie conditions."""
 
-    if not np.isfinite(margin_tolerance) or margin_tolerance < 0:
+    if margin_tolerance is not None and (not np.isfinite(margin_tolerance) or margin_tolerance < 0):
         raise ValueError("margin_tolerance must be finite and nonnegative")
+
+    # Validation must not reinterpret a completed search under a new tie set.
+    searched_margin_tolerance = candidate.initial_assignment.margin_tolerance
+    if margin_tolerance is not None and margin_tolerance != searched_margin_tolerance:
+        raise ValueError("margin_tolerance must match the boundary search tolerance")
 
     final_region = candidate.terminal_iteration.fixed_assignment_result
     final_solve = final_region.final_solve_result
@@ -117,7 +122,7 @@ def validate_candidate(
     assignment = candidate.terminal_iteration.true_assignment
     assert assignment is not None
     tied = assignment.has_numerical_cost_ties
-    double_ties = tied & (assignment.optimistic_margin_gaps <= margin_tolerance)
+    double_ties = assignment.has_double_ties
     tie_count = int(np.count_nonzero(tied))
     double_tie_count = int(np.count_nonzero(double_ties))
     status = (

@@ -212,3 +212,11 @@ def test_validation_rejects_negative_margin_tolerance() -> None:
 
     with pytest.raises(ValueError, match="margin_tolerance"):
         validate_candidate(candidate, margin_tolerance=-1.0)
+
+
+def test_validation_cannot_reinterpret_completed_search_with_a_new_margin_tolerance():
+    candidate = _manual_candidate(_SmoothIntersectionProblem(2), _menu(0.5, 0.0))
+    candidate = replace(candidate, boundary_search_complete=True)
+    with pytest.raises(ValueError, match="must match the boundary search tolerance"):
+        validate_candidate(candidate, margin_tolerance=1e-8)
+    assert validate_candidate(candidate, margin_tolerance=1e-9).valid

@@ -14,6 +14,11 @@ from maas_bundle.design.menu import BundleMenu
 from maas_bundle.design.primal import FixedAssignmentResult, solve_fixed_assignment
 from maas_bundle.design.problem import BundleDesignProblem
 from maas_bundle.design.regional import RegionalNlpSolver
+from maas_bundle.design.tolerances import (
+    DEFAULT_COST_TOLERANCE,
+    DEFAULT_MARGIN_TOLERANCE,
+    effective_cost_tolerance,
+)
 
 
 @dataclass(frozen=True)
@@ -71,11 +76,11 @@ def enumerate_assignment_regions(
     solver: RegionalNlpSolver,
     *,
     maximum_assignments: int | None = 100_000,
-    choice_tolerance: float = 1e-9,
-    profit_tolerance: float = 1e-9,
+    choice_tolerance: float = DEFAULT_COST_TOLERANCE,
+    profit_tolerance: float = DEFAULT_MARGIN_TOLERANCE,
     initial_per_pair: int = 1,
     tie_tolerance: float = 1e-12,
-    violation_tolerance: float = 1e-9,
+    violation_tolerance: float = DEFAULT_COST_TOLERANCE,
     max_generation_iterations: int | None = None,
 ) -> AssignmentEnumerationResult:
     """Solve every fixed-assignment region and retain consistent candidates.
@@ -86,6 +91,9 @@ def enumerate_assignment_regions(
     exact optimistic-assignment evaluator without duplicating their formulas.
     """
 
+    choice_tolerance = violation_tolerance = effective_cost_tolerance(
+        solver, choice_tolerance=choice_tolerance, violation_tolerance=violation_tolerance
+    )
     assignment_count = problem.bundle_count**problem.traveler_count
     if maximum_assignments is not None:
         if not isinstance(maximum_assignments, (int, np.integer)) or maximum_assignments <= 0:

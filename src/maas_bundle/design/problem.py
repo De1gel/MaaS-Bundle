@@ -20,6 +20,10 @@ from maas_bundle.design.cost import (
     checked_cost_values,
 )
 from maas_bundle.design.menu import BundleMenu
+from maas_bundle.design.tolerances import (
+    DEFAULT_COST_TOLERANCE,
+    DEFAULT_MARGIN_TOLERANCE,
+)
 from maas_bundle.design.valuation import ValuationTable
 from maas_bundle.oracle.demand_distribution import TripFrequencyDistribution
 from maas_bundle.oracle.route_value import RouteValueOracle
@@ -161,10 +165,14 @@ class BundleDesignProblem:
         self,
         menu: BundleMenu,
         *,
-        choice_tolerance: float = 1e-9,
-        profit_tolerance: float = 1e-9,
+        choice_tolerance: float = DEFAULT_COST_TOLERANCE,
+        profit_tolerance: float = DEFAULT_MARGIN_TOLERANCE,
     ) -> AssignmentResult:
-        """Return the exact optimistic response and true profit at a menu."""
+        """Return the numerical optimistic response and true profit at a menu.
+
+        ``profit_tolerance`` is the legacy name for the per-bundle margin
+        tolerance here, not an aggregate-objective improvement threshold.
+        """
 
         valuation = self.evaluate_valuations(menu)
         generalized_costs = valuation.route_values + menu.prices[None, :]

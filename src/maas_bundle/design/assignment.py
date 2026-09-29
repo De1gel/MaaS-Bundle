@@ -8,6 +8,10 @@ import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
 from maas_bundle.design.menu import BundleMenu
+from maas_bundle.design.tolerances import (
+    DEFAULT_COST_TOLERANCE,
+    DEFAULT_MARGIN_TOLERANCE,
+)
 from maas_bundle.design.valuation import ValuationTable
 
 
@@ -22,10 +26,11 @@ class AssignmentResult:
     bundle_margins: NDArray[np.float64]
     bundle_demand: NDArray[np.float64]
     total_profit: float
-    choice_tolerance: float = 1e-9
-    profit_tolerance: float = 1e-9
+    choice_tolerance: float = DEFAULT_COST_TOLERANCE
+    profit_tolerance: float = DEFAULT_MARGIN_TOLERANCE
     minimum_cost_gaps: NDArray[np.float64] = field(init=False, repr=False)
     numerical_tie_mask: NDArray[np.bool_] = field(init=False, repr=False)
+    numerical_optimistic_mask: NDArray[np.bool_] = field(init=False, repr=False)
     optimistic_margin_gaps: NDArray[np.float64] = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
@@ -65,13 +70,15 @@ class AssignmentResult:
             raise ValueError("total_profit must be finite")
 
         if self.valuation.traveler_count:
-            minimum_costs = np.min(generalized_costs, axis=1, keepdims=True)
-            minimum_cost_gaps = generalized_costs - minimum_costs
-            numerical_tie_mask = minimum_cost_gaps <= self.choice_tolerance
+            minimum_cost_gaps, numerical_tie_mask, numerical_optimistic_mask = _choice_masks(
+                generalized_costs, bundle_margins, self.choice_tolerance, self.profit_tolerance
+            )
             rows = np.arange(self.valuation.traveler_count)
             if not np.all(numerical_tie_mask[rows, bundle_indices]):
                 raise ValueError("bundle_indices must select a numerical minimum-cost bundle")
 
+            if not np.all(numerical_optimistic_mask[rows, bundle_indices]):
+                raise ValueError("bundle_indices must satisfy optimistic margin tie-breaking")
             optimistic_margin_gaps = np.full(self.valuation.traveler_count, np.inf)
             for traveler, selected in enumerate(bundle_indices):
                 tied_competitors = numerical_tie_mask[traveler].copy()
@@ -88,6 +95,7 @@ class AssignmentResult:
         else:
             minimum_cost_gaps = np.empty(expected_shape, dtype=float)
             numerical_tie_mask = np.empty(expected_shape, dtype=bool)
+            numerical_optimistic_mask = np.empty(expected_shape, dtype=bool)
             optimistic_margin_gaps = np.empty(0, dtype=float)
 
         immutable_indices = bundle_indices.copy()
@@ -97,6 +105,7 @@ class AssignmentResult:
         immutable_cost_gaps = minimum_cost_gaps.copy()
         immutable_tie_mask = numerical_tie_mask.copy()
         immutable_margin_gaps = optimistic_margin_gaps.copy()
+        numerical_optimistic_mask.setflags(write=False)
         for array in (
             immutable_indices,
             immutable_costs,
@@ -116,6 +125,7 @@ class AssignmentResult:
         object.__setattr__(self, "profit_tolerance", float(self.profit_tolerance))
         object.__setattr__(self, "minimum_cost_gaps", immutable_cost_gaps)
         object.__setattr__(self, "numerical_tie_mask", immutable_tie_mask)
+        object.__setattr__(self, "numerical_optimistic_mask", numerical_optimistic_mask)
         object.__setattr__(self, "optimistic_margin_gaps", immutable_margin_gaps)
 
     @property
@@ -139,12 +149,16 @@ class AssignmentResult:
         return result
 
     @property
+    def margin_tolerance(self) -> float:
+        """Per-bundle margin tolerance (legacy storage name: profit_tolerance)."""
+
+        return self.profit_tolerance
+
+    @property
     def has_double_ties(self) -> NDArray[np.bool_]:
         """Return tied travelers without a strict optimistic platform margin."""
 
-        result = self.has_numerical_cost_ties & (
-            self.optimistic_margin_gaps <= self.profit_tolerance
-        )
+        result = np.count_nonzero(self.numerical_optimistic_mask, axis=1) > 1
         result.setflags(write=False)
         return result
 
@@ -153,10 +167,13 @@ def select_optimistic_bundles(
     generalized_costs: ArrayLike,
     bundle_margins: ArrayLike,
     *,
-    choice_tolerance: float = 1e-9,
-    profit_tolerance: float = 1e-9,
+    choice_tolerance: float = DEFAULT_COST_TOLERANCE,
+    profit_tolerance: float = DEFAULT_MARGIN_TOLERANCE,
 ) -> NDArray[np.int64]:
-    """Select one bundle per traveler using the optimistic tie-breaking rule."""
+    """Select the lowest-index numerical optimistic bundle per traveler.
+
+    ``profit_tolerance`` is a per-bundle margin tolerance (legacy API name).
+    """
 
     costs = np.asarray(generalized_costs, dtype=float)
     margins = np.asarray(bundle_margins, dtype=float)
@@ -171,12 +188,8 @@ def select_optimistic_bundles(
     if not np.all(np.isfinite(costs)) or not np.all(np.isfinite(margins)):
         raise ValueError("costs and margins must contain only finite values")
 
-    assignment = np.empty(costs.shape[0], dtype=np.int64)
-    for traveler, traveler_costs in enumerate(costs):
-        cheapest = traveler_costs <= np.min(traveler_costs) + choice_tolerance
-        best_margin = np.max(margins[cheapest])
-        optimistic = cheapest & (margins >= best_margin - profit_tolerance)
-        assignment[traveler] = int(np.flatnonzero(optimistic)[0])
+    _, _, optimistic = _choice_masks(costs, margins, choice_tolerance, profit_tolerance)
+    assignment = np.argmax(optimistic, axis=1).astype(np.int64)
 
     assignment.setflags(write=False)
     return assignment
@@ -214,3 +227,18 @@ def aggregate_bundle_demand(
 def _validate_tolerance(value: float, *, name: str) -> None:
     if not np.isfinite(value) or value < 0:
         raise ValueError(f"{name} must be finite and nonnegative")
+
+
+def _choice_masks(
+    costs: NDArray[np.float64],
+    margins: NDArray[np.float64],
+    choice_tolerance: float,
+    margin_tolerance: float,
+) -> tuple[NDArray[np.float64], NDArray[np.bool_], NDArray[np.bool_]]:
+    """Use minima/maxima as common references; approximate equality is not transitive."""
+
+    gaps = costs - np.min(costs, axis=1, keepdims=True)
+    tied = gaps <= choice_tolerance
+    best_margins = np.max(np.where(tied, margins[None, :], -np.inf), axis=1, keepdims=True)
+    optimistic = tied & (best_margins - margins[None, :] <= margin_tolerance)
+    return gaps, tied, optimistic

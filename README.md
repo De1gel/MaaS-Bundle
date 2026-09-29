@@ -122,6 +122,12 @@ insufficient: an allowance-heavy menu can attract them at a loss. The public
 `solve_primal` entry rejects nonpositive starts and requires profit above its
 `profit_tolerance` (default `1e-9`). It also checks initial price ordering.
 
+Cost ties and choice feasibility share a run-wide threshold (default `1e-7`)
+from initialization onward. `margin_tolerance` (default `1e-9`) controls both
+boundary exploration and final tie diagnostics, independently of aggregate
+`profit_tolerance`. Price and allowance matching have separate absolute
+tolerances. See [numerical tolerances](docs/numerical_tolerances.md).
+
 After a successful fixed-assignment solve, the outer search checks both the
 regional objective and recomputed optimistic profit against the current
 incumbent in ordinary ascent. Boundary exploration instead compares each trial

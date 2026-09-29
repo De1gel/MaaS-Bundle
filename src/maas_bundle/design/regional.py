@@ -18,6 +18,9 @@ from maas_bundle.design.boundary import ChoiceConstraintIndex, CriticalConstrain
 from maas_bundle.design.cost import LinearProvisionCost
 from maas_bundle.design.menu import BundleMenu
 from maas_bundle.design.problem import BundleDesignProblem
+from maas_bundle.design.tolerances import (
+    DEFAULT_COST_TOLERANCE,
+)
 from maas_bundle.design.valuation import ValuationTable
 
 
@@ -207,7 +210,7 @@ class RestrictedRegionalProblem:
         self,
         vector: ArrayLike,
         *,
-        feasibility_tolerance: float = 1e-7,
+        feasibility_tolerance: float = DEFAULT_COST_TOLERANCE,
         stationarity_tolerance: float = 1e-6,
         active_tolerance: float = 1e-6,
     ) -> RegionalFirstOrderCertificate:
@@ -433,7 +436,7 @@ class ScipyRegionalSolver:
 
     method: str = "SLSQP"
     options: Mapping[str, int | float | bool] | None = None
-    feasibility_tolerance: float = 1e-7
+    feasibility_tolerance: float = DEFAULT_COST_TOLERANCE
     optimality_tolerance: float = 1e-5
     active_set_tolerance: float = 1e-4
     enable_recovery: bool = True
@@ -542,14 +545,10 @@ class ScipyRegionalSolver:
             else:
                 constraints = (
                     NonlinearConstraint(
-                        fun=lambda x: regional_problem.constraint_values(
-                            np.maximum(x, 0.0)
-                        ),
+                        fun=lambda x: regional_problem.constraint_values(np.maximum(x, 0.0)),
                         lb=np.full(regional_problem.constraint_count, -np.inf),
                         ub=np.zeros(regional_problem.constraint_count),
-                        jac=lambda x: regional_problem.constraint_jacobian(
-                            np.maximum(x, 0.0)
-                        ),
+                        jac=lambda x: regional_problem.constraint_jacobian(np.maximum(x, 0.0)),
                         hess="2-point",
                     ),
                 )
@@ -605,10 +604,7 @@ class ScipyRegionalSolver:
             active_tolerance=self.active_set_tolerance,
         )
         status = _map_scipy_status(
-            success=(
-                acceptable_optimality
-                and certificate.satisfies_kkt
-            ),
+            success=(acceptable_optimality and certificate.satisfies_kkt),
             message=str(result.message),
             maximum_violation=violation,
             feasibility_tolerance=self.feasibility_tolerance,
@@ -706,9 +702,7 @@ def _combine_attempts(attempts: list[RegionalSolveResult]) -> RegionalSolveResul
     """Return the final result with cumulative retry metrics."""
 
     final = attempts[-1]
-    trace = " -> ".join(
-        f"{attempt.solver_name}:{attempt.status.value}" for attempt in attempts
-    )
+    trace = " -> ".join(f"{attempt.solver_name}:{attempt.status.value}" for attempt in attempts)
     return replace(
         final,
         solve_time_seconds=sum(attempt.solve_time_seconds for attempt in attempts),
@@ -716,9 +710,7 @@ def _combine_attempts(attempts: list[RegionalSolveResult]) -> RegionalSolveResul
         message=f"recovery chain [{trace}]; final: {final.message}",
         attempt_count=len(attempts),
         attempted_solvers=tuple(
-            solver
-            for attempt in attempts
-            for solver in attempt.attempted_solvers
+            solver for attempt in attempts for solver in attempt.attempted_solvers
         ),
     )
 

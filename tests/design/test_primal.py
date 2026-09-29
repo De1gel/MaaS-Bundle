@@ -1120,3 +1120,133 @@ def test_outer_search_retains_latest_accepted_menu_after_later_failure(monkeypat
     np.testing.assert_array_equal(result.assignment, second)
     assert result.iterations[-1].fixed_assignment_result.menu is failed_menu
     assert not result.iterations[-1].accepted
+
+
+def test_initial_and_final_assignment_share_solver_cost_tolerance(monkeypatch):
+    problem = _SyntheticProblem([1.0], [0.0], [0.0])
+    menu = _menu(1.0 + 5e-8, 0.0)
+    fixed = _FixedAssignmentSequence([menu], [menu.prices[1]])
+    monkeypatch.setattr(primal_module, "solve_fixed_assignment", fixed)
+    result = primal_module.solve_primal(
+        problem,
+        menu,
+        ScipyRegionalSolver(),
+        choice_tolerance=1e-9,
+        violation_tolerance=1e-9,
+    )
+    assert result.valid
+    assert fixed.assignments[0].tolist() == [1]
+    assert result.candidate.initial_assignment.choice_tolerance == 1e-7
+    assert result.candidate.terminal_iteration.true_assignment.choice_tolerance == 1e-7
+
+
+def test_numerically_feasible_entry_remains_a_backtracking_anchor(monkeypatch):
+    problem = _switching_problem()
+    initial = _menu(1.5 + 5e-8, 1.0)
+    solver = _MenuSequenceSolver([_menu(1.5, 0.0), _menu(1.5, 0.5)])
+    calls = []
+    original = primal_module.backtrack_to_feasible_menu
+
+    def traced(regional, menu, anchor, *, tolerance):
+        calls.append((anchor, tolerance))
+        return original(regional, menu, anchor, tolerance=tolerance)
+
+    monkeypatch.setattr(primal_module, "backtrack_to_feasible_menu", traced)
+    result = solve_fixed_assignment(problem, initial, [1, 1], solver)
+    assert result.converged
+    assert calls == [(initial, 1e-7)]
+    assert solver.warm_starts[1].allowances[1, 0] > 0.49
+    assert result.feasibility_tolerance == 1e-7
+
+
+def test_later_looser_solver_certificate_cannot_widen_cost_policy():
+    class LooserCertificateSolver(_MenuSequenceSolver):
+        feasibility_tolerance = 1e-7
+
+        def solve(self, regional_problem, initial_menu):
+            result = super().solve(regional_problem, initial_menu)
+            return replace(
+                result,
+                maximum_constraint_violation=5e-7,
+                first_order_certificate=replace(
+                    result.first_order_certificate,
+                    primal_violation=5e-7,
+                    feasibility_tolerance=1e-6,
+                ),
+            )
+
+    result = solve_fixed_assignment(
+        _bounded_problem(),
+        _menu(1.0, 0.0),
+        [1, 1, 1],
+        LooserCertificateSolver([_menu(3.0 + 5e-7, 0.0)]),
+    )
+    assert result.status is FixedAssignmentStatus.SOLVER_FAILED
+    assert result.feasibility_tolerance == 1e-7
+
+
+def test_double_tie_neighbors_use_best_margin_not_pairwise_closeness():
+    response = _boundary_response([[5, 1, 1, 1]], prices=(0, 1, 1 + 0.75e-9, 1 + 1.5e-9))
+    assert response.bundle_indices.tolist() == [2]
+    # Option 1 is close to the selected option, but outside the best-margin set.
+    assert response.numerical_optimistic_mask.tolist() == [[False, False, True, True]]
+    assert [a.tolist() for a in primal_module._boundary_neighbors(response)] == [[3]]
+    assert response.has_double_ties.tolist() == [True]
+    assert not response.numerical_optimistic_mask.flags.writeable
+
+
+@pytest.mark.parametrize("margin_tolerance,expected_regions", [(1e-9, 1), (1e-8, 2)])
+def test_margin_policy_controls_search_and_validation_together(
+    monkeypatch,
+    margin_tolerance,
+    expected_regions,
+):
+    class NearMarginProblem(_SyntheticProblem):
+        bundle_count = 3
+
+        def bundle_margins(self, menu):
+            return menu.prices
+
+        def evaluate_valuations(self, menu):
+            return ValuationTable(np.array([[5.0, 0.0, -5e-9]]), np.zeros((1, 3, 1)))
+
+    problem = NearMarginProblem([5.0], [0.0], [0.0])
+    menu = BundleMenu(np.array([0, 1, 1 + 5e-9]), np.zeros((3, 1)))
+    # A deliberately wide objective tolerance must not enlarge the margin tie set.
+    fixed = _FixedAssignmentSequence([menu] * expected_regions, [1 + 5e-9, 1][:expected_regions])
+    monkeypatch.setattr(primal_module, "solve_fixed_assignment", fixed)
+    result = primal_module.solve_primal(
+        problem,
+        menu,
+        ScipyRegionalSolver(),
+        margin_tolerance=margin_tolerance,
+        profit_tolerance=1e-4,
+    )
+    assert result.valid
+    assert result.candidate.region_iteration_count == expected_regions
+    assert result.double_tie_count == expected_regions - 1
+    assert result.candidate.initial_assignment.margin_tolerance == margin_tolerance
+    if expected_regions == 2:
+        assert result.candidate.iterations[-1].boundary_returned
+        assert [a.tolist() for a in fixed.assignments] == [[1], [2]]
+
+
+def test_price_and_allowance_matching_have_independent_units():
+    left, right = _menu(10, 100), _menu(10, 100 + 5e-5)
+    assert not primal_module._same_menu(left, right, 1e-3, 0, 1e-7)
+    assert primal_module._same_menu(left, right, 1e-7, 0, 1e-4)
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["choice_tolerance", "violation_tolerance", "margin_tolerance", "profit_tolerance"],
+)
+@pytest.mark.parametrize("value", [-1.0, np.nan, np.inf])
+def test_invalid_search_tolerances_are_rejected_before_assignment(field, value):
+    with pytest.raises(ValueError, match=field):
+        primal_module.solve_primal(
+            _bounded_problem(),
+            _menu(1.0, 0.0),
+            ScipyRegionalSolver(),
+            **{field: value},
+        )

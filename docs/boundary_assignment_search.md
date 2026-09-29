@@ -5,7 +5,9 @@
 当区域 assignment 已经一致时，才对当前菜单的 double-tie 替代项进行额外求解。
 
 同点/异点的返回判定本身不依赖 double tie；double tie 只用于选取额外的邻区。
-入口仍为 `find_assignment_consistent_menu` / `solve_primal`。
+入口仍为 `find_assignment_consistent_menu` / `solve_primal`。成本 tie 与选择可行性从
+初值起共享有效阈值（默认 `1e-7`）；margin 搜索和最终诊断共享 `margin_tolerance`
+（默认 `1e-9`），独立于总利润容差。详见[数值容差](numerical_tolerances.md)。
 
 ## 当前点决定是否继续
 
@@ -31,7 +33,8 @@ assignment 标签相同、利润相同，都不能单独触发第 4 步。
 |y_j-x_j|\le a+r\max(|x_j|,|y_j|).
 \]
 
-`a=boundary_tolerance`，默认 `1e-7`；`r=boundary_relative_tolerance`，默认 `1e-6`。
+价格分量的 `a=boundary_tolerance`，额度分量的 `a=allowance_boundary_tolerance`，
+两者分别配置，默认均为 `1e-7`；`r=boundary_relative_tolerance`，默认 `1e-6`。
 比较是对称的，绝对误差与相对误差共同适应菜单的尺度。
 此外，邻区目标相对 entry objective 的变化、真实 optimistic 利润相对保留点的变化，
 都须在 `profit_tolerance`（默认 `1e-9`）内。
@@ -57,6 +60,9 @@ assignment 标签相同、利润相同，都不能单独触发第 4 步。
 现有区域 adapter 检查可行性和一阶 KKT；同点复核采用相同标准，不将其升级成独立二阶证书。
 
 ## 验证
+
+2026-09-29 容差统一后的完整回归为 424 项通过、0 失败、0 跳过，
+包含 20 项新增容差回归。命令和覆盖范围见[数值容差验证记录](numerical_tolerances.md#回归覆盖)。
 
 回归覆盖异点返回 A 后重新优化、等利润异点接受、改善后的旧记录失效、多个 double tie、
 浮点级利润误差、尺度化菜单比较、近点在保留点的检查、失败及迭代上限。

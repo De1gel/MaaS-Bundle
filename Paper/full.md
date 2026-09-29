@@ -289,6 +289,7 @@ M_b=C_b-K_b(\varepsilon_b)\le C_b\le e_{i0},
 | 一般供给成本及其导数 | 已实现 `ProvisionCost` / `CallableProvisionCost`，可提供解析梯度或使用数值差分；兼容共享线性参数，见 [接口说明](../docs/provision_cost.md) |
 | Optimistic assignment、区域 NLP、full separation | 已实现 |
 | Assignment 更新、warm start、候选诊断 | 已实现 |
+| 数值容差 | 成本 tie/选择可行性从初值统一；margin 搜索与诊断共享判定；总利润、价格坐标、额度坐标分别设置误差。见 [数值容差](../docs/numerical_tolerances.md) |
 | 正利润初值、外层 incumbent 的利润保护与单调接受 | 已实现；下降或求解失败时保留旧菜单并报告未收敛；内层保留 entry 可行锚点，未逐次设置 restricted NLP 目标下限 |
 | 边界 assignment 切换 | 普通 tie 按 optimistic rule 切换，double tie 额外探索；异点继续优化，同点双方检查完成后才结束往返；未独立认证二阶最优性或多重交点联合方向，见 [边界搜索](../docs/boundary_assignment_search.md) |
 | PBD 单层 NLP、直接 OBD MPEC 求解器 | 未实现 |

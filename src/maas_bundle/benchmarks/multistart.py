@@ -12,6 +12,11 @@ from maas_bundle.design.menu import BundleMenu
 from maas_bundle.design.primal import solve_primal
 from maas_bundle.design.problem import BundleDesignProblem
 from maas_bundle.design.regional import RegionalNlpSolver
+from maas_bundle.design.tolerances import (
+    DEFAULT_COST_TOLERANCE,
+    DEFAULT_MARGIN_TOLERANCE,
+    DEFAULT_PROFIT_TOLERANCE,
+)
 from maas_bundle.design.validation import CandidateDiagnostics
 
 
@@ -94,9 +99,7 @@ class MultiStartResult:
         summaries: list[dict[str, object]] = []
         for assignment, runs in sorted(grouped.items()):
             profits = [float(run.true_profit) for run in runs if run.true_profit is not None]
-            region_iterations = [
-                run.diagnostics.candidate.region_iteration_count for run in runs
-            ]
+            region_iterations = [run.diagnostics.candidate.region_iteration_count for run in runs]
             summaries.append(
                 {
                     "assignment": list(assignment),
@@ -129,15 +132,18 @@ def run_multistart(
     initial_menus: Iterable[BundleMenu],
     solver: RegionalNlpSolver,
     *,
-    choice_tolerance: float = 1e-9,
-    profit_tolerance: float = 1e-9,
+    choice_tolerance: float = DEFAULT_COST_TOLERANCE,
+    profit_tolerance: float = DEFAULT_PROFIT_TOLERANCE,
     max_region_iterations: int = 100,
     stop_on_assignment_revisit: bool = False,
     initial_per_pair: int = 1,
     critical_tie_tolerance: float = 1e-12,
-    violation_tolerance: float = 1e-9,
+    violation_tolerance: float = DEFAULT_COST_TOLERANCE,
     max_generation_iterations: int | None = None,
-    margin_tolerance: float = 1e-8,
+    margin_tolerance: float = DEFAULT_MARGIN_TOLERANCE,
+    boundary_tolerance: float = 1e-7,
+    boundary_relative_tolerance: float = 1e-6,
+    allowance_boundary_tolerance: float = 1e-7,
 ) -> MultiStartResult:
     """Run the complete primal pipeline from each supplied initial menu."""
 
@@ -166,6 +172,9 @@ def run_multistart(
                 violation_tolerance=violation_tolerance,
                 max_generation_iterations=max_generation_iterations,
                 margin_tolerance=margin_tolerance,
+                boundary_tolerance=boundary_tolerance,
+                boundary_relative_tolerance=boundary_relative_tolerance,
+                allowance_boundary_tolerance=allowance_boundary_tolerance,
             ),
         )
         for number, menu in enumerate(menus, start=1)
