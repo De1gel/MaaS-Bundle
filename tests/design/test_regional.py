@@ -398,6 +398,46 @@ def test_slsqp_success_uses_one_attempt_without_recovery(monkeypatch) -> None:
     assert result.metrics()["attempts"] == 1
 
 
+def test_certified_warm_start_is_retained_after_roundoff_profit_loss(monkeypatch) -> None:
+    regional = RestrictedRegionalProblem(_bounded_price_problem(), _critical_pool(3))
+    initial = BundleMenu(np.array([0.0, 3.0]), np.zeros((2, 1)))
+    monkeypatch.setattr(
+        regional_module,
+        "minimize",
+        lambda **kwargs: _synthetic_optimize_result([3.0 - 1e-12, 0.0], success=True, status=0),
+    )
+    result = ScipyRegionalSolver().solve(regional, initial)
+    assert result.success
+    assert result.objective_value == 9.0
+    np.testing.assert_array_equal(result.menu.prices, initial.prices)
+    assert result.first_order_certificate.satisfies_kkt
+    assert "retained certified warm start" in result.message
+
+
+@pytest.mark.parametrize("price_gap,accepted", [(5.1e-12, True), (1e-3, False)])
+def test_price_order_roundoff_is_repaired_only_within_feasibility_tolerance(
+    price_gap, accepted
+) -> None:
+    from maas_bundle.benchmarks.stylized_regional import _full_region
+    from maas_bundle.examples import build_stylized_problem
+
+    problem = build_stylized_problem(price_upper_bound=190, allowance_upper_bound=64)
+    regional = _full_region(problem, [2, 1, 2])
+    menu = BundleMenu(
+        np.array([0.0, 71.33057851132759 + price_gap, 71.33057851132759]),
+        np.array([[0, 0], [7.676290969093693, 15.335408233861619], [40.72727272460213, 0]]),
+    )
+    raw = _synthetic_optimize_result(regional.layout.pack(menu), success=True, status=0)
+    result = ScipyRegionalSolver()._normalize_result(regional, raw, 0.0)
+    assert result.success == accepted
+    if accepted:
+        assert result.menu.prices[1] == result.menu.prices[2]
+        assert result.first_order_certificate.satisfies_kkt
+        assert regional.maximum_constraint_violation(regional.layout.pack(result.menu)) <= 1e-7
+    else:
+        assert result.maximum_constraint_violation > 1e-7
+
+
 def test_slsqp_restarts_once_from_feasible_nonstationary_point(monkeypatch) -> None:
     problem = _bounded_price_problem()
     regional = RestrictedRegionalProblem(problem, _critical_pool(3))

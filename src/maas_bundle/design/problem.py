@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 import numpy as np
-from numpy.typing import NDArray
+from numpy.typing import ArrayLike, NDArray
 
 from maas_bundle.design.assignment import (
     AssignmentResult,
@@ -35,12 +35,16 @@ class BundleDesignProblem:
 
     Rows of ``route_oracles`` correspond to traveler classes and columns to
     bundle options. Bundle index zero is the fixed PAYG outside option.
+    Optional upper bounds cover subscriptions only; scalars broadcast to all
+    prices or allowances. Defaults preserve the unbounded design domain.
     """
 
     traveler_weights: NDArray[np.float64]
     provision_cost: ProvisionCost
     route_oracles: Sequence[Sequence[RouteValueOracle]]
     demand_distributions: Sequence[TripFrequencyDistribution]
+    price_upper_bounds: NDArray[np.float64]
+    allowance_upper_bounds: NDArray[np.float64]
 
     def __init__(
         self,
@@ -50,6 +54,8 @@ class BundleDesignProblem:
         demand_distributions: Sequence[TripFrequencyDistribution] = (),
         *,
         provision_cost: ProvisionCost | None = None,
+        price_upper_bounds: ArrayLike = np.inf,
+        allowance_upper_bounds: ArrayLike = np.inf,
     ) -> None:
         """Accept a general cost model or the legacy linear coefficient vector."""
 
@@ -61,6 +67,8 @@ class BundleDesignProblem:
         object.__setattr__(self, "provision_cost", provision_cost)
         object.__setattr__(self, "route_oracles", route_oracles)
         object.__setattr__(self, "demand_distributions", demand_distributions)
+        object.__setattr__(self, "price_upper_bounds", price_upper_bounds)
+        object.__setattr__(self, "allowance_upper_bounds", allowance_upper_bounds)
         self.__post_init__()
 
     def __post_init__(self) -> None:
@@ -99,6 +107,15 @@ class BundleDesignProblem:
         object.__setattr__(self, "traveler_weights", immutable_weights)
         object.__setattr__(self, "route_oracles", oracle_rows)
         object.__setattr__(self, "demand_distributions", distributions)
+        for name, shape in (
+            ("price_upper_bounds", (bundle_count - 1,)),
+            ("allowance_upper_bounds", (bundle_count - 1, cost.mode_count)),
+        ):
+            bounds = np.broadcast_to(np.asarray(getattr(self, name), dtype=float), shape).copy()
+            if np.any(np.isnan(bounds)) or np.any(bounds < 0):
+                raise ValueError(f"{name} must be nonnegative, with no NaN entries")
+            bounds.setflags(write=False)
+            object.__setattr__(self, name, bounds)
 
     @property
     def unit_allowance_cost(self) -> NDArray[np.float64] | None:

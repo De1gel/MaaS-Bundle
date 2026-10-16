@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import StrEnum
 from time import perf_counter
 
@@ -407,6 +407,30 @@ def solve_fixed_assignment(
                 violation_tolerance,
             )
 
+        # Retain a certified full-region anchor if the restricted CG solves
+        # introduce only a roundoff loss. The most recent NLP entry may itself
+        # violate omitted constraints, so its warm-start guard cannot do this.
+        if feasible_anchor is not None:
+            anchor_vector = regional.layout.pack(feasible_anchor)
+            anchor_profit = regional.profit(anchor_vector)
+            loss = anchor_profit - solve_result.objective_value
+            if 0 < loss <= getattr(solver, "objective_tolerance", DEFAULT_PROFIT_TOLERANCE):
+                certificate = regional.first_order_certificate(
+                    anchor_vector,
+                    feasibility_tolerance=violation_tolerance,
+                    stationarity_tolerance=getattr(solver, "optimality_tolerance", 1e-5),
+                    active_tolerance=getattr(solver, "active_set_tolerance", 1e-4),
+                )
+                if certificate.satisfies_kkt:
+                    solve_result = replace(
+                        solve_result,
+                        menu=feasible_anchor,
+                        objective_value=anchor_profit,
+                        maximum_constraint_violation=certificate.primal_violation,
+                        first_order_certificate=certificate,
+                        message=solve_result.message
+                        + "; retained certified CG anchor after roundoff loss",
+                    )
         menu = solve_result.menu
         valuation = problem.evaluate_valuations(menu)
         separation = separate_choice_constraints(
@@ -592,6 +616,10 @@ def find_assignment_consistent_menu(
         choice_tolerance=choice_tolerance,
         profit_tolerance=margin_tolerance,
     )
+    if np.any(initial_menu.prices[1:] > getattr(problem, "price_upper_bounds", np.inf)) or np.any(
+        initial_menu.allowances[1:] > getattr(problem, "allowance_upper_bounds", np.inf)
+    ):
+        raise ValueError("initial menu must satisfy the problem design upper bounds")
     incumbent = initial_assignment
     menu = initial_menu
     assumed_assignment = initial_assignment.bundle_indices

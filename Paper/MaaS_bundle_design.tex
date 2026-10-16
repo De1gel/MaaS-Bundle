@@ -76,7 +76,7 @@ A MaaS bundle combines a subscription fee with prepaid allowances and overage ch
 
 Let $i\in\mathcal I$, $b\in\mathcal B$, and $m\in\mathcal M$ index traveler classes, subscription bundles, and transport modes, respectively. Each subscription bundle $b\in\mathcal B$ is characterized by a subscription fee $C_b\geq 0$, a vector of mode-specific allowances $\varepsilon_b\in\mathbb{R}_+^{|\mathcal M|}$, and a vector of strictly positive per-unit overage charges $\rho\in\mathbb{R}_{++}^{|\mathcal M|}$. The overage component can be interpreted as pay-as-you-go (PAYG) access for usage beyond the included allowances. As a limiting case, pure PAYG, corresponding to non-subscribers, is represented as a zero-fee bundle with zero included allowances. We index this option by $b=0$ and define $\mathcal B_0:=\{0\}\cup\mathcal B$ as the complete bundle menu, with $C_0=0$ and $\varepsilon_0=0$.
 
-Travelers therefore trade off prepaid allowances against future possible PAYG usage. This trade-off varies across traveler classes because they differ in both their feasible path sets and trip-frequency distributions. Trip frequency,  denoted as $\mu$, is typically unknown when a bundle is selected. We therefore model it as a random variable whose distribution $F_i$ is known to the traveler class $i$. Ultimately, travelers compare bundles according to their expected minimum travel costs under these distributions.
+Travelers therefore trade off prepaid allowances against future possible PAYG usage. This trade-off varies across traveler classes because they differ in both their feasible path sets and trip-frequency distributions. Trip frequency,  denoted as $\mu$, is typically unknown when a bundle is selected. We therefore model it as a random variable whose distribution $F_i$ is known to the traveler class $i$. Ultimately, travelers compare bundles by combining the subscription fee with the expected minimum travel cost (EMTC) under these distributions.
 
 \subsection{Ex Post Travel Allocation}
 
@@ -141,7 +141,7 @@ $\Phi_{ib}(\mu;\varepsilon_b,\rho)$ is the minimum ex post travel cost incurred 
 
 \subsection{Ex Ante Bundle Choice}
 
-Travelers select a bundle before their trip frequency is realized. They therefore evaluate each option according to the expected minimum travel cost induced by their class-specific trip-frequency distribution. For traveler class $i\in\mathcal I$ and option $b\in\mathcal B_0$, define the generalized bundle cost as
+Travelers select a bundle before their trip frequency is realized. They therefore evaluate each option according to the EMTC induced by their class-specific trip-frequency distribution. For traveler class $i\in\mathcal I$ and option $b\in\mathcal B_0$, define the generalized bundle cost as
 \begin{equation}
 e_{ib}
 =
@@ -189,31 +189,22 @@ In the flow-independent setting considered here, the generalized bundle costs ar
 
 \subsection{Bundle Design Problem}
 
-We now formulate the platform's bundle design problem. Throughout the paper,
-the mode-specific overage tariffs $\bm{\rho}$ are treated as exogenous
-parameters. In practice, these tariffs are often linked to the prevailing
-PAYG fares of the underlying mobility services, whereas the MaaS platform
-has greater flexibility in designing the subscription fee and the included
-service allowances. We therefore focus on the joint design of the
-subscription fees $\bm C:=(C_b)_{b\in\mathcal B}$ and the mode-specific
+We now formulate the platform's bundle design problem. Taking the
+mode-specific overage tariffs $\bm\rho$ as given, the platform jointly
+chooses the subscription fees $\bm C:=(C_b)_{b\in\mathcal B}$ and
 allowance vectors $\bm\varepsilon:=(\bm\varepsilon_b)_{b\in\mathcal B}$.
-The outside option $b=0$ remains fixed at $C_0=0$ and
-$\bm\varepsilon_0=\bm0$.
 
 Let $Q_i$ denote the size of traveler class $i$. For each subscription
 bundle $b\in\mathcal B$, let $K_b(\bm\varepsilon_b)$ denote the nonnegative,
 continuous provision cost per subscriber, with $K_b(\bm0)=0$. We assume
 that $K_b$ is continuously differentiable wherever derivative information
-is used. The linear specification $K_b(\bm\varepsilon_b)=
-\bm k^\top\bm\varepsilon_b$, with $\bm k\geq\bm0$, is a special case.
-The platform margin from a traveler selecting option $b\in\mathcal B_0$ is
+is used. The platform margin from a traveler selecting option $b\in\mathcal B_0$ is
 \begin{equation}
     M_b(C_b,\bm\varepsilon_b)
     :=
-    C_b-K_b(\bm\varepsilon_b),
+    C_b-K_b(\bm\varepsilon_b).
     \label{eq:bundle-margin}
 \end{equation}
-where $K_0(\bm0)=0$, so that $M_0=0$ for the PAYG outside option.
 
 For a given menu $(\bm C,\bm\varepsilon)$, define the optimal-response set
 of traveler class $i$ as
@@ -228,11 +219,23 @@ of traveler class $i$ as
     \right\}.
     \label{eq:bundle-choice-solution-set}
 \end{equation}
-If class $i$ has a unique minimum-cost option,
-$\mathcal S_i(\bm C,\bm\varepsilon)$ contains a single vertex of the
-simplex. If several options attain the same minimum generalized cost,
-$\mathcal S_i(\bm C,\bm\varepsilon)$ contains all choice vectors supported
-on those minimum-cost options.
+
+Among these minimum-cost responses, the optimistic and pessimistic rules
+select those that maximize and minimize the platform margin, respectively:
+\begin{align}
+    \mathcal S_i^{\mathrm O}(\bm C,\bm\varepsilon)
+    &:=
+    \arg\max_{\bm q_i\in\mathcal S_i(\bm C,\bm\varepsilon)}
+    \sum_{b\in\mathcal B_0}
+    q_{ib}M_b(C_b,\bm\varepsilon_b),
+    \label{eq:optimistic-response-set}\\
+    \mathcal S_i^{\mathrm P}(\bm C,\bm\varepsilon)
+    &:=
+    \arg\min_{\bm q_i\in\mathcal S_i(\bm C,\bm\varepsilon)}
+    \sum_{b\in\mathcal B_0}
+    q_{ib}M_b(C_b,\bm\varepsilon_b).
+    \label{eq:pessimistic-response-set}
+\end{align}
 
 Let $\mathcal D$ denote the feasible set of bundle menus:
 \begin{equation}
@@ -253,17 +256,8 @@ Let $\mathcal D$ denote the feasible set of bundle menus:
 \label{eq:bundle-menu-feasible-set}
 \end{equation}
 
-When the minimum generalized cost is unique, the traveler response is
-uniquely determined. When several options are tied, the resulting platform
-outcome depends on how a response is selected from
-$\mathcal S_i(\bm C,\bm\varepsilon)$. We consider two selection rules.
-
-\medskip
-\noindent\textbf{Optimistic bundle design (OBD).}
-Under the optimistic rule, a traveler class selects, among its minimum-cost
-responses, one that is most favorable to the platform. Equivalently, the
-platform may select any response in $\mathcal S_i(\bm C,\bm\varepsilon)$
-when solving its design problem. The optimistic bundle design problem is
+For a given selection rule $r\in\{\mathrm O,\mathrm P\}$, the platform's
+bundle design problem is
 \begin{align}
     \max_{\bm C,\bm\varepsilon,\bm q}
     \quad&
@@ -271,126 +265,27 @@ when solving its design problem. The optimistic bundle design problem is
     Q_i
     \sum_{b\in\mathcal B_0}
     q_{ib}M_b(C_b,\bm\varepsilon_b)
-    \label{eq:optimistic-bundle-design-objective}\\
+    \label{eq:bundle-design-objective}\\
     \text{s.t.}\quad&
     \bm q_i\in
-    \mathcal S_i(\bm C,\bm\varepsilon),
+    \mathcal S_i^r(\bm C,\bm\varepsilon),
     && i\in\mathcal I,
-    \label{eq:optimistic-bundle-design-response}\\
+    \label{eq:bundle-design-response}\\
     &
     (\bm C,\bm\varepsilon)\in\mathcal D.
-    \label{eq:optimistic-bundle-design-menu}
+    \label{eq:bundle-design-menu}
 \end{align}
-We refer to this problem as \textbf{(OBD)}.
+We refer to the cases $r=\mathrm O$ and $r=\mathrm P$ as optimistic bundle
+design (OBD) and pessimistic bundle design (PBD), respectively. The two selection rules can differ only when a traveler class has multiple minimum-cost options.
 
-The optimistic rule affects the solution only when several bundles attain
-the same minimum generalized cost. In that case, the selected response
-maximizes the platform margin over the minimum-cost options. An option with
-strictly larger generalized cost cannot receive positive choice probability.
-
-Using the complementarity characterization of bundle choice from the
-preceding subsection, (OBD) admits the equivalent mathematical program with
-equilibrium constraints
-\begin{align}
-    \max_{\bm C,\bm\varepsilon,\bm q,\bm\Pi}
-    \quad&
-    \sum_{i\in\mathcal I}
-    Q_i
-    \sum_{b\in\mathcal B_0}
-    q_{ib}M_b(C_b,\bm\varepsilon_b)
-    \label{eq:optimistic-mpec-objective}\\
-    \text{s.t.}\quad&
-    q_{ib}\geq0,
-    && i\in\mathcal I,\quad b\in\mathcal B_0,
-    \label{eq:optimistic-mpec-nonnegative}\\
-    &
-    \sum_{b\in\mathcal B_0}q_{ib}=1,
-    && i\in\mathcal I,
-    \label{eq:optimistic-mpec-simplex}\\
-    &
-    e_{ib}(\bm C,\bm\varepsilon)-\Pi_i\geq0,
-    && i\in\mathcal I,\quad b\in\mathcal B_0,
-    \label{eq:optimistic-mpec-mincost}\\
-    &
-    q_{ib}
-    \left(
-        e_{ib}(\bm C,\bm\varepsilon)-\Pi_i
-    \right)
-    =0,
-    && i\in\mathcal I,\quad b\in\mathcal B_0,
-    \label{eq:optimistic-mpec-complementarity}\\
-    &
-    (\bm C,\bm\varepsilon)\in\mathcal D.
-    \label{eq:optimistic-mpec-menu}
-\end{align}
-The upper-level maximization over $\bm q$ resolves any bundle-cost tie in
-favor of the platform.
-
-\medskip
-\noindent\textbf{Pessimistic bundle design (PBD).}
-Under the pessimistic rule, a traveler class selects, among its minimum-cost
-responses, one that is least favorable to the platform. For a fixed menu
-$(\bm C,\bm\varepsilon)$, define the pessimistic response set as
-\begin{equation}
-    \mathcal S_i^{\mathrm P}(\bm C,\bm\varepsilon)
-    :=
-    \arg\min_{\bm q_i\in
-    \mathcal S_i(\bm C,\bm\varepsilon)}
-    \sum_{b\in\mathcal B_0}
-    q_{ib}M_b(C_b,\bm\varepsilon_b).
-    \label{eq:pessimistic-response-set}
-\end{equation}
-
-The pessimistic bundle design problem is
-\begin{align}
-    \max_{\bm C,\bm\varepsilon,\bm q}
-    \quad&
-    \sum_{i\in\mathcal I}
-    Q_i
-    \sum_{b\in\mathcal B_0}
-    q_{ib}M_b(C_b,\bm\varepsilon_b)
-    \label{eq:pessimistic-bundle-design-objective}\\
-    \text{s.t.}\quad&
-    \bm q_i\in
-    \mathcal S_i^{\mathrm P}(\bm C,\bm\varepsilon),
-    && i\in\mathcal I,
-    \label{eq:pessimistic-bundle-design-response}\\
-    &
-    (\bm C,\bm\varepsilon)\in\mathcal D.
-    \label{eq:pessimistic-bundle-design-menu}
-\end{align}
-We refer to this problem as \textbf{(PBD)}.
-
-Equivalently, (PBD) can be written as
-\begin{equation}
-    \max_{(\bm C,\bm\varepsilon)\in\mathcal D}
-    \sum_{i\in\mathcal I}
-    Q_i
-    \min_{\bm q_i\in\mathcal S_i(\bm C,\bm\varepsilon)}
-    \sum_{b\in\mathcal B_0}
-    q_{ib}M_b(C_b,\bm\varepsilon_b).
-    \label{eq:pessimistic-max-min-form}
-\end{equation}
-
-The two models coincide whenever each traveler class has a unique
-minimum-cost option. They differ only on bundle-indifference boundaries.
-Under (OBD), a tied response is selected to maximize the platform margin,
-whereas under (PBD), it is selected to minimize the platform margin. As
-shown later, this difference in boundary behavior leads to distinct
-solution approaches for the two design problems.
-
-Although $\bm q_i$ is represented continuously, fractional assignment is
-not essential under either selection rule. For a fixed menu, both selection
-problems optimize a linear function over
-$\mathcal S_i(\bm C,\bm\varepsilon)$. Hence, an optimal response can always
-be chosen at an extreme point of this set, so that each traveler class is
-assigned entirely to one of its minimum-cost options.
 
 \section{Bundle Valuation and Segmentation}
+\label{sec:bundle-valuation-segmentation}
 
 \subsection{Bundle Valuation and Marginal Allowance Value}
+\label{sec:bundle-valuation}
 
-We first separate the route-side cost from the subscription fee. For
+We first express the EMTC separately from the subscription fee. For
 traveler class $i$ and bundle $b$, define
 \begin{equation}
     G_{ib}(\bm\varepsilon_b)
@@ -493,8 +388,8 @@ is therefore attained at an extreme point of $\mathcal V_{ib}$. This
 gives~\eqref{eq:route-value-vertex}.
 \end{proof}
 
-Lemma~\ref{lem:fixed-dual-geometry} also gives the shape of the realized
-route-side cost.
+Lemma~\ref{lem:fixed-dual-geometry} also gives the shape of the minimum
+ex post travel cost.
 
 \begin{corollary}
 For each traveler class $i$ and bundle $b$,
@@ -513,8 +408,8 @@ $\bm\omega_{ib}^j\geq\bm0$, it is componentwise nonincreasing in
 $\bm\varepsilon_b$.
 \end{proof}
 
-Within a region where extreme point $j^*$ is uniquely optimal, the realized
-route-side cost is
+Within a region where extreme point $j^*$ is uniquely optimal, the minimum
+ex post travel cost is
 \begin{equation}
     \Phi_{ib}(\mu;\bm\varepsilon_b,\bm\rho)
     =
@@ -527,7 +422,7 @@ Thus, $-\bm\omega_{ib}^{j^*}$ gives the local marginal effect of the
 allowance vector. This effect changes only when the optimal dual
 extreme point changes.
 
-We now consider the expected route-side cost
+We now consider the EMTC
 $G_{ib}(\bm\varepsilon_b)$.
 
 \begin{proposition}
@@ -584,7 +479,7 @@ Taking expectations gives~\eqref{eq:valuation-lipschitz}.
 \end{proof}
 
 The optimal shadow prices give the local effect of an allowance change
-on the expected valuation. For each realization $\mu$, let
+on the EMTC. For each realization $\mu$, let
 $\bm\omega_{ib}^*(\mu;\bm\varepsilon_b)$ be an optimal shadow-price
 vector. Define
 \begin{equation}
@@ -653,13 +548,79 @@ The vector $\bar{\bm\omega}_{ib}$ has a direct economic meaning. Its
 component $\bar\omega_{ib,m}$ measures the expected marginal value of
 one more unit of allowance for mode $m$. 
 
-These results reduce the lower-level network problem to two quantities
-that matter for bundle design. The first quantity is the expected
-route-side cost $G_{ib}$. The second quantity is its marginal allowance
-value $\bar{\bm\omega}_{ib}$. The next subsection uses these two
-quantities to study how different traveler classes compare bundles.
+These results reduce the evaluation of the ex post travel cost to selecting
+an optimal dual extreme point from a fixed set for given trip frequency
+$\mu$ and allowance vector $\bm\varepsilon_b$.
 
-\subsection{Bundle Preferences under Unordered Heterogeneity}
+\subsection{Bundle Valuation Oracle}
+\label{sec:bundle-valuation-oracle}
+
+In this subsection, we develop a reusable oracle that computes the fixed
+set of dual extreme points once and efficiently evaluates the EMTC for
+different allowance vectors.
+
+Since $\mathcal V_{ib}$ depends on neither the allowance vector nor the
+realized trip frequency, its extreme points can be computed once for each
+traveler class $i$ and bundle $b$. We enumerate them using the double
+description method \citep{FukudaProdon1996} and cache them for all subsequent
+upper-level evaluations.
+
+Given a new allowance vector $\bm\varepsilon_b$, the oracle updates the
+intercepts of the affine pieces associated with the cached extreme points and
+constructs their upper envelope over $\mu\geq0$. Because trip frequency is
+one-dimensional, this envelope can be obtained efficiently by scanning the
+pieces in slope order. Integrating the upper envelope with respect to
+$F_i$ directly yields $G_{ib}(\bm\varepsilon_b)$.
+
+Algorithm~\ref{alg:bundle-valuation-oracle} summarizes the procedure.
+
+\begin{algorithm}[t]
+\caption{Bundle valuation oracle}
+\label{alg:bundle-valuation-oracle}
+\begin{algorithmic}[1]
+\Require Traveler class $i$, bundle $b$, allowance $\bm\varepsilon_b$,
+trip-frequency distribution $F_i$
+\Ensure EMTC $G_{ib}(\bm\varepsilon_b)$
+\State Retrieve cached extreme points
+$\{(\pi_{ib}^j,\bm\omega_{ib}^j)\}_{j=1}^J$, sorted by $\pi_{ib}^j$
+\For{$j=1,\ldots,J$}
+    \State $a_j\gets\pi_{ib}^j$,
+    \quad $d_j\gets-(\bm\omega_{ib}^j)^\top\bm\varepsilon_b$
+\EndFor
+\State For identical slopes $a_j$, retain only the line with the largest $d_j$
+\State $(j_k,\tau_k)_{k=1}^K\gets
+\Call{UpperEnvelope}{\{(a_j,d_j)\}_j,[0,\infty)}$
+\State $\tau_{K+1}\gets\infty$ \Comment{$\tau_1=0$; line $j_k$ is active on $[\tau_k,\tau_{k+1})$}
+\State $G\gets0$
+\For{$k=1,\ldots,K$}
+    \State $I_k\gets[\tau_k,\tau_{k+1})$
+    \State $p_k\gets\Pr_{\mu\sim F_i}(\mu\in I_k)$,
+    \quad $m_k\gets\int_{I_k}\mu\,dF_i(\mu)$
+    \State $G\gets G+a_{j_k}m_k+d_{j_k}p_k$
+\EndFor
+\State \Return $G$
+\end{algorithmic}
+\end{algorithm}
+
+The main computational advantage is that the network optimization is removed
+from repeated upper-level evaluations. Vertex enumeration is performed only
+once for each traveler class $i$ and bundle $b$. After this preprocessing, an allowance
+update requires only operations on the cached affine pieces and
+one-dimensional distribution integrals. If $J$ extreme points are cached and
+$M$ denotes the number of modes, updating the intercepts requires
+$O(JM)$ operations. With the extreme points pre-sorted by slope, the upper
+envelope can be constructed in $O(J)$ time. The remaining calculations only
+involve the active intervals of $F_i$.
+
+The oracle therefore replaces repeated solutions of the ex post allocation
+problem by inexpensive evaluations of a cached piecewise-linear
+representation. This computational reuse is particularly important because
+$G_{ib}$ must be evaluated many times for each traveler class $i$ and bundle $b$ during
+both the direct single-level optimization and the regional search developed
+below.
+
+\subsection{Unordered Heterogeneity and Critical Travelers}
+\label{sec:bundle-segmentation}
 
 We now study how traveler classes compare different bundles. For two
 distinct options $a,b\in\mathcal B_0$, define
@@ -680,7 +641,7 @@ options $a$ and $b$ if and only if
     \delta_{iba}.
     \label{eq:pairwise-indifference}
 \end{equation}
-The quantity $\delta_{iba}$ therefore measures the route-side value that
+The quantity $\delta_{iba}$ therefore measures the travel-cost saving that
 class $i$ obtains from switching from option $a$ to option $b$. It is
 also the largest price premium that class $i$ is willing to pay for $b$
 relative to $a$.
@@ -693,7 +654,7 @@ class $i$, rather than a scalar index of traveler classes. Each class is
 instead characterized by a trip-frequency distribution $F_i$ together
 with its network-side characteristics. Traveler classes may have
 different O--D pairs, feasible path sets, and mode-usage patterns.
-Consequently, the expected route-side cost
+Consequently, the EMTC
 $G_{ib}(\bm\varepsilon_b)$ depends jointly on the trip-frequency
 distribution and on how class $i$ can use the transport network under
 bundle $b$.
@@ -728,7 +689,125 @@ Hence, the traveler classes cannot generally be partitioned by a set of
 cutoffs along one common ordering. Nevertheless, each bundle pair admits
 its own scalar ordering through $\delta_{iba}$.
 
-\subsection{Single-Level Reformulations under Alternative Selection Rules}
+Consider a candidate assignment
+$\bm\alpha=(\alpha_i)_{i\in\mathcal I}$, where
+$\alpha_i\in\mathcal B_0$ denotes the option assigned to traveler class
+$i$. For each option $b\in\mathcal B_0$, define
+\begin{equation}
+    \mathcal I_b(\bm\alpha)
+    :=
+    \left\{
+        i\in\mathcal I:
+        \alpha_i=b
+    \right\}.
+    \label{eq:assigned-traveler-set}
+\end{equation}
+
+For $\bm\alpha$ to remain a valid traveler response, every class
+$i\in\mathcal I_b(\bm\alpha)$ must weakly prefer its assigned option
+$b$ to every alternative $a\neq b$. Using the pairwise valuation
+defined above, this requires
+\begin{equation}
+    C_b-C_a
+    \leq
+    \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b),
+    \qquad
+    i\in\mathcal I_b(\bm\alpha),
+    \quad
+    a\in\mathcal B_0\setminus\{b\}.
+    \label{eq:regional-choice-condition}
+\end{equation}
+
+The traveler-choice conditions contain one constraint for each assigned
+traveler class and each alternative option. When the number of traveler
+classes is large, these constraints become the main source of scale.
+Their pairwise structure allows them to be compressed.
+
+For every occupied option $b$ and alternative $a\neq b$, define the
+pairwise boundary value
+\begin{equation}
+    \Gamma_{ba}(\bm\varepsilon;\bm\alpha)
+    :=
+    \min_{i\in\mathcal I_b(\bm\alpha)}
+    \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b),
+    \label{eq:pairwise-boundary-value}
+\end{equation}
+whenever $\mathcal I_b(\bm\alpha)\neq\varnothing$.
+
+\begin{definition}[Critical traveler class]
+For an ordered option pair $(b,a)$ and assignment $\bm\alpha$, define
+\begin{equation}
+    \mathcal I^{\mathrm{crit}}_{ba}
+    (\bm\varepsilon;\bm\alpha)
+    :=
+    \arg\min_{i\in\mathcal I_b(\bm\alpha)}
+    \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b).
+    \label{eq:critical-traveler-set}
+\end{equation}
+Each class in
+$\mathcal I^{\mathrm{crit}}_{ba}(\bm\varepsilon;\bm\alpha)$
+is called a critical traveler class for the comparison from $b$ to
+$a$.
+\end{definition}
+
+A critical traveler has the weakest preference for $b$ relative to $a$
+among all classes assigned to $b$. It therefore imposes the tightest
+restriction on the admissible price difference $C_b-C_a$.
+
+\begin{lemma}[Pairwise boundary compression]
+For any candidate assignment $\bm\alpha$, the complete set of weak
+traveler-choice conditions supporting $\bm\alpha$ is equivalent to
+\begin{equation}
+    C_b-C_a
+    \leq
+    \Gamma_{ba}(\bm\varepsilon;\bm\alpha),
+    \qquad
+    b\in\mathcal B_0:
+    \mathcal I_b(\bm\alpha)\neq\varnothing,
+    \quad
+    a\in\mathcal B_0\setminus\{b\}.
+    \label{eq:compressed-assignment-condition}
+\end{equation}
+\label{lem:pairwise-boundary-compression}
+\end{lemma}
+
+\begin{proof}
+For a fixed ordered pair $(b,a)$, the inequalities
+\eqref{eq:regional-choice-condition} hold for all
+$i\in\mathcal I_b(\bm\alpha)$ if and only if $C_b-C_a$ does not exceed
+the smallest right-hand side. This value is
+$\Gamma_{ba}(\bm\varepsilon;\bm\alpha)$.
+\end{proof}
+
+Lemma~\ref{lem:pairwise-boundary-compression} shows that, for each
+ordered option pair, the complete set of traveler-level constraints is
+represented exactly by a single pairwise boundary value. Hence, the
+choice conditions supporting a fixed assignment contain at most
+one condition for each ordered option pair, regardless of the number of
+traveler classes.
+
+At a binding boundary
+\begin{equation}
+    C_b-C_a
+    =
+    \Gamma_{ba}(\bm\varepsilon;\bm\alpha),
+    \label{eq:binding-pairwise-boundary}
+\end{equation}
+the classes in
+$\mathcal I^{\mathrm{crit}}_{ba}(\bm\varepsilon;\bm\alpha)$
+are indifferent between $b$ and $a$, while any class satisfying
+\begin{equation}
+    \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b)
+    >
+    \Gamma_{ba}(\bm\varepsilon;\bm\alpha)
+\end{equation}
+still strictly prefers $b$ to $a$. As allowances change, the critical
+traveler may change as well. This motivates dynamically generating
+traveler-choice constraints in the regional algorithm rather than fixing
+the critical classes in advance.
+
+\section{Single-Level Reformulations}
+\label{sec:single-level-reformulations}
 
 The bundle-choice problem becomes set-valued when several options attain
 the same minimum generalized cost. The treatment of such ties therefore
@@ -872,25 +951,29 @@ traveler class can be associated with one minimum-cost option. This
 induces a collection of assignment regions in the bundle-design space,
 which we study next.
 
+\section{Regional Search under Optimistic Selection}
+\label{sec:regional-search}
 
-\subsection{Assignment Regions and Critical Travelers}
+The single-level reformulations developed in the previous section provide
+direct computational models for both selection rules. The pessimistic
+reformulation gives a strong-duality-based nonconvex formulation, whereas
+the direct optimistic formulation retains the complementarity structure
+of an MPEC. However, the optimistic problem admits additional
+assignment-region structure that can be exploited to construct a more
+specialized solution method. We combine this structure with the valuation
+oracle in Section~\ref{sec:bundle-valuation-oracle} and the critical-traveler
+conditions in Section~\ref{sec:bundle-segmentation} to develop a regional
+search algorithm.
+
+\subsection{Assignment Regions and Boundary Transitions}
+\label{sec:assignment-regions}
 
 We now focus on the optimistic formulation and exploit the discrete
-assignment structure of its extreme-point responses.
+assignment structure of its extreme-point responses. For a candidate
+assignment $\bm\alpha$ and the assigned traveler sets defined in
+Section~\ref{sec:bundle-segmentation}, we formulate the regional objective
+and feasible region.
 
-Consider a candidate assignment
-$\bm\alpha=(\alpha_i)_{i\in\mathcal I}$, where
-$\alpha_i\in\mathcal B_0$ denotes the option assigned to traveler class
-$i$. For each option $b\in\mathcal B_0$, define
-\begin{equation}
-    \mathcal I_b(\bm\alpha)
-    :=
-    \left\{
-        i\in\mathcal I:
-        \alpha_i=b
-    \right\}.
-    \label{eq:assigned-traveler-set}
-\end{equation}
 The total demand assigned to option $b$ is
 \begin{equation}
     D_b(\bm\alpha)
@@ -912,22 +995,8 @@ Conditional on $\bm\alpha$, the platform objective becomes
     \label{eq:regional-objective}
 \end{equation}
 
-For $\bm\alpha$ to remain a valid traveler response, every class
-$i\in\mathcal I_b(\bm\alpha)$ must weakly prefer its assigned option
-$b$ to every alternative $a\neq b$. Using the pairwise valuation
-defined in the previous subsection, this requires
-\begin{equation}
-    C_b-C_a
-    \leq
-    \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b),
-    \qquad
-    i\in\mathcal I_b(\bm\alpha),
-    \quad
-    a\in\mathcal B_0\setminus\{b\}.
-    \label{eq:regional-choice-condition}
-\end{equation}
-
-The weak assignment region associated with $\bm\alpha$ is therefore
+Using the traveler-choice conditions in Section~\ref{sec:bundle-segmentation},
+the weak assignment region associated with $\bm\alpha$ is
 \begin{equation}
     \mathcal R_{\bm\alpha}
     :=
@@ -1013,178 +1082,8 @@ margins, the corresponding assignment switch yields a strict
 improvement. The treatment of degenerate ties and the resulting
 termination properties is deferred to the solution method.
 
-Although the regional representation removes the bundle-choice
-variables for a fixed assignment, the region
-$\mathcal R_{\bm\alpha}$ still contains one choice constraint for each
-assigned traveler class and each alternative option. When the number of
-traveler classes is large, these constraints become the main source of
-scale. Their pairwise structure allows them to be compressed.
-
-For every occupied option $b$ and alternative $a\neq b$, define the
-pairwise boundary value
-\begin{equation}
-    \Gamma_{ba}(\bm\varepsilon;\bm\alpha)
-    :=
-    \min_{i\in\mathcal I_b(\bm\alpha)}
-    \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b),
-    \label{eq:pairwise-boundary-value}
-\end{equation}
-whenever $\mathcal I_b(\bm\alpha)\neq\varnothing$.
-
-\begin{definition}[Critical traveler class]
-For an ordered option pair $(b,a)$ and assignment $\bm\alpha$, define
-\begin{equation}
-    \mathcal I^{\mathrm{crit}}_{ba}
-    (\bm\varepsilon;\bm\alpha)
-    :=
-    \arg\min_{i\in\mathcal I_b(\bm\alpha)}
-    \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b).
-    \label{eq:critical-traveler-set}
-\end{equation}
-Each class in
-$\mathcal I^{\mathrm{crit}}_{ba}(\bm\varepsilon;\bm\alpha)$
-is called a critical traveler class for the comparison from $b$ to
-$a$.
-\end{definition}
-
-A critical traveler has the weakest preference for $b$ relative to $a$
-among all classes assigned to $b$. It therefore imposes the tightest
-restriction on the admissible price difference $C_b-C_a$.
-
-\begin{lemma}[Pairwise boundary compression]
-For any candidate assignment $\bm\alpha$, the complete set of weak
-traveler-choice conditions supporting $\bm\alpha$ is equivalent to
-\begin{equation}
-    C_b-C_a
-    \leq
-    \Gamma_{ba}(\bm\varepsilon;\bm\alpha),
-    \qquad
-    b\in\mathcal B_0:
-    \mathcal I_b(\bm\alpha)\neq\varnothing,
-    \quad
-    a\in\mathcal B_0\setminus\{b\}.
-    \label{eq:compressed-assignment-condition}
-\end{equation}
-\label{lem:pairwise-boundary-compression}
-\end{lemma}
-
-\begin{proof}
-For a fixed ordered pair $(b,a)$, the inequalities
-\eqref{eq:regional-choice-condition} hold for all
-$i\in\mathcal I_b(\bm\alpha)$ if and only if $C_b-C_a$ does not exceed
-the smallest right-hand side. This value is
-$\Gamma_{ba}(\bm\varepsilon;\bm\alpha)$.
-\end{proof}
-
-Lemma~\ref{lem:pairwise-boundary-compression} shows that, for each
-ordered option pair, the complete set of traveler-level constraints is
-represented exactly by a single pairwise boundary value. Hence, the
-boundary representation of a fixed assignment region contains at most
-one condition for each ordered option pair, regardless of the number of
-traveler classes.
-
-At a binding boundary
-\begin{equation}
-    C_b-C_a
-    =
-    \Gamma_{ba}(\bm\varepsilon;\bm\alpha),
-    \label{eq:binding-pairwise-boundary}
-\end{equation}
-the classes in
-$\mathcal I^{\mathrm{crit}}_{ba}(\bm\varepsilon;\bm\alpha)$
-are indifferent between $b$ and $a$, while any class satisfying
-\begin{equation}
-    \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b)
-    >
-    \Gamma_{ba}(\bm\varepsilon;\bm\alpha)
-\end{equation}
-still strictly prefers $b$ to $a$. As allowances change, the critical
-traveler may change as well. This motivates dynamically generating
-traveler-choice constraints in the regional algorithm rather than fixing
-the critical classes in advance.
-
-\section{Solution Approach}
-
-The single-level reformulations developed in the previous section provide
-direct computational models for both selection rules. The pessimistic
-reformulation gives a strong-duality-based nonconvex formulation, whereas
-the direct optimistic formulation retains the complementarity structure
-of an MPEC. However, the optimistic problem admits additional
-assignment-region structure that can be exploited to construct a more
-specialized solution method. Before developing this regional algorithm,
-we first address the common computational task of evaluating the expected
-bundle valuation $G_{ib}(\bm\varepsilon_b)$ through a bundle valuation
-oracle.
-
-\subsection{Bundle Valuation Oracle}
-
-The upper-level models require repeated evaluations of the expected route-side
-cost $G_{ib}(\bm\varepsilon_b)$ defined in Section~3.1. Solving the ex post
-allocation problem repeatedly for different trip-frequency realizations would
-introduce substantial redundant computation. We therefore use the dual
-representation developed in Section~3.1 to construct a reusable bundle
-valuation oracle.
-
-For each traveler--option pair $(i,b)$, the extreme points of
-$\mathcal V_{ib}$ are enumerated once before the bundle-design optimization
-and then cached. The current implementation uses the double-description
-method for this preprocessing step. Since $\mathcal V_{ib}$ is independent
-of the allowance vector and the realized trip frequency, the same set of
-dual extreme points can be reused throughout all subsequent upper-level
-iterations.
-
-Given a new allowance vector $\bm\varepsilon_b$, the oracle updates the
-intercepts of the affine pieces associated with the cached extreme points and
-constructs their upper envelope over $\mu\geq0$. Because trip frequency is
-one-dimensional, this envelope can be obtained efficiently by scanning the
-pieces in slope order. The resulting active pieces partition the
-trip-frequency domain into intervals. The oracle then evaluates their
-contributions using the interval probabilities and truncated first moments
-of $F_i$. This directly returns $G_{ib}(\bm\varepsilon_b)$ and, at the same
-time, the expected shadow price characterized in Section~3.1.
-
-Algorithm~\ref{alg:bundle-valuation-oracle} summarizes the procedure.
-
-\begin{algorithm}[t]
-\caption{Bundle valuation oracle}
-\label{alg:bundle-valuation-oracle}
-\begin{algorithmic}[1]
-\Require Traveler--option pair $(i,b)$, allowance $\bm\varepsilon_b$,
-trip-frequency distribution $F_i$
-\State Retrieve the cached extreme points of $\mathcal V_{ib}$
-\State Update the intercept associated with each extreme point
-\State Remove dominated pieces with identical slopes
-\State Construct the upper envelope over $\mu\geq0$
-\State Identify the active extreme points and their frequency intervals
-\For{each active interval}
-    \State Evaluate its probability and truncated first moment under $F_i$
-\EndFor
-\State Aggregate the interval contributions to obtain
-$G_{ib}(\bm\varepsilon_b)$ and the expected shadow price
-\State \Return $G_{ib}(\bm\varepsilon_b)$ and
-$\bar{\bm\omega}_{ib}(\bm\varepsilon_b)$
-\end{algorithmic}
-\end{algorithm}
-
-The main computational advantage is that the network optimization is removed
-from repeated upper-level evaluations. Vertex enumeration is performed only
-once for each traveler--option pair. After this preprocessing, an allowance
-update requires only operations on the cached affine pieces and
-one-dimensional distribution integrals. If $J$ extreme points are cached and
-$M$ denotes the number of modes, updating the intercepts requires
-$O(JM)$ operations. With the extreme points pre-sorted by slope, the upper
-envelope can be constructed in $O(J)$ time. The remaining calculations only
-involve the active intervals of $F_i$.
-
-The oracle therefore replaces repeated solutions of the ex post allocation
-problem by inexpensive evaluations of a cached piecewise-linear
-representation. This computational reuse is particularly important because
-$G_{ib}$ must be evaluated many times for every traveler--option pair during
-both the direct single-level optimization and the regional search developed
-below.
-
-
-\subsection{Regional Search under Optimistic Selection}
+\subsection{Regional Search Procedure}
+\label{sec:regional-search-procedure}
 
 We next exploit the assignment-region structure of the optimistic
 formulation. The direct MPEC is replaced by a sequence of continuous
@@ -1194,8 +1093,8 @@ the next assignment to explore.
 
 Starting from a feasible menu $x^0$ with strictly positive optimistic
 profit, we compute its optimistic assignment $\bm\alpha$. For a fixed
-assignment, the regional problem defined in Section~3.4 is solved using
-the valuation oracle in Section~4.1. The feasible region-entry menu is
+assignment, the regional problem defined in Section~\ref{sec:assignment-regions} is solved using
+the valuation oracle in Section~\ref{sec:bundle-valuation-oracle}. The feasible region-entry menu is
 retained as an incumbent throughout constraint generation.
 
 The complete regional problem may contain many traveler-choice
@@ -1300,7 +1199,6 @@ traveler constraints only when they become relevant. Regional search
 uses the bundle-choice boundaries to explore only locally connected
 assignments. The full assignment space is therefore replaced by a
 sequence of regional NLPs guided by the optimistic response.
-
 
 \subsection{Convergence and Local Optimality}
 
@@ -1459,8 +1357,112 @@ only one additional regional solve. When several double ties occur
 simultaneously, the same argument applies after resolving the locally
 adjacent assignment combinations generated by those ties.
 
-
 \section{Numerical Results}
+
+We consider a stylized multimodal network with one origin--destination pair and three feasible paths, as shown in Fig.~\ref{fig:stylized-network}. The three paths correspond to PT-only, SM-only, and multimodal travel, with mode-usage vectors
+\begin{equation}
+    n_1=(2,0),\qquad
+    n_2=(0,2),\qquad
+    n_3=(1,1),
+\end{equation}
+and hence
+\begin{equation}
+    N=
+    \begin{pmatrix}
+        2 & 0 & 1\\
+        0 & 2 & 1
+    \end{pmatrix}.
+\end{equation}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.68\textwidth]{figures/stylized_network.png}
+    \caption{Stylized multimodal network with PT-only, SM-only, and multimodal paths. The unlabeled intermediate node subdivides the SM-only path into two segments, each representing one unit of SM usage.}
+    \label{fig:stylized-network}
+\end{figure}
+
+The baseline instance contains three traveler classes with path-cost vectors
+\begin{equation}
+    c_P=(4,5,4.5),\qquad
+    c_M=(5,4.5,3),\qquad
+    c_S=(5.5,3,4.5),
+\end{equation}
+and identical trip-frequency distributions
+\begin{equation}
+    \mu_P,\mu_M,\mu_S\sim U[16,24].
+\end{equation}
+Their initial population shares are
+\begin{equation}
+    Q_P=Q_M=Q_S=\frac13.
+\end{equation}
+
+The menu contains PAYG and two subscription bundles. The mode-specific overage tariffs and unit provision costs are
+\begin{equation}
+    \rho=(2,4),
+    \qquad
+    k=(0.5,1).
+\end{equation}
+Only parameters directly relevant to the numerical analysis are reported here; complete implementation details and auxiliary settings will be provided with the open-source code.
+
+\subsection{Algorithmic Illustration}
+
+Figure~\ref{fig:stylized-valuation} examines the lower-level valuation structure for traveler class $M$. Panel~(a) shows the EMTC
+\begin{equation}
+    G_M(\varepsilon)
+    =
+    \mathbb{E}_{\mu\sim U[16,24]}
+    \left[\Phi_M(\mu;\varepsilon)\right].
+\end{equation}
+The EMTC decreases as either modal allowance increases and approaches the minimum travel-cost level when both allowances become sufficiently large. The non-axis-aligned contours also indicate that the two allowance dimensions are jointly determined through endogenous path substitution.
+
+For a realized trip frequency,
+\begin{equation}
+    \Phi_M(\mu;\varepsilon)
+    =
+    \max_{j\in J_M}
+    \left\{
+        \mu\pi_M^j-(\omega_M^j)^\top\varepsilon
+    \right\}.
+\end{equation}
+Each dual extreme point defines an affine piece of the realized value function, and the allowance space is partitioned according to the active extreme point. Panel~(b) shows these regime boundaries for $\mu=16$, $20$, and $24$.
+
+The partitions exhibit a clear scaling pattern as the realized trip frequency changes. This follows from the positive homogeneity of the lower-level allocation problem:
+\begin{equation}
+    \Phi_M(\lambda\mu;\lambda\varepsilon)
+    =
+    \lambda\Phi_M(\mu;\varepsilon),
+    \qquad \lambda\geq0,
+\end{equation}
+or equivalently,
+\begin{equation}
+    \Phi_M(\mu;\varepsilon)
+    =
+    \mu\,
+    \Phi_M\left(1;\frac{\varepsilon}{\mu}\right).
+\end{equation}
+Hence, the active dual regime depends on the normalized allowance vector $\varepsilon/\mu$. Different demand realizations therefore generate scaled versions of a common normalized regime partition. Network complexity may alter the shape and number of these regions, while trip-frequency variation rescales the underlying geometry.
+
+This also explains the relation between the two panels. For a fixed allowance vector, different realizations of $\mu$ imply different normalized allowances and may activate different dual regimes. The EMTC in panel~(a) averages over these moving realized-demand partitions, smoothing the sharp regime transitions associated with any single demand realization.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/a1_valuation_structure.png}
+    \caption{
+    Valuation structure for traveler class $M$.
+    Panel~(a) shows the EMTC
+    $G_M(\boldsymbol{\varepsilon})$ under
+    $\mu\sim U[16,24]$.
+    Panel~(b) shows the realized-demand dual-regime boundaries for
+    $\mu=16$, $20$, and $24$.
+    }
+    \label{fig:stylized-valuation}
+\end{figure}
+
+\subsection{Bundle-Design Insights}
+
+\subsection{Large-Scale Computational Experiments}
+
+\section{Conclusion}
 
 \small
 \Urlmuskip=0mu plus 1mu\relax

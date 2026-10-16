@@ -136,6 +136,19 @@ Python 调用可用 `dataclasses.replace(DEFAULT_SIOUX_FALLS_CONFIG, ...)` 创�
 
 完整 Sioux Falls 的 30 初值优化实验尚未按本配置运行；不能沿用旧参数的多初值统计。
 
+## 验证记录
+
+新配置全量回归命令：
+
+```bash
+python -m pytest --run-regional-scale --run-enumeration --run-multistart --run-sioux-falls -q
+```
+
+结果：**404 passed，0 failed，0 skipped**，用时 170.76 秒。包括小算例单次、
+81-assignment 枚举、30 初值，100/1000 约束规模测试及完整 Sioux Falls 单初值。
+还验证了月度尺度下完整路网弧流 LP 的 72 组对照、时间到分钟的换算、参数变更后的
+oracle 缓存隔离及 CLI 单位元数据。`ruff check .`、修改文件格式检查和本地文档链接检查通过。
+
 ## 容差统一后的复验（2026-09-29）
 
 采用上述统一容差重新运行全部 opt-in 测试：424 项通过、0 失败、0 跳过，

@@ -17,6 +17,43 @@ budgets. CLI commands are unchanged. See [experiment interfaces and migration](d
 
 ## Running the bundled example
 
+A synthetic three-path, two-mode instance is also available through
+`build_stylized_problem()` in `maas_bundle.examples`. It has three baseline
+classes with demand distributions U[14,22], U[16,24] and U[18,26], and an
+optional fourth class with the same multimodal preferences but
+wider demand uncertainty. See the [complete configuration and Python usage](docs/stylized_experiment.md).
+
+Generate the first oracle experiment's two-panel figure with
+`maas-bundle oracle stylized --output-dir results/stylized_a1`. This evaluates
+class M on the configured `[0,40]^2` scan window and saves only
+`a1_valuation_structure.png` and `.pdf`: expected valuation alongside moving
+realized-demand regime boundaries at demand 16, 20 and 24. Numerical and
+boundary diagnostics are reported in the terminal.
+
+Run the second experiment with
+`maas-bundle regional stylized --output-dir results/stylized_a2`. It records the
+existing regional search with CG, repeats it with all traveler constraints,
+and enumerates 26 candidate assignments with one solver-provided seed each;
+the all-PAYG assignment has identically zero profit and is excluded. All three methods use
+the same finite price/allowance bounds (190/64), SLSQP policy and tolerances.
+Outputs are one trajectory in PNG/PDF, three CSV tables and the full JSON trace.
+The default illustration starts in `(2,2,1)` and shows S switching from Basic
+to Premium before optimizing `(2,2,2)`. Only the starting menu changes;
+`--trajectory-start baseline` reproduces the original `(1,2,2)` start.
+This is a local-solver benchmark, not a proof of global optimality.
+
+Run `maas-bundle multistart stylized` to initialize each of the 26 candidate assignments
+once using the solver adapter's deterministic numerical seed, then continue
+existing regional search from certified positive-profit menus. Results go to
+`results/stylized_a2_assignment_starts` as one PNG, a 26-row CSV and full JSON.
+Initialization response changes and accepted search transitions are reported
+separately. Numerical seeds belong to the solver adapter; subsequent regions
+retain the existing warm-start policy.
+Failed backend attempts activate internal recovery from local iterates, with
+all attempts counted separately from experimental starts. The current run
+certifies all 26 initial regions; 25 searches finish with valid diagnostics
+and one fails certification during a later boundary-neighbor solve.
+
 The algorithm entry point is `maas_bundle.solve_primal(...)`. The installed
 command-line entry point currently exposes a small end-to-end example:
 

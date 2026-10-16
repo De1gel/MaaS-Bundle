@@ -11,15 +11,26 @@ from time import perf_counter
 import numpy as np
 
 from maas_bundle.benchmarks import (
+    StylizedOracleSettings,
     run_sioux_falls_example,
     run_sioux_falls_multistart,
+    run_stylized_assignment_starts,
+    run_stylized_oracle,
     run_two_route_example,
     run_two_route_multistart,
+    save_stylized_assignment_starts,
+    save_stylized_oracle_results,
 )
 from maas_bundle.benchmarks.settings import (
     DEFAULT_RANDOM_SEED,
     DEFAULT_SIOUX_FALLS_SETTINGS,
     DEFAULT_START_COUNT,
+)
+from maas_bundle.benchmarks.stylized_regional import (
+    StylizedRegionalSettings,
+    run_stylized_regional,
+    save_stylized_regional_results,
+    terminal_summary,
 )
 from maas_bundle.benchmarks.two_route import compare_two_route as _compare_two_route
 from maas_bundle.examples.sioux_falls import (
@@ -50,10 +61,98 @@ def main(argv: Sequence[str] | None = None) -> int:
         "multistart",
         help="run a reproducible multi-start region experiment",
     )
-    multistart.add_argument("name", choices=("two-route", "sioux-falls", "souxf"))
-    multistart.add_argument("--starts", type=int, default=DEFAULT_START_COUNT)
-    multistart.add_argument("--seed", type=int, default=DEFAULT_RANDOM_SEED)
+    multistart.add_argument("name", choices=("two-route", "sioux-falls", "souxf", "stylized"))
+    multistart.add_argument("--starts", type=int)
+    multistart.add_argument("--seed", type=int)
+    multistart.add_argument("--output-dir")
+    multistart.add_argument("--max-nlp-iterations", type=int, default=500)
+    oracle = subcommands.add_parser("oracle", help="plot the A1 stylized route-value oracle")
+    oracle.add_argument("name", choices=("stylized",))
+    oracle.add_argument("--output-dir", default="results/stylized_a1")
+    oracle.add_argument("--grid-points", type=int, default=161)
+    oracle.add_argument("--allowance-max", type=float, default=40.0)
+    regional = subcommands.add_parser("regional", help="run the A2 stylized assignment benchmark")
+    regional.add_argument("name", choices=("stylized",))
+    regional.add_argument("--output-dir", default="results/stylized_a2")
+    regional.add_argument("--starts", type=int, default=1)
+    regional.add_argument("--seed", type=int, default=20261004)
+    regional.add_argument("--max-nlp-iterations", type=int, default=500)
+    regional.add_argument("--trajectory-start", choices=("switch", "baseline"), default="switch")
     arguments = parser.parse_args(argv)
+
+    if arguments.command == "multistart" and arguments.name == "stylized":
+        if arguments.starts not in (None, 26):
+            parser.error("stylized uses one numerical start for each of 26 non-PAYG assignments")
+        if arguments.seed is not None:
+            parser.error("stylized assignment starts are deterministic and do not use --seed")
+        try:
+            settings = StylizedRegionalSettings(max_nlp_iterations=arguments.max_nlp_iterations)
+            result = run_stylized_assignment_starts(
+                settings,
+                progress=lambda message: print(message, flush=True),
+            )
+        except ValueError as error:
+            parser.error(str(error))
+        save_stylized_assignment_starts(
+            result, arguments.output_dir or "results/stylized_a2_assignment_starts"
+        )
+        print(json.dumps(result["summary"], indent=2))
+        return 0 if result["summary"]["audited_valid_continuations"] else 1
+
+    if arguments.command == "multistart":
+        if arguments.starts is None:
+            arguments.starts = DEFAULT_START_COUNT
+        if arguments.seed is None:
+            arguments.seed = DEFAULT_RANDOM_SEED
+
+    if arguments.command == "regional":
+        try:
+            settings = StylizedRegionalSettings(
+                starts=arguments.starts,
+                seed=arguments.seed,
+                max_nlp_iterations=arguments.max_nlp_iterations,
+                trajectory_start=arguments.trajectory_start,
+            )
+        except ValueError as error:
+            parser.error(str(error))
+        result = run_stylized_regional(
+            settings, progress=lambda message: print(message, flush=True)
+        )
+        save_stylized_regional_results(result, arguments.output_dir)
+        print(json.dumps(terminal_summary(result), indent=2))
+        return 0 if result["numerical_validity"]["passed"] else 1
+
+    if arguments.command == "oracle":
+        try:
+            settings = StylizedOracleSettings(
+                grid_points=arguments.grid_points, allowance_max=arguments.allowance_max
+            )
+        except ValueError as error:
+            parser.error(str(error))
+        result = run_stylized_oracle(settings=settings)
+        summary = save_stylized_oracle_results(result, arguments.output_dir)
+        print(
+            json.dumps(
+                {
+                    "experiment": summary["experiment"],
+                    "output_dir": arguments.output_dir,
+                    "grid_evaluations": result.diagnostics["grid_evaluations"],
+                    "mu_values": summary["visualization"]["mu_values"],
+                    "allowance_scan_range": summary["visualization"]["allowance_scan_range"],
+                    "cached_dual_vertex_count": summary["visualization"][
+                        "cached_dual_vertex_count"
+                    ],
+                    "active_dual_vertex_counts": summary["visualization"][
+                        "active_dual_vertex_counts"
+                    ],
+                    "diagnostics_passed": summary["visualization"]["passed"],
+                    "value_range": summary["value_range"],
+                    "figures": summary["figures"],
+                },
+                indent=2,
+            )
+        )
+        return 0 if summary["visualization"]["passed"] else 1
 
     if arguments.command == "example" and arguments.name == "two-route":
         diagnostics = run_two_route_example()

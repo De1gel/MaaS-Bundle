@@ -20,6 +20,7 @@ from maas_bundle.design.menu import BundleMenu
 from maas_bundle.design.problem import BundleDesignProblem
 from maas_bundle.design.tolerances import (
     DEFAULT_COST_TOLERANCE,
+    DEFAULT_PROFIT_TOLERANCE,
 )
 from maas_bundle.design.valuation import ValuationTable
 
@@ -105,6 +106,17 @@ class RestrictedRegionalProblem:
 
         self.problem = problem
         self.layout = MenuVariableLayout(problem.bundle_count, problem.mode_count)
+        # Legacy problem adapters without the optional domain fields retain
+        # their original unbounded domain.
+        price_caps = np.broadcast_to(
+            getattr(problem, "price_upper_bounds", np.inf), (problem.bundle_count - 1,)
+        )
+        allowance_caps = np.broadcast_to(
+            getattr(problem, "allowance_upper_bounds", np.inf),
+            (problem.bundle_count - 1, problem.mode_count),
+        )
+        self.upper_bounds = np.concatenate((price_caps, allowance_caps.reshape(-1)))
+        self.upper_bounds.setflags(write=False)
         self.assigned_bundles = critical_constraints.assigned_bundles
         self.active_indices = critical_constraints.indices()
         self.bundle_demand = aggregate_bundle_demand(
@@ -194,10 +206,13 @@ class RestrictedRegionalProblem:
         return jacobian
 
     def maximum_constraint_violation(self, vector: ArrayLike) -> float:
-        """Return the largest nonnegativity or regional inequality violation."""
+        """Return the largest box-bound or regional inequality violation."""
 
         values = np.asarray(vector, dtype=float)
         bound_violation = float(np.max(np.maximum(-values, 0.0), initial=0.0))
+        bound_violation = max(
+            bound_violation, float(np.max(values - self.upper_bounds, initial=0.0))
+        )
         if np.any(values < 0):
             projected = np.maximum(values, 0.0)
         else:
@@ -217,7 +232,7 @@ class RestrictedRegionalProblem:
         """Independently check primal feasibility and first-order KKT stationarity.
 
         Nonnegative Lagrange multipliers are fitted to the active regional
-        inequalities and active lower bounds with nonnegative least squares.
+        inequalities and active lower/upper bounds with nonnegative least squares.
         A small residual is necessary for a local maximum, but is not by itself
         sufficient without a second-order or problem-specific argument.
         """
@@ -235,15 +250,19 @@ class RestrictedRegionalProblem:
         constraints = self.constraint_values(projected)
         active_inequalities = constraints >= -active_tolerance
         active_lower_bounds = projected <= active_tolerance
+        active_upper_bounds = projected >= self.upper_bounds - active_tolerance
         gradient = self.profit_gradient(projected)
 
         columns: list[NDArray[np.float64]] = []
         active_inequality_indices = np.flatnonzero(active_inequalities)
         active_lower_bound_indices = np.flatnonzero(active_lower_bounds)
+        active_upper_bound_indices = np.flatnonzero(active_upper_bounds)
         if np.any(active_inequalities):
             columns.append(self.constraint_jacobian(projected)[active_inequalities].T)
         if np.any(active_lower_bounds):
             columns.append(-np.eye(self.variable_count)[:, active_lower_bounds])
+        if np.any(active_upper_bounds):
+            columns.append(np.eye(self.variable_count)[:, active_upper_bounds])
 
         if columns:
             multiplier_matrix = np.column_stack(columns)
@@ -269,7 +288,18 @@ class RestrictedRegionalProblem:
                 float(value) for value in multipliers[: active_inequality_indices.size]
             ),
             lower_bound_multipliers=tuple(
-                float(value) for value in multipliers[active_inequality_indices.size :]
+                float(value)
+                for value in multipliers[
+                    active_inequality_indices.size : active_inequality_indices.size
+                    + active_lower_bound_indices.size
+                ]
+            ),
+            active_upper_bound_indices=tuple(int(index) for index in active_upper_bound_indices),
+            upper_bound_multipliers=tuple(
+                float(value)
+                for value in multipliers[
+                    active_inequality_indices.size + active_lower_bound_indices.size :
+                ]
             ),
         )
 
@@ -350,6 +380,8 @@ class RegionalFirstOrderCertificate:
     active_lower_bound_indices: tuple[int, ...] = ()
     inequality_multipliers: tuple[float, ...] = ()
     lower_bound_multipliers: tuple[float, ...] = ()
+    active_upper_bound_indices: tuple[int, ...] = ()
+    upper_bound_multipliers: tuple[float, ...] = ()
 
     @property
     def satisfies_kkt(self) -> bool:
@@ -380,6 +412,7 @@ class RegionalSolveResult:
     raw_status: int | None = None
     attempt_count: int = 1
     attempted_solvers: tuple[str, ...] = ()
+    initial_menu: BundleMenu | None = None
 
     @property
     def success(self) -> bool:
@@ -431,7 +464,8 @@ class ScipyRegionalSolver:
 
     A successful first solve returns immediately.  Failed SLSQP solves are
     restarted once from the best feasible point available and then fall back
-    to ``trust-constr``. Direct ``trust-constr`` use remains a single attempt.
+    to ``trust-constr``. An optional numerical constraint Jacobian attempt
+    precedes that fallback. Direct ``trust-constr`` use remains a single attempt.
     """
 
     method: str = "SLSQP"
@@ -440,6 +474,8 @@ class ScipyRegionalSolver:
     optimality_tolerance: float = 1e-5
     active_set_tolerance: float = 1e-4
     enable_recovery: bool = True
+    numerical_constraint_recovery: bool = False
+    objective_tolerance: float = DEFAULT_PROFIT_TOLERANCE
 
     def __post_init__(self) -> None:
         """Validate the algorithm and freeze its option mapping."""
@@ -456,6 +492,10 @@ class ScipyRegionalSolver:
             raise ValueError("active_set_tolerance must be finite and nonnegative")
         if not isinstance(self.enable_recovery, (bool, np.bool_)):
             raise ValueError("enable_recovery must be Boolean")
+        if not isinstance(self.numerical_constraint_recovery, (bool, np.bool_)):
+            raise ValueError("numerical_constraint_recovery must be Boolean")
+        if not np.isfinite(self.objective_tolerance) or self.objective_tolerance < 0:
+            raise ValueError("objective_tolerance must be finite and nonnegative")
         options = {} if self.options is None else dict(self.options)
         object.__setattr__(self, "method", names[normalized])
         object.__setattr__(self, "options", MappingProxyType(options))
@@ -467,13 +507,24 @@ class ScipyRegionalSolver:
 
         return f"scipy-{self.method}"
 
+    def default_initial_menu(self, regional_problem: RestrictedRegionalProblem) -> BundleMenu:
+        """Choose a deterministic numerical seed when no warm start is supplied.
+
+        Zero satisfies the design bounds. Choice feasibility still depends on
+        the model; in the shared-oracle stylized instance all options tie here.
+        This numerical policy does not choose the algorithm's initial assignment.
+        """
+        return regional_problem.layout.unpack(np.zeros(regional_problem.variable_count))
+
     def solve(
         self,
         regional_problem: RestrictedRegionalProblem,
-        initial_menu: BundleMenu,
+        initial_menu: BundleMenu | None = None,
     ) -> RegionalSolveResult:
         """Solve once normally and activate recovery only after rejection."""
 
+        if initial_menu is None:
+            initial_menu = self.default_initial_menu(regional_problem)
         first = self._solve_once(regional_problem, initial_menu)
         if first.success or self.method != "SLSQP" or not self.enable_recovery:
             return first
@@ -497,6 +548,16 @@ class ScipyRegionalSolver:
         if restarted.success:
             return _combine_attempts(attempts)
 
+        if self.numerical_constraint_recovery:
+            # Change the Jacobian strategy at the same local iterate, rather
+            # than drawing a different initial menu. Degenerate active rows
+            # can stall SLSQP despite a nonstationary point.
+            numerical = self._solve_once(regional_problem, restart_menu, numerical_constraints=True)
+            attempts.append(numerical)
+            if numerical.success:
+                return _combine_attempts(attempts)
+            restarted = numerical
+
         fallback_menu, _ = _prepare_recovery_start(
             regional_problem,
             restarted.menu,
@@ -515,6 +576,7 @@ class ScipyRegionalSolver:
             optimality_tolerance=self.optimality_tolerance,
             active_set_tolerance=max(self.active_set_tolerance, 1e-3),
             enable_recovery=False,
+            objective_tolerance=self.objective_tolerance,
         ).solve(regional_problem, fallback_menu)
         attempts.append(fallback)
         return _combine_attempts(attempts)
@@ -523,25 +585,29 @@ class ScipyRegionalSolver:
         self,
         regional_problem: RestrictedRegionalProblem,
         initial_menu: BundleMenu,
+        *,
+        numerical_constraints: bool = False,
     ) -> RegionalSolveResult:
         """Run exactly one SciPy minimize call."""
 
-        initial = regional_problem.layout.pack(initial_menu)
+        initial = np.clip(
+            regional_problem.layout.pack(initial_menu), 0.0, regional_problem.upper_bounds
+        )
         bounds = Bounds(
             np.zeros(regional_problem.variable_count),
-            np.full(regional_problem.variable_count, np.inf),
+            regional_problem.upper_bounds,
             keep_feasible=True,
         )
         constraints: tuple[object, ...] = ()
         if regional_problem.constraint_count:
             if self.method == "SLSQP":
-                constraints = (
-                    {
-                        "type": "ineq",
-                        "fun": lambda x: -regional_problem.constraint_values(x),
-                        "jac": lambda x: -regional_problem.constraint_jacobian(x),
-                    },
-                )
+                constraint = {
+                    "type": "ineq",
+                    "fun": lambda x: -regional_problem.constraint_values(x),
+                }
+                if not numerical_constraints:
+                    constraint["jac"] = lambda x: -regional_problem.constraint_jacobian(x)
+                constraints = (constraint,)
             else:
                 constraints = (
                     NonlinearConstraint(
@@ -555,6 +621,8 @@ class ScipyRegionalSolver:
 
         started = perf_counter()
         solver_options = dict(self.options)
+        if numerical_constraints:
+            solver_options.setdefault("eps", 1e-6)
         if (
             self.method == "trust-constr"
             and regional_problem.constraint_count > regional_problem.variable_count
@@ -582,7 +650,39 @@ class ScipyRegionalSolver:
             **arguments,
         )
         elapsed = perf_counter() - started
-        return self._normalize_result(regional_problem, result, elapsed)
+        normalized = replace(
+            self._normalize_result(regional_problem, result, elapsed), initial_menu=initial_menu
+        )
+        if numerical_constraints:
+            normalized = replace(
+                normalized,
+                solver_name=self.name + " (numerical constraint Jacobian)",
+                attempted_solvers=(self.name + " (numerical constraint Jacobian)",),
+            )
+        # A stationary feasible warm start is preferable to a numerical
+        # roundoff loss. Recheck it; never accept a less profitable incumbent
+        # or label an uncertified entry point as a successful solve.
+        loss = regional_problem.profit(initial) - normalized.objective_value
+        if normalized.success and 0 < loss <= self.objective_tolerance:
+            certificate = regional_problem.first_order_certificate(
+                initial,
+                feasibility_tolerance=self.feasibility_tolerance,
+                stationarity_tolerance=self.optimality_tolerance,
+                active_tolerance=self.active_set_tolerance,
+            )
+            if certificate.satisfies_kkt and np.all(
+                np.diff(regional_problem.layout.unpack(initial).prices) >= 0
+            ):
+                normalized = replace(
+                    normalized,
+                    menu=regional_problem.layout.unpack(initial),
+                    objective_value=regional_problem.profit(initial),
+                    maximum_constraint_violation=certificate.primal_violation,
+                    first_order_certificate=certificate,
+                    message=normalized.message
+                    + "; retained certified warm start after roundoff loss",
+                )
+        return normalized
 
     def _normalize_result(
         self,
@@ -591,21 +691,46 @@ class ScipyRegionalSolver:
         elapsed: float,
     ) -> RegionalSolveResult:
         raw_vector = np.asarray(result.x, dtype=float)
-        projected_vector = np.maximum(raw_vector, 0.0)
+        projected_vector = np.clip(raw_vector, 0.0, regional_problem.upper_bounds)
+        designed = regional_problem.layout.designed_bundle_count
+        ordered = np.maximum.accumulate(projected_vector[:designed])
+        price_correction = float(np.max(ordered - projected_vector[:designed], initial=0.0))
+        corrected = projected_vector.copy()
+        corrected[:designed] = ordered
+        repaired_price_order = False
+        if (
+            0 < price_correction <= self.feasibility_tolerance
+            and np.all(corrected <= regional_problem.upper_bounds)
+            and regional_problem.maximum_constraint_violation(corrected)
+            <= self.feasibility_tolerance
+        ):
+            projected_vector = corrected
+            repaired_price_order = True
         menu = regional_problem.layout.unpack(projected_vector)
         violation = regional_problem.maximum_constraint_violation(raw_vector)
         raw_optimality = getattr(result, "optimality", None)
         optimality = float(raw_optimality) if raw_optimality is not None else None
         acceptable_optimality = optimality is None or optimality <= self.optimality_tolerance
         certificate = regional_problem.first_order_certificate(
-            raw_vector,
+            projected_vector,
             feasibility_tolerance=self.feasibility_tolerance,
             stationarity_tolerance=self.optimality_tolerance,
             active_tolerance=self.active_set_tolerance,
         )
+        certificate = replace(
+            certificate, primal_violation=max(violation, certificate.primal_violation)
+        )
+        violation = certificate.primal_violation
+        message = str(result.message) + (
+            "; repaired price-order roundoff and recertified" if repaired_price_order else ""
+        )
         status = _map_scipy_status(
-            success=(acceptable_optimality and certificate.satisfies_kkt),
-            message=str(result.message),
+            success=(
+                acceptable_optimality
+                and certificate.satisfies_kkt
+                and np.all(np.diff(menu.prices) >= 0)
+            ),
+            message=message,
             maximum_violation=violation,
             feasibility_tolerance=self.feasibility_tolerance,
         )
@@ -621,7 +746,7 @@ class ScipyRegionalSolver:
             first_order_certificate=certificate,
             active_choice_constraint_count=regional_problem.active_choice_constraint_count,
             variable_count=regional_problem.variable_count,
-            message=str(result.message),
+            message=message,
             raw_status=int(result.status) if result.status is not None else None,
             attempted_solvers=(self.name,),
         )
@@ -709,6 +834,7 @@ def _combine_attempts(attempts: list[RegionalSolveResult]) -> RegionalSolveResul
         iteration_count=sum(attempt.iteration_count for attempt in attempts),
         message=f"recovery chain [{trace}]; final: {final.message}",
         attempt_count=len(attempts),
+        initial_menu=attempts[0].initial_menu,
         attempted_solvers=tuple(
             solver for attempt in attempts for solver in attempt.attempted_solvers
         ),
