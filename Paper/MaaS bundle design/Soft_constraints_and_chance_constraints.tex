@@ -1,0 +1,699 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath,amsthm,graphicx,amssymb,float,authblk,color,subcaption,appendix,url,amsbsy}
+\captionsetup[subfigure]{labelformat=simple}
+\usepackage{algorithm,algpseudocode}
+\usepackage{url,hyperref}
+\usepackage[round]{natbib}
+\usepackage[sc]{mathpazo}
+\usepackage[gen]{eurosym}
+% \usepackage{biblatex}
+\usepackage[capitalise]{cleveref} 
+\usepackage[dvipsnames]{xcolor}
+\usepackage{placeins}
+
+% environments
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+%%%%%%%%%% EXACT 1in MARGINS %%%%%%%                                   %%
+\setlength{\textwidth}{6.5in}     %%                                   %%
+\setlength{\oddsidemargin}{0in}   %% (It is recommended that you       %%
+\setlength{\evensidemargin}{0in}  %%  not change these parameters,     %%
+\setlength{\textheight}{9in}      %%  at the risk of having your       %%0
+%\setlength{\topmargin}{0.5in}       %%  proposal dismissed on the basis  %%
+\setlength{\headheight}{-0.4in}      %%  of incorrect formatting!!!)      %%
+\setlength{\headsep}{0.1in}         %%   
+
+% Notations
+\newcommand{\setK}{\mathcal{K}}
+\newcommand{\setA}{\mathcal{A}}
+\newcommand{\setB}{\mathcal{B}}
+\newcommand{\setI}{\mathcal{I}}
+\newcommand{\mbbone}{\mathbb{1}}
+
+
+% Comments
+\newcommand{\kz}[1]{{\color{magenta}{\noindent KZ:#1}}}
+\newcommand{\ry}[1]{{\color{blue}{\noindent RY:#1}}}
+\newcommand{\jl}[1]{{\color{red}{\noindent JL:#1}}}
+
+\title{MaaS bundle design}
+
+\begin{document}
+
+\maketitle
+
+\section{Model}
+
+\subsection{Main ideas}
+\begin{itemize}
+    \item Finite number of user classes, while each class features a continuous trip frequency distribution, e.g., daily commuters vs flexible working schedules
+    \item Travelers in each class make bundle choice based on some statistical metric of generalized path cost (e.g., expectation). 
+    \item Expected travel flows are constrained by bundle-specific link capacity constraints, while the shadow price of each constraint is included in the generalized path cost. 
+    \item Design variables of each bundle are the bundle price and maximum usage of each mode, i.e., the set of link capacities. 
+    \item Expected outcomes: travelers with different trip frequency distributions and feasible paths vary in their bundle preferences. Hence, bundle design introduces a form of service personalization instead of simply price discrimination.
+\end{itemize}
+
+\subsection{Notations}
+\begin{itemize}
+    \item Traveler class $i$, traveler class set $\setI$, traveler class number $I = |\setI|$
+    \item Path $k$, path set $\setK$, path number $K = |\setK|$, (optimal) path flow $f$ ($f^*$), (min) path cost $c$ ($\pi^*$)
+    \item Link-path incidence matrix $\Delta$
+    \item Link $a$, link set $\setA$, link number $A=|\setA|$, (optimal) link flow $x$ ($x^*$), link cost $t$
+    \item Bundle-specific link capacity $\varepsilon$ and shadow price $\omega$
+    \item Bundle $b$, bundle set $\setB$, bundle number $B=|\setB|$, bundle price $C$, (min) generalized bundle cost $e$ ($\Pi^*$)
+    \item Path choice probability $p$, (optimal) bundle choice probability $q$ ($q^*$)
+    \item Value of time $\beta$
+    \item Bundle horizon $T$, total demand $Q$
+\end{itemize}
+
+\subsection{Route choice with soft constraints}
+Suppose travelers of class $i\in I$ share a trip-frequency distribution $F_i$.
+For a given trip-frequency realization $\mu\sim F_i$ and bundle $b\in\setB$,
+let $P_{ib}$ denote the set of feasible paths. Define
+\begin{itemize}
+    \item path choice probability vector $p_{ib}(\mu)\in\mathbb{R}_+^{|P_{ib}|}$ with
+    \[
+    \mbbone^\top p_{ib}(\mu)=1,
+    \]
+    \item path usage vector
+    \[
+    f_{ib}(\mu)=\mu\,p_{ib}(\mu),
+    \]
+    \item link usage vector
+    \[
+    x_{ib}(\mu)=\Delta f_{ib}(\mu),
+    \]
+    \item mode usage vector
+    \[
+    M_{ib}(\mu)=N_{ib}f_{ib}(\mu),
+    \]
+    where $N_{ib}\in\mathbb{R}_+^{M\times |P_{ib}|}$ is the mode-usage matrix, and
+    its $(m,r)$-entry records the number of times mode $m$ is used on path $r$,
+    \item excess-usage vector
+    \[
+    z_{ib}(\mu)\in\mathbb{R}_+^M,
+    \]
+    where $z_{ib,m}(\mu)$ denotes the number of pay-as-you-go trips exceeding the
+    bundle allowance on mode $m$.
+\end{itemize}
+
+Let $t\in\mathbb{R}_+^{|A|}$ be the vector of link travel times. Let $\varepsilon_b\in\mathbb{R}_+^M$ denote the allowance vector of bundle $b$, and
+let $\rho_b\in\mathbb{R}_+^M$ denote the pay-as-you-go tariff vector, where
+$\rho_{b,m}$ is the unit charge for excess usage of mode $m$.
+
+Define the baseline path travel time vector
+\[
+\bar c_{ib}:=\Delta^\top t\in\mathbb{R}_+^{|P_{ib}|}.
+\]
+
+For a given bundle $b$ and realization $\mu$, the lower-level route-choice problem with fixed link travel time is
+\begin{align}
+\Phi_{ib}(\mu;\varepsilon_b,\rho_b):=
+\min_{f\in\mathbb{R}_+^{|P_{ib}|},\,z\in\mathbb{R}_+^M}
+\quad & \beta\,\bar c_{ib}^\top f+\rho_b^\top z
+\label{eq:payg-primal-obj}\\
+\text{s.t.}\quad
+& \mbbone^\top f=\mu,
+\label{eq:payg-primal-demand}\\
+& N_{ib}f\le \varepsilon_b+z.
+\label{eq:payg-primal-allowance}
+\end{align}
+where $\beta>0$ is the weight placed on expected
+travel expenditure.
+
+Problem \eqref{eq:payg-primal-obj}--\eqref{eq:payg-primal-allowance} minimizes the
+total realized travel cost, consisting of baseline travel time cost and pay-as-you-go
+charges for excess mode usage.
+
+Let $\omega_{ib}(\mu)\in\mathbb{R}_+^M$ be the shadow price vector associated with
+\eqref{eq:payg-primal-allowance}, and let $\pi_{ib}(\mu)\in\mathbb{R}$ be the dual
+variable associated with \eqref{eq:payg-primal-demand}. The generalized path-cost
+vector is
+\begin{align}
+c_{ib}(\mu)=\beta\,\bar c_{ib}+N_{ib}^\top \omega_{ib}(\mu).
+\label{eq:payg-generalized-cost}
+\end{align}
+
+Accordingly, the lower-level equilibrium for a given bundle $b$ and realization $\mu$
+can be characterized by the KKT system: find
+$(f_{ib}^*(\mu),z_{ib}^*(\mu),\omega_{ib}^*(\mu),\pi_{ib}^*(\mu))$ such that
+\begin{align}
+0 \le \omega_{ib}^*(\mu)\ \perp\ \varepsilon_b+z_{ib}^*(\mu)-N_{ib}f_{ib}^*(\mu)\ge 0,
+\label{eq:payg-kkt-omega}
+\end{align}
+\begin{align}
+0 \le f_{ib}^*(\mu)\ \perp\ \beta\,\bar c_{ib}+N_{ib}^\top\omega_{ib}^*(\mu)-\pi_{ib}^*(\mu)\mbbone \ge 0,
+\label{eq:payg-kkt-f}
+\end{align}
+\begin{align}
+0 \le z_{ib}^*(\mu)\ \perp\ \rho_b-\omega_{ib}^*(\mu)\ge 0,
+\label{eq:payg-kkt-z}
+\end{align}
+subject to
+\begin{align}
+\mbbone^\top f_{ib}^*(\mu)=\mu.
+\label{eq:payg-kkt-demand}
+\end{align}
+
+\ry{Or just write everything as complementarity
+\begin{equation}
+    \pi_{ib}^*(\mu) \perp \mu - \mbbone^\top f_{ib}^*(\mu) = 0
+\end{equation}
+}
+
+Here $\pi_{ib}^*(\mu)$ denotes the marginal generalized path cost associated with the
+realized trip frequency $\mu$ under bundle $b$. Condition
+\eqref{eq:payg-kkt-z} implies that the shadow price of any mode allowance is capped by
+its pay-as-you-go tariff. In particular, whenever excess usage of mode $m$ is strictly
+positive, the corresponding shadow price equals the tariff, i.e.,
+$\omega_{ib,m}^*(\mu)=\rho_{b,m}$.
+
+\jl{
+I think soft capacity is good because it is compatible with PAYG, or with hard capacity the PAYG passenger (or passengers that have more trips) will be forbidden to travel unless you set a different route choice rule.
+}
+
+\ry{To me, this can be considered as hard bundle usage constraint. Since the routing objective is linear, this is separable: one part corresponds to only with bundle and another for PAYG. To see this, notice that the objective can be written as
+
+\begin{equation}
+    \Phi_{ib}(\mu;\varepsilon_b,\rho_b):=
+\min_{f\in\mathbb{R}_+^{|P_{ib}|},\,z\in\mathbb{R}_+^M}
+\quad \beta\,\bar c_{ib}^\top (f-z)+ [\beta\,\bar c_{ib}^\top + \rho_b^\top] z,
+\end{equation}
+where $f-z$ is the bundle usage and it is always $\leq \varepsilon_b$. 
+}
+
+\kz{An different interpretation of the same problem and decision variable: $f-z$ is the bundle trip flow and $z$ is the PAYG trip flow. }
+
+
+\subsection{Bundle choice}
+
+At the upper level, travelers choose among bundles on the basis of the expected
+realized travel expenditure induced by the lower-level route-choice problem \ry{(Self notes: for now, we use expectations, but later we can incorporate measures other than expectation (risk neutral)). For example, different traveler classes can have different risk preferences.}.
+Under the pay-as-you-go scheme, the lower-level problem yields the realized total
+cost function $\Phi_{ib}(\mu;\varepsilon_b,\rho_b)$ for traveler class $i$ under
+bundle $b$ and trip-frequency realization $\mu$. Accordingly, for traveler class
+$i\in I$ and bundle $b\in\setB$, define the generalized bundle cost as
+\begin{align}
+e_{ib}
+=
+C_b+\mathbb E_{\mu\sim F_i}\!\left[\Phi_{ib}(\mu;\varepsilon_b,\rho_b)\right],
+\label{eq:bundle-generalized-cost-payg}
+\end{align}
+where $C_b$ is the bundle price.
+
+
+\jl{Here I change the shortest path cost to the cumulated path cost, because the user
+should compare the whole trip cost over the bundle cycle rather than the cost of one
+single trip.}
+
+\ry{Side note: it seems $\Phi$ is convex in $\mu$. This can become handy when we try to optimize the whole bundle choice problem. We might be able to exploit convex hull to identify the vertex and solve it.}
+
+
+\jl{\subsubsection*{For hard constraints version }
+
+At the same time, if we really want a hard constraint at the route level, I would suggest
+using the idea of chance constraints (\cite{math9151757}), then we may get a different interpretation of traveler behavior.
+
+To be specific, the bundle choice can follow a rule like
+\[
+\tilde e_{ib}=
+\begin{cases}
+C_b+\beta\,\Gamma_{ib}, & \text{if } R_{ib}(\varepsilon_b)\ge \alpha_i,\\
++\infty, & \text{otherwise}.
+\end{cases}
+\]
+where $R_{ib}(\varepsilon_b)$ is the coverage probability of bundle $b$ for class $i$:
+\[
+R_{ib}(\varepsilon_b)
+:=
+\mathbb P_{\mu\sim F_i}
+\Big(
+\exists f\ge 0:\mathbf{1}^\top f=\mu,\ N_{ib}f\le \varepsilon_b
+\Big).
+\]
+
+Here $\Gamma_{ib}$ is a representative route-side cost metric. For example, it can be
+taken as the minimum feasible route cost (cumulated) evaluated at the class-specific quantile demand
+level
+\[
+\mu_i^\alpha:=F_i^{-1}(\alpha_i).
+\]
+
+This has some spirit of robustness mentioned by Prof. Zhang, although it is not standard robust optimization.
+The interpretation is that travelers choose bundles that have a high enough probability
+of covering their trips. In this way, the hard constraint is reasonable and we may avoid working with the full distribution explicitly in the bundle-choice metric.
+}
+
+Let $q_{ib}$ denote the probability that a traveler of class $i$ chooses bundle
+$b$, and let $\Pi_i^*$ denote the minimum generalized bundle cost attained by
+class $i$. Then the bundle-choice equilibrium is characterized by
+\begin{align}
+q_i \ge 0,\qquad \mbbone^\top q_i = 1,\qquad \forall i\in I,
+\label{eq:bundle-choice-feasibility}
+\end{align}
+and
+\begin{align}
+0 \le q_{ib}^* \ \perp\ e_{ib}-\Pi_i^* \ge 0,
+\qquad \forall i\in I,\ b\in \setB.
+\label{eq:bundle-choice-kkt}
+\end{align}
+Condition \eqref{eq:bundle-choice-kkt} implies that a bundle can be chosen with
+positive probability only if it attains the minimum generalized bundle cost for
+the corresponding traveler class. Conversely, any bundle with strictly higher
+generalized cost is assigned zero choice probability.
+
+Together, \eqref{eq:bundle-generalized-cost-payg}--\eqref{eq:bundle-choice-kkt}
+define the upper-level bundle-choice equilibrium induced by the lower-level
+pay-as-you-go route-choice model.
+
+\subsection{Flow-independent case}
+\ry{I would suggest first to focus on the flow-independent case. If we can solve this efficiently, and at scale, we can extend this to equilibrium or bundle design. See some initial ideas below:
+
+
+For each class of the traveler $i$, we assume they solve the following choice problem: (or maybe make it a logit will have better properties?)
+\begin{align}
+    \min_{q_i \in \Delta} q_i^\top [C_b + \mathbb E_{\mu\sim F_i}\!\left[\Phi_{i}(\mu;\varepsilon_b,\rho)\right]],
+\end{align}
+where $\Delta$ denote the probability simplex.
+
+Observe that the objective is linear in $q$. Hence, the optimal choice occurs at a vertex of $\Delta$ (one of the bundles). This means, we need only to evaluate the terms in the bracket for each bundle in parallel.
+
+We now need to deal with $\Phi_{ib}(\mu;\varepsilon_b,\rho_b)$ over a continuous distribution $\mu\sim F$. Recall this is a parametric LP, the issue now is that $\mu$ enters into the constraint. If it is in the objective, we can simply apply convex hull and check all vertex of the feasible region easily. One trick we used (for another problem I worked on, and perhaps also well-known in outer approximation literature) is to use the dual LP (and strong duality holds trivially). In our case, this becomes:
+
+\begin{align}
+    \Phi_{i}(\mu;\varepsilon,\rho) &= \max_{\pi, \omega}\; \pi \mu - \omega^\top \varepsilon \\
+    s.t.& \; \pi \mathbf{1} - N_{i}^\top \omega \leq \beta\,\bar c_{i} \\
+    &\; 0 \leq \omega \leq \rho.\\
+    % \lambda \leq \rho_b.
+    &\; \pi \geq 0
+\end{align}
+Importantly, the feasible region is a polytope that is independent of $\mu$ (we will need to show $\pi \geq 0$ without loss of generality; it should, so that it is bounded and form a polytope)! It is exactly the H-representation of a convex hull. This means we can run convex hull algorithm (e.g., we used cdd) to transforxm the H-representation of the feasible region into V-representation (all the vertex), namely $(\pi_j, \omega_j)_j$. Then, the optimal value is attained at one of the vertex (may have tie, but it is fine to break tie arbitrarily); so we just check over all vertex
+\begin{align}
+    \Phi_{i}(\mu;\varepsilon_b,\rho) &= \max_{j = 1, ....}\; (\pi_j\mu -\omega_j \varepsilon_b).
+\end{align}
+This requires only a simple sorting for any $\mu$, and the vertex needs only computed once.
+
+For each vertex $j$, the function $(\pi_j\mu -\omega_j \varepsilon_b)$ is affine in $\mu$, so, $\Phi_{i}(\mu;\varepsilon_b,\rho_b)$ as the max over a set of affine functions is piece-wise linear in $\mu$; and also convex.
+
+Then, the expectaction $\mathbb E_{\mu\sim F_i}\!\left[\Phi_{i}(\mu;\varepsilon_b,\rho)\right]$ is the integral over a piece-wise linear function, which is also convex (expectation of convex function). This means, we need only to find the break points, and do integral for each segment. But the break points are exactly when the optimal value is equal for both vertex. (Similar to your idea in the bundle paper).
+
+Recall that $\omega$ are the shadow prices of the capacity $\varepsilon_b$.
+
+}
+\subsection{Network loading}
+Suppose each traveler class is sufficiently large, then we can use the expected path flow to represent the traffic flow aggregated over a bundle horizon. The traffic averaged on each day is thus 
+\begin{align}
+    x = \frac{Q}{T} \sum_{i\in\setI} \sum_{b\in\setB} q_{ib}\mathbb{E}_\mu[\Delta f^*_{ib}(\mu)]
+\end{align}
+
+\jl{
+If congestion and mode-specific capacity constraints are considered, a path-based formulation becomes necessary, but the resulting path-flow solution is generally not unique. If link flows are defined as the expectation over a stochastic distribution of such non-unique path flows, are the resulting link flows unique, and how can they be computed?
+}
+
+\subsection{Equilibrium}
+
+\jl{Should the goal of this section be a coupled equilibrium definition in its original form, or a further reduced single-object formulation such as a VI/fixed-point representation? What is the minimum level of theoretical properties that needs to be established before moving on to the bundle design problem?
+}
+
+\subsection{Bundle design}
+
+Assume that the subscription bundles are indexed in increasing order of service
+tier, i.e., $b=1,\dots,B$, where a larger index corresponds to a weakly
+higher-tier bundle. We also introduce a pay-as-you-go option, indexed by
+$b=0$, as the outside option of the subscription menu. Let
+\[
+\setB_0:=\{0\}\cup\setB .
+\]
+The pay-as-you-go option has no subscription fee and no included allowance:
+\[
+C_0=0,\qquad \varepsilon_0=0 .
+\]
+It provides a benchmark against which travelers compare the subscription
+bundles. In this way, travelers are not forced to subscribe to a bundle.
+
+Traveler class $i$ chooses an option with the minimum generalized
+cost; if multiple options attain the same minimum cost, the highest-index option
+is selected. Formally,
+\begin{align}
+\mathcal B_i^*(C,\varepsilon)
+&:=
+\arg\min_{b\in\setB_0} e_{ib}(C,\varepsilon),
+\label{eq:bundle-design-argmin}
+\\
+b_i^*(C,\varepsilon)
+&:=
+\max \mathcal B_i^*(C,\varepsilon).
+\label{eq:bundle-design-tiebreak}
+\end{align}
+Define the induced choice indicator
+\begin{align}
+y_{ib}(C,\varepsilon)
+=
+\begin{cases}
+1, & \text{if } b=b_i^*(C,\varepsilon),\\
+0, & \text{otherwise},
+\end{cases}
+\qquad i\in\setI,\ b\in\setB_0.
+\label{eq:bundle-design-indicator}
+\end{align}
+
+The platform earns revenue only from subscription fees. The expected subscription profit is
+\begin{align}
+\Pi(C,\varepsilon)
+=
+\sum_{i\in\setI} Q_i
+\sum_{b\in\setB}
+y_{ib}(C,\varepsilon)
+\left(C_b-k^\top\varepsilon_b\right).
+\label{eq:bundle-design-profit}
+\end{align}
+
+The bundle design problem is
+\begin{align}
+\max_{C,\varepsilon}\quad
+&
+\Pi(C,\varepsilon)
+\label{eq:bundle-design-obj}
+\\
+\text{s.t.}\quad
+&
+C_b\ge 0,\qquad \varepsilon_b\ge 0,
+&& b\in\setB,
+\label{eq:bundle-design-feasibility}
+\\
+&
+C_{b+1}\ge C_b,
+&& b=1,\dots,B-1,
+\label{eq:bundle-design-monotone-price}
+\\
+&
+\varepsilon_{b+1,m}\ge \varepsilon_{b,m},
+&& b=1,\dots,B-1,\ m=1,\dots,M,
+\label{eq:bundle-design-monotone-allowance}
+\\
+&
+C_0=0,\qquad \varepsilon_0=0.
+\label{eq:bundle-design-payg}
+\end{align}
+
+The monotonicity constraints impose a weak tier structure on the subscription
+menu: a higher-tier bundle has a weakly higher subscription price and weakly
+larger allowances in every mode. The pay-as-you-go option plays the role of an
+outside option and prevents the platform from increasing all subscription prices
+without changing travelers' choices.
+
+\jl{
+\subsection*{Bundle choice with logit}
+
+Here we treat the zero-allowance bundle as the outside option, so there is no need to
+introduce an additional alternative outside $\setB$.
+
+For each traveler class $i\in\setI$, define the generalized bundle cost of bundle
+$b\in\setB$ by
+\begin{align}
+e_{ib}
+=
+C_b+\mathbb E_{\mu\sim F_i}\!\left[\Phi_{ib}(\mu;\varepsilon_b,\rho_b)\right].
+\label{eq:bundle-logit-cost}
+\end{align}
+
+Instead of the deterministic minimum-cost rule, we consider an entropy-regularized
+bundle-choice problem:
+\begin{align}
+\min_{q_i\in\Delta(\setB)}
+\quad
+\sum_{b\in\setB} e_{ib} q_{ib}
++
+\frac{1}{\theta_i}\sum_{b\in\setB} q_{ib}\ln q_{ib},
+\label{eq:bundle-logit-problem}
+\end{align}
+where
+\[
+\Delta(\setB):=
+\left\{
+q_i\ge 0:\ \sum_{b\in\setB} q_{ib}=1
+\right\},
+\]
+and $\theta_i>0$ is the bundle-choice sensitivity parameter.
+
+The first-order condition yields the logit bundle shares
+\begin{align}
+q_{ib}
+=
+\frac{\exp(-\theta_i e_{ib})}
+{\sum_{b'\in\setB}\exp(-\theta_i e_{ib'})},
+\qquad \forall i\in\setI,\ b\in\setB.
+\label{eq:bundle-logit-share}
+\end{align}
+
+So the lower-level route-choice LP is unchanged for each bundle, and the bundle-choice
+layer is smoothed by the entropy term. In this way, bundle choice becomes unique and no
+separate tie-breaking rule is needed.
+
+The bundle design problem with logit bundle choice is therefore
+\begin{align}
+\max_{C,\varepsilon}\quad
+& \Pi(C,\varepsilon)
+\label{eq:bundle-design-problem-obj}
+\\
+\text{s.t.}\quad
+& e_{ib}
+=
+C_b+
+\mathbb E_{\mu\sim F_i}\!\left[\Phi_{ib}(\mu;\varepsilon_b,\rho_b)\right],
+\qquad \forall i\in\setI,\ b\in\setB,
+\label{eq:Bundle-design-link-1}
+\\
+& q_{ib}
+=
+\frac{\exp(-\theta_i e_{ib})}
+{\sum_{b'\in\setB}\exp(-\theta_i e_{ib'})},
+\qquad \forall i\in\setI,\ b\in\setB,
+\label{eq:Bundle-design-link-2}
+\\
+& C_b\ge 0,\qquad \varepsilon_b\ge 0,
+\qquad \forall b\in\setB,
+\label{eq:Bundle-design-feasibility}
+\\
+& C_{b+1}\ge C_b,
+\qquad \forall b=1,\dots,B-1,
+\label{eq:Bundle-design-monotone-price}
+\\
+& \varepsilon_{b+1,m}\ge \varepsilon_{b,m},
+\qquad \forall b=1,\dots,B-1,\ \forall m=1,\dots,M.
+\label{eq:Bundle-design-monotone-allowance}
+\end{align}
+}
+\subsection{Solution Algorithm}
+\textbf{For lexicographic version}
+\subsubsection{Branch-and-Bound over Allowance Menus with Region-Enumeration Pricing}
+
+For the lexicographic version, we discretize each allowance component and restrict
+\[
+\varepsilon_{b,m}\in\mathcal E_m,\qquad \forall b\in\setB,\ m=1,\dots,M,
+\]
+where each $\mathcal E_m$ is a finite candidate set. Together with the monotonicity constraints
+\eqref{eq:bundle-design-monotone-price}--\eqref{eq:bundle-design-monotone-allowance},
+the design problem \eqref{eq:bundle-design-obj} becomes a finite search over feasible
+allowance menus.
+
+For a fixed allowance menu \(\varepsilon\), the route-choice problem does not
+depend on the subscription price vector \(C\). Hence, for each traveler class
+\(i\in\setI\) and option \(b\in\setB_0\), define
+\[
+\bar\Phi_{ib}^{\varepsilon}
+:=
+\mathbb E_{\mu\sim F_i}
+\!\left[\Phi_{ib}(\mu;\varepsilon_b,\rho_b)\right].
+\]
+This quantity is a constant in the pricing problem. By
+\eqref{eq:bundle-generalized-cost-payg},
+\[
+e_{ib}(C;\varepsilon)
+=
+C_b+\bar\Phi_{ib}^{\varepsilon},
+\qquad i\in\setI,\ b\in\setB_0 .
+\]
+Hence, the generalized bundle cost is affine in the price vector \(C\).
+Under the lexicographic choice rule
+\eqref{eq:bundle-design-argmin}--\eqref{eq:bundle-design-tiebreak},
+traveler class \(i\) switches between two options \(b\) and \(b'\) only when
+\[
+e_{ib}(C;\varepsilon)=e_{ib'}(C;\varepsilon)
+\iff
+C_b-C_{b'}
+=
+\bar\Phi_{ib'}^{\varepsilon}
+-
+\bar\Phi_{ib}^{\varepsilon}.
+\]
+
+Therefore, all pairwise bundle-indifference conditions induce a finite collection of
+hyperplanes in the feasible price region. These hyperplanes partition the price space
+into polyhedral faces, and on the relative interior of each face the bundle-selection
+indicator \(y_{ib}(C,\varepsilon)\) in \eqref{eq:bundle-design-indicator} is fixed.
+
+Once the bundle assignment is fixed, say \(b_i^*(C,\varepsilon)=\alpha_i\) on a
+given face, the profit function \eqref{eq:bundle-design-profit} reduces to a linear
+function of \(C\). The corresponding regional pricing problem can be written, in its
+closed form, as
+\begin{align}
+V_{\alpha}(\varepsilon)
+:=
+\max_{C}\quad
+&
+\sum_{i\in\setI:\,\alpha_i\in\setB}
+Q_i
+\left(C_{\alpha_i}-k^\top\varepsilon_{\alpha_i}\right)
+\label{eq:fixed-assignment-pricing-lp}
+\\
+\text{s.t.}\quad
+&
+C_{\alpha_i}+\bar\Phi_{i\alpha_i}^{\varepsilon}
+\le
+C_b+\bar\Phi_{ib}^{\varepsilon},
+&& i\in\setI,\ b\in\setB_0,
+\notag
+\\
+&
+C_b\ge 0,
+&& b\in\setB,
+\notag
+\\
+&
+C_{b+1}\ge C_b,
+&& b=1,\dots,B-1,
+\notag
+\\
+&
+C_0=0.
+\notag
+\end{align}
+Thus, for each supportable assignment pattern \(\alpha\), the regional pricing
+problem is a linear program.
+
+For the lexicographic rule, the strict assignment region is obtained by allowing
+ties with lower-index options but not with higher-index options. Equivalently, after
+solving the closed LP \eqref{eq:fixed-assignment-pricing-lp}, the induced assignment is
+verified using the tie-breaking rule in \eqref{eq:bundle-design-tiebreak}. Candidate
+solutions that do not induce the prescribed assignment are assigned to the corresponding
+lexicographic face.
+
+This yields an exact pricing oracle for any fixed allowance menu: enumerate all relevant
+faces of the induced price partition, or equivalently all supportable bundle-assignment
+patterns \(\alpha\), solve \eqref{eq:fixed-assignment-pricing-lp} for each of them, verify
+lexicographic consistency when needed, and select the best feasible solution. Since each
+fixed-menu pricing problem is solved globally in this way, the overall discretized
+lexicographic design problem can be solved globally by combining the pricing oracle
+with either exhaustive menu enumeration or branch-and-bound over feasible menus.
+
+The role of branch-and-bound is to avoid enumerating all allowance menus explicitly.
+Each node of the search tree corresponds to a partially specified allowance menu satisfying
+the monotonicity conditions in \eqref{eq:bundle-design-monotone-allowance}. Bounds are
+computed from valid relaxations of the corresponding pricing value, while a complete
+menu is evaluated exactly by the fixed-menu pricing oracle above. Since the discretized
+menu space is finite and every complete menu can be evaluated globally, the resulting
+algorithm returns a globally optimal solution to the discretized lexicographic bundle
+design problem.
+
+\jl{
+
+\textbf{Ordered structure}
+
+If, in addition, traveler classes can be ordered by first-order stochastic dominance of
+trip-frequency distributions, and this ordering implies an ordered segmentation structure
+in bundle choice, then the inner pricing oracle can be accelerated further. In that case,
+it suffices to enumerate ordered assignment patterns rather than arbitrary ones, which can
+substantially reduce the number of candidate faces while preserving exactness under the
+ordering assumptions.
+}
+
+\jl{
+
+\textbf{Problem of tie-breaking}
+
+The regional LP analysis also reveals a technical issue with the current
+lexicographic tie-breaking rule. Although the rule makes bundle choice
+single-valued, some assignment regions become half-open. Hence, the supremum
+of the upper-level profit over one assignment region may be attained only on
+a boundary hyperplane, while that boundary is assigned to another assignment
+under the tie-breaking rule. As a result, the upper-level profit may fail to
+attain its supremum.
+
+To ensure existence of an optimal solution without changing the tie-breaking
+rule, one may impose compactness of the menu-design set together with a
+profit-compatibility condition for the lexicographic rule, requiring that the
+bundle selected on any tie boundary yields a weakly larger platform margin
+than the other tied bundles.
+
+Or we can replace the lexicographic rule with a
+platform-favorable tie-breaking rule. Under this rule, when a traveler class
+is indifferent among several minimum-cost options, the platform selects the
+one that yields the largest platform margin. This can be modeled by keeping
+the bundle-choice variables in the upper-level problem and imposing only the
+minimum-cost support condition:
+\begin{align}
+\max_{C,\varepsilon,q,\Pi}\quad
+&
+\sum_{i\in\setI} Q_i
+\sum_{b\in\setB}
+q_{ib}\bigl(C_b-k^\top \varepsilon_b\bigr)
+\label{eq:platform-favorable-design}
+\\
+\text{s.t.}\quad
+&
+q_i\in \Delta(\setB),
+&& \forall i\in\setI,
+\\
+&
+e_{ib}-\Pi_i\ge 0,
+&& \forall i\in\setI,\ b\in\setB,
+\\
+&
+q_{ib}\bigl(e_{ib}-\Pi_i\bigr)=0,
+&& \forall i\in\setI,\ b\in\setB,
+\\
+&
+\text{menu feasibility constraints.}
+\end{align}
+The complementarity condition ensures that a class can be assigned only to
+bundles attaining its minimum generalized cost. Since the assignment variables
+are chosen in the platform's objective, any tie among minimum-cost bundles is
+resolved in favor of the bundle with the largest platform margin.
+
+For a fixed allowance menu, this rule is also compatible with the regional LP
+oracle: one may enumerate class-to-bundle assignments and impose only that the
+assigned bundle is minimum-cost. Each candidate assignment then yields a linear
+pricing problem.
+}
+\subsubsection{Alternating Optimization}
+
+\jl{
+\textbf{For logit version}
+\subsubsection*{Multi-Start Projected Gradient Method}
+\subsubsection*{Epigraph Outer Approximation with Sequential Nonlinear Programming}
+}
+
+\kz{
+\subsection{Notes}
+\begin{itemize}
+    \item Although path and bundle choice probabilities are introduced, the optimality conditions are based on the simple setting of mixed strategies, without considering random utility.
+    \item The statistical metric in bundle choice is set to expectation for the baseline case, while it's more interesting to explore metrics reflecting robustness/reliability, e.g., ensuring that the bundle is sufficient to cover most possibly realized trips. 
+    \item Aggregate link flow to be double-checked. 
+    \item The equilibrium condition to be derived. Not sure if it corresponds to or can be transformed into any existing one. 
+\end{itemize}
+}
+\newpage
+\small
+\Urlmuskip=0mu plus 1mu\relax
+\bibliographystyle{abbrvnat}
+\bibliography{ref}
+\end{document}
