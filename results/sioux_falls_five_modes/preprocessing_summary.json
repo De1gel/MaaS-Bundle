@@ -1,0 +1,15 @@
+{
+  "cache_path": "results/sioux_falls_five_modes/dual_vertices.npz",
+  "geometry_signature": "cec9189194b4e9e93c0a112f5167b1e2186a335ff1fab1e420db992a20f6b3f3",
+  "positive_od_pairs": 528,
+  "traveler_types": 1056,
+  "mode_count": 5,
+  "total_vertices": 285910,
+  "minimum_vertices": 96,
+  "maximum_vertices": 914,
+  "complete": true,
+  "preprocessing_seconds": 57.39886225000373,
+  "cache_bytes": 2675957,
+  "cache_sha256": "fb2b6c554370a7e146f2756393553d9e7e28dd25ae9d7cea1da486309347e93b",
+  "verified_load_seconds": 0.04991429099754896
+}

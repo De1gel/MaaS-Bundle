@@ -14,6 +14,27 @@
         "isDefault": true
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Auto commit and push (10 min)",
+      "type": "process",
+      "command": "/usr/bin/python3",
+      "args": ["-u", "${workspaceFolder}/scripts/auto-git-sync.py", "--watch", "--interval", "600"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen",
+        "instanceLimit": 1
+      },
+      "presentation": {
+        "reveal": "silent",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "problemMatcher": []
     }
   ]
 }

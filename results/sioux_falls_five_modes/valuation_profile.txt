@@ -1,0 +1,26 @@
+         1774506 function calls in 0.409 seconds
+
+   Ordered by: cumulative time
+   List reduced from 82 to 18 due to restriction <18>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.002    0.002    0.410    0.410 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/design/problem.py:163(evaluate_valuations)
+     3168    0.036    0.000    0.407    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/route_value.py:137(expected_valuation)
+     3168    0.002    0.000    0.276    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/route_value.py:97(for_allowance)
+     3168    0.024    0.000    0.274    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/piecewise_linear.py:73(build_piecewise_phi)
+     3168    0.158    0.000    0.183    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/piecewise_linear.py:155(_best_line_per_slope)
+     3168    0.012    0.000    0.026    0.000 /opt/homebrew/Caskroom/miniforge/base/envs/maas-bundle/lib/python3.12/site-packages/numpy/_core/numeric.py:2320(isclose)
+     3168    0.017    0.000    0.024    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/piecewise_linear.py:184(_build_upper_hull)
+    41670    0.022    0.000    0.022    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/demand_distribution.py:200(_validate_interval)
+   860898    0.021    0.000    0.021    0.000 {built-in method builtins.abs}
+    25348    0.009    0.000    0.019    0.000 /opt/homebrew/Caskroom/miniforge/base/envs/maas-bundle/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:86(_wrapreduction_any_all)
+    15842    0.003    0.000    0.017    0.000 /opt/homebrew/Caskroom/miniforge/base/envs/maas-bundle/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:2586(all)
+    10024    0.004    0.000    0.014    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/demand_distribution.py:154(first_moment)
+     3168    0.006    0.000    0.013    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/route_value.py:29(__post_init__)
+    10024    0.004    0.000    0.013    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/demand_distribution.py:142(probability)
+     3168    0.007    0.000    0.012    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/piecewise_linear.py:137(_cumulative_integrals)
+    10811    0.003    0.000    0.010    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/demand_distribution.py:49(probability)
+    10811    0.003    0.000    0.010    0.000 /Users/jiali/Project/MaaS-Bundle/src/maas_bundle/oracle/demand_distribution.py:59(first_moment)
+   194640    0.007    0.000    0.007    0.000 {method 'append' of 'list' objects}
+
+

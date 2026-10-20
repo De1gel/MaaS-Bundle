@@ -167,6 +167,13 @@ solver vector 只包含设计套餐 \(b=1,\ldots,B\)，不包含固定 PAYG 变�
 
 不能把 solver 返回的原生 `success` 或 `optimality` 直接解释为数学上的局部最优证明。regional adapter 会根据 active regional inequalities 与 active lower bounds，通过非负最小二乘拟合 KKT multipliers 并检查 stationarity；只有独立可行性/KKT 检查通过时才生成统一的 `SUCCESS` 状态，solver 原生状态保留为诊断。首次 SLSQP 验收失败时，adapter 才依次执行可行回溯、一次 SLSQP restart 和 `trust-constr` fallback；首次成功时不产生额外 NLP 成本。后续流程直接信任这个 contract，不重复检查。一般非线性 regional problem 的局部最优性仍依赖 solver 能力及论文中的 regularity/SOSC 假设，主程序不重复实现二阶 NLP 验证器。规模测试采用可解析的仿射实例，其目标存在独立全局上界，因此匹配已知解时可标记为 `global`（自然也意味着 local optimum）。
 
+探索模式 `ScipyRegionalSolver(check_kkt=False)` 跳过独立 NNLS/KKT 计算和额外的原生
+`optimality` 阈值门槛，以原生 `success` 加可行性复核接受区域解。重启、回退、
+CG 锚点和近点复核均继承该策略；`kkt_checked=false`，驻点指标为 `null`。
+`CONSISTENT_CANDIDATE` 此时只表示通过所选探索策略与算法一致性检查，不能解释为
+KKT 或局部最优证书。五模式 Sioux Falls 默认采用该策略，通用 adapter 默认仍为严格模式。
+
+
 普通/详细 pytest 模式在终端汇总 metrics，`-q` 模式保持安静。默认测试保持快速；运行规模套件使用：
 
 ```bash
@@ -312,3 +319,38 @@ PBD 施加 simplex、\(\sum_be_{ib}q_{ib}\le\Pi_i\)、\(\Pi_i\le e_{ib}\)，再�
 - 路径 LP、对偶多面体、\(G\)、choice constraints 和 full separation 不因供给成本推广而改变。
 - `tests/design/test_cost.py` 已覆盖线性兼容、非线性梯度差分、套餐特定成本、初值与利润验收及已知最优解。现有 two-route/Sioux Falls 默认仍验证线性特例。
 - 一般成本的 `trust-constr` 目标 Hessian 使用 BFGS，线性成本保留零 Hessian；数值差分和目标非凸性可能增加求解时间，接口推广不等于性能或全局最优性保证。
+
+
+## 受限 NLP 的估值开销（2026-10-19）
+
+`RestrictedRegionalProblem` 从 active choice constraints 构造唯一旅客子集和显式行映射，
+调用 `evaluate_valuations_for_travelers` 获得紧凑的估值表，约束值和 Jacobian 共用该表。
+原始旅客编号不会与紧凑行号混用。无 choice constraints 时不评估原生 route oracle。
+
+原生 `BundleDesignProblem` 在每个旅客/套餐上缓存最后一次精确额度字节对应的
+`RouteValuation`。价格不进入缓存键，额度不舍入；PAYG 因额度始终为零而持续复用。
+该内部缓存不参与 dataclass 相等性或构造，`dataclasses.replace` 创建独立的空缓存。
+对覆盖 `evaluate_valuations` 的自定义 problem，子集 API 从其全表结果选择所需行，
+保留现有合成测试和自定义适配器的计算语义。
+
+全量 separation 和 optimistic assignment 仍使用完整旅客表。性能测试单列计算量和耗时；
+正确性测试检查非连续旅客编号、缓存失效、价格单独变化、PAYG 复用、全量检查覆盖，
+并将实际五模式约束值和梯度与无缓存全量实现逐点对照。
+
+## SLSQP 重试与实验继续搜索（2026-10-20）
+
+`ScipyRegionalSolver.slsqp_restarts` 控制首次求解之外的重试次数，
+`enable_fallback` 单独控制跨求解器回退。通用 adapter 保持一次重试及允许回退的
+兼容默认值；Sioux Falls 的默认设置为四次重试、禁用回退、关闭额外 KKT 验收。
+首次求解成功立即返回。首次重试使用修复后的迭代点，之后从最好已知的区域可行点
+做确定性小扰动并回溯恢复可行性。启用 `numerical_constraint_recovery` 时，最后
+一次重试使用数值约束 Jacobian，仍调用 SLSQP，并计入既定重试次数。
+`attempt_history` 保存每次尝试的原生退出码、信息、残差、耗时和起点。
+
+有限次内层重试仍失败时，库函数保留失败诊断。预算控制的
+`scripts/run-sioux-falls-five-mode.py` 则从所有已记录 NLP 终点中真实利润最高的
+可行菜单重新计算 optimistic assignment，再次调用区域搜索。默认最多三次此类
+搜索重启，共享原总时间预算；不把失败尝试当作已收敛结果，也不随机指定 assignment。
+`search_attempts` 分别保存各搜索阶段的起点、状态、区域轨迹及 NLP 范围。
+阶段之间不拼接成一条已认证的单调区域轨迹；最好可行菜单单独保护。
+该外层数值恢复属于预算实验驱动层，不改变 `solve_primal` 的失败返回 contract。

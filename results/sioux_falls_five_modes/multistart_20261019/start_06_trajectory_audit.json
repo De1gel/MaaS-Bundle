@@ -1,0 +1,106 @@
+{
+  "matches_original_best_menu": true,
+  "all_regions_accepted": true,
+  "all_true_profit_increases_strictly_positive": true,
+  "initial_profit": 8.674327045215776,
+  "maximum_profit_recomputation_error": 0.0,
+  "minimum_profit_increase": 0.0016496015180500478,
+  "records": [
+    {
+      "region": 1,
+      "true_profit": 15.395103029172237,
+      "increase": 6.720775983956461,
+      "regional_objective": 15.370368157451626,
+      "nlp_calls": 6,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 2,
+      "true_profit": 15.575357577632383,
+      "increase": 0.18025454846014632,
+      "regional_objective": 15.550964445398353,
+      "nlp_calls": 4,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 3,
+      "true_profit": 15.708147147480124,
+      "increase": 0.13278956984774126,
+      "regional_objective": 15.578181807168125,
+      "nlp_calls": 4,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 4,
+      "true_profit": 15.827999705981963,
+      "increase": 0.1198525585018384,
+      "regional_objective": 15.792103509244246,
+      "nlp_calls": 2,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 5,
+      "true_profit": 16.022287458440264,
+      "increase": 0.1942877524583011,
+      "regional_objective": 15.994378982543276,
+      "nlp_calls": 4,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 6,
+      "true_profit": 16.143621966036527,
+      "increase": 0.12133450759626285,
+      "regional_objective": 16.07986124002927,
+      "nlp_calls": 2,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 7,
+      "true_profit": 16.2338925501154,
+      "increase": 0.09027058407887267,
+      "regional_objective": 16.21799491682279,
+      "nlp_calls": 2,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 8,
+      "true_profit": 16.304230719826425,
+      "increase": 0.07033816971102524,
+      "regional_objective": 16.27684653086523,
+      "nlp_calls": 2,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 9,
+      "true_profit": 16.827869712165935,
+      "increase": 0.5236389923395102,
+      "regional_objective": 16.332838128463198,
+      "nlp_calls": 2,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 10,
+      "true_profit": 16.885611940654304,
+      "increase": 0.05774222848836885,
+      "regional_objective": 16.8819516360069,
+      "nlp_calls": 3,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 11,
+      "true_profit": 16.973867067878544,
+      "increase": 0.08825512722424023,
+      "regional_objective": 16.898047014622517,
+      "nlp_calls": 3,
+      "recomputation_error": 0.0
+    },
+    {
+      "region": 12,
+      "true_profit": 16.975516669396594,
+      "increase": 0.0016496015180500478,
+      "regional_objective": 16.975516669396594,
+      "nlp_calls": 4,
+      "recomputation_error": 0.0
+    }
+  ]
+}

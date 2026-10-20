@@ -55,6 +55,9 @@ def run_two_route_example(
     solver = ScipyRegionalSolver(
         "SLSQP",
         options={"maxiter": settings.nlp_max_iterations, "ftol": settings.nlp_ftol},
+        slsqp_restarts=settings.slsqp_restarts,
+        enable_fallback=settings.solver_fallback,
+        numerical_constraint_recovery=settings.numerical_constraint_recovery,
     )
     return solve_primal(
         build_two_route_problem(),
@@ -76,6 +79,9 @@ def run_two_route_multistart(
     solver = ScipyRegionalSolver(
         "SLSQP",
         options={"maxiter": settings.nlp_max_iterations, "ftol": settings.nlp_ftol},
+        slsqp_restarts=settings.slsqp_restarts,
+        enable_fallback=settings.solver_fallback,
+        numerical_constraint_recovery=settings.numerical_constraint_recovery,
     )
     problem = build_two_route_problem()
     return run_multistart(
@@ -100,6 +106,9 @@ def compare_two_route(
     solver = ScipyRegionalSolver(
         "SLSQP",
         options={"maxiter": settings.nlp_max_iterations, "ftol": settings.nlp_ftol},
+        slsqp_restarts=settings.slsqp_restarts,
+        enable_fallback=settings.solver_fallback,
+        numerical_constraint_recovery=settings.numerical_constraint_recovery,
     )
     primal = solve_primal(
         problem,

@@ -1,0 +1,91 @@
+{
+  "settings": {
+    "wall_seconds": 180,
+    "nlp_max_iterations": 2000,
+    "max_regions": 30,
+    "recovery": true,
+    "slsqp_restarts": 4,
+    "search_restarts": 3,
+    "numerical_constraint_recovery": true,
+    "solver_fallback": false,
+    "check_kkt": false
+  },
+  "all_three_recovered": true,
+  "all_only_slsqp": true,
+  "independent_profit_check_passed": true,
+  "rows": [
+    {
+      "start": 78,
+      "seed": 20261095,
+      "old_status": "regional_solve_failed",
+      "new_status": "consistent_candidate",
+      "valid": true,
+      "initial_profit": 1.757145103898973,
+      "final_profit": 14.200516853163949,
+      "best_observed_profit": 14.200516853163949,
+      "profit_recomputation_error": 0.0,
+      "search_attempts": 2,
+      "total_regions": 2,
+      "final_stage_regions": 1,
+      "nlp_calls": 5,
+      "backend_attempts": 10,
+      "max_attempts_per_nlp": 5,
+      "elapsed_seconds": 70.3361600000062,
+      "source": "start_78.json",
+      "stage_initial_profits": [
+        1.757145103898973,
+        13.912509976217876
+      ]
+    },
+    {
+      "start": 81,
+      "seed": 20261098,
+      "old_status": "regional_solve_failed",
+      "new_status": "consistent_candidate",
+      "valid": true,
+      "initial_profit": 8.321969624980262,
+      "final_profit": 16.76101726294872,
+      "best_observed_profit": 16.76101726294872,
+      "profit_recomputation_error": 0.0,
+      "search_attempts": 2,
+      "total_regions": 5,
+      "final_stage_regions": 2,
+      "nlp_calls": 11,
+      "backend_attempts": 19,
+      "max_attempts_per_nlp": 5,
+      "elapsed_seconds": 28.09301320798113,
+      "source": "start_81.json",
+      "stage_initial_profits": [
+        8.321969624980262,
+        16.64838598746979
+      ]
+    },
+    {
+      "start": 85,
+      "seed": 20261102,
+      "old_status": "regional_solve_failed",
+      "new_status": "consistent_candidate",
+      "valid": true,
+      "initial_profit": 8.271962863794979,
+      "final_profit": 15.323380503976981,
+      "best_observed_profit": 15.915158906690747,
+      "profit_recomputation_error": 0.0,
+      "search_attempts": 1,
+      "total_regions": 14,
+      "final_stage_regions": 14,
+      "nlp_calls": 41,
+      "backend_attempts": 44,
+      "max_attempts_per_nlp": 4,
+      "elapsed_seconds": 28.054542958998354,
+      "source": "start_85.json",
+      "stage_initial_profits": [
+        8.271962863794979
+      ]
+    }
+  ],
+  "tests": {
+    "passed": 335,
+    "skipped_opt_in_scale": 3,
+    "ruff": "passed"
+  }
+}

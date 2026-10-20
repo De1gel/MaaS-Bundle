@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import sys
 from collections.abc import Sequence
 from time import perf_counter
 
@@ -25,6 +26,10 @@ from maas_bundle.benchmarks.settings import (
     DEFAULT_RANDOM_SEED,
     DEFAULT_SIOUX_FALLS_SETTINGS,
     DEFAULT_START_COUNT,
+)
+from maas_bundle.benchmarks.sioux_falls_preprocessing import (
+    DEFAULT_VERTEX_CACHE,
+    preprocess_sioux_falls_oracles,
 )
 from maas_bundle.benchmarks.stylized_regional import (
     StylizedRegionalSettings,
@@ -55,6 +60,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     subcommands = parser.add_subparsers(dest="command", required=True)
     example = subcommands.add_parser("example", help="run a bundled reproducible example")
     example.add_argument("name", choices=("two-route", "sioux-falls", "souxf"))
+    example.add_argument("--oracle-cache", help="load previously saved Sioux Falls vertices")
+    preprocess = subcommands.add_parser(
+        "preprocess", help="save complete lower-level dual vertices"
+    )
+    preprocess.add_argument("name", choices=("sioux-falls", "souxf"))
+    preprocess.add_argument("--output", default=DEFAULT_VERTEX_CACHE)
     compare = subcommands.add_parser("compare", help="compare primal and enumeration")
     compare.add_argument("name", choices=("two-route",))
     multistart = subcommands.add_parser(
@@ -66,6 +77,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     multistart.add_argument("--seed", type=int)
     multistart.add_argument("--output-dir")
     multistart.add_argument("--max-nlp-iterations", type=int, default=500)
+    multistart.add_argument("--oracle-cache", help="load previously saved Sioux Falls vertices")
     oracle = subcommands.add_parser("oracle", help="plot the A1 stylized route-value oracle")
     oracle.add_argument("name", choices=("stylized",))
     oracle.add_argument("--output-dir", default="results/stylized_a1")
@@ -79,6 +91,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     regional.add_argument("--max-nlp-iterations", type=int, default=500)
     regional.add_argument("--trajectory-start", choices=("switch", "baseline"), default="switch")
     arguments = parser.parse_args(argv)
+
+    if arguments.command == "preprocess":
+        summary = preprocess_sioux_falls_oracles(
+            arguments.output, progress=lambda message: print(message, file=sys.stderr, flush=True)
+        )
+        print(json.dumps(summary, indent=2))
+        return 0 if summary["complete"] else 1
+
+    if getattr(arguments, "oracle_cache", None) and arguments.name not in {"sioux-falls", "souxf"}:
+        parser.error("--oracle-cache is only supported for Sioux Falls")
 
     if arguments.command == "multistart" and arguments.name == "stylized":
         if arguments.starts not in (None, 26):
@@ -178,7 +200,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0 if diagnostics.valid else 1
 
     if arguments.command == "example" and arguments.name in {"sioux-falls", "souxf"}:
-        payload = _run_sioux_falls()
+        payload = (
+            _run_sioux_falls(oracle_cache_path=arguments.oracle_cache)
+            if arguments.oracle_cache
+            else _run_sioux_falls()
+        )
         print(json.dumps(payload, indent=2))
         return 0 if payload["valid"] else 1
 
@@ -193,7 +219,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0 if payload["consistent_starts"] else 1
 
     if arguments.command == "multistart" and arguments.name in {"sioux-falls", "souxf"}:
-        payload = _multistart_sioux_falls(arguments.starts, arguments.seed)
+        payload = (
+            _multistart_sioux_falls(
+                arguments.starts, arguments.seed, oracle_cache_path=arguments.oracle_cache
+            )
+            if arguments.oracle_cache
+            else _multistart_sioux_falls(arguments.starts, arguments.seed)
+        )
         print(json.dumps(payload, indent=2))
         return 0 if payload["consistent_starts"] else 1
 
@@ -215,9 +247,11 @@ def _multistart_two_route(start_count: int, seed: int) -> dict[str, object]:
     }
 
 
-def _run_sioux_falls() -> dict[str, object]:
+def _run_sioux_falls(*, oracle_cache_path=None) -> dict[str, object]:
     started = perf_counter()
-    diagnostics = run_sioux_falls_example()
+    diagnostics = run_sioux_falls_example(
+        **({"oracle_cache_path": oracle_cache_path} if oracle_cache_path else {})
+    )
     candidate = diagnostics.candidate
     return {
         "example": "sioux-falls",
@@ -244,9 +278,15 @@ def _run_sioux_falls() -> dict[str, object]:
     }
 
 
-def _multistart_sioux_falls(start_count: int, seed: int) -> dict[str, object]:
+def _multistart_sioux_falls(
+    start_count: int, seed: int, *, oracle_cache_path=None
+) -> dict[str, object]:
     started = perf_counter()
-    result = run_sioux_falls_multistart(start_count, seed=seed)
+    result = run_sioux_falls_multistart(
+        start_count,
+        seed=seed,
+        **({"oracle_cache_path": oracle_cache_path} if oracle_cache_path else {}),
+    )
     best = result.best_run
     regions = []
     for summary in result.region_summaries():

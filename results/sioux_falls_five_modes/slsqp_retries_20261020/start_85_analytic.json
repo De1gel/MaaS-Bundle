@@ -1,0 +1,1888 @@
+{
+  "experiment": {
+    "parameters": {
+      "version": "sioux-falls-monthly-usd-overlapping-five-mode-v3",
+      "segment_shares": [
+        0.45,
+        0.55
+      ],
+      "value_of_time_usd_per_minute": [
+        0.18,
+        0.32
+      ],
+      "preference_usd_per_link_use": [
+        [
+          0.02,
+          0.04,
+          0.06,
+          0.08,
+          0.1
+        ],
+        [
+          0.08,
+          0.065,
+          0.05,
+          0.04,
+          0.03
+        ]
+      ],
+      "travel_time_factors": [
+        1.5,
+        1.0,
+        2.5,
+        0.65,
+        0.85
+      ],
+      "payg_usd_per_link_use": [
+        0.3,
+        0.6,
+        0.1,
+        1.2,
+        0.9
+      ],
+      "provision_usd_per_link_use": [
+        0.05,
+        0.08,
+        0.02,
+        0.15,
+        0.1
+      ],
+      "low_frequency_trips_per_month": [
+        8.0,
+        20.0
+      ],
+      "high_frequency_trips_per_month": [
+        20.0,
+        32.0,
+        44.0
+      ],
+      "initial_prices_usd_per_month": [
+        0.0,
+        20.0,
+        40.0
+      ],
+      "initial_allowances_link_uses_per_month": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          16.0,
+          16.0,
+          4.0,
+          6.0,
+          6.0
+        ],
+        [
+          40.0,
+          40.0,
+          12.0,
+          18.0,
+          18.0
+        ]
+      ],
+      "sampled_price_bounds_usd_per_month": [
+        4.0,
+        64.0
+      ],
+      "sampled_basic_allowance_bounds_link_uses_per_month": [
+        0.0,
+        48.0
+      ],
+      "sampled_premium_increment_bounds_link_uses_per_month": [
+        0.0,
+        72.0
+      ]
+    },
+    "billing_period": "month",
+    "currency": "USD",
+    "units": {
+      "free_flow_time": "minute",
+      "source_free_flow_time": "0.01 hour",
+      "prices": "USD/person/month",
+      "allowances": "passenger-link traversals/person/month",
+      "trip_frequency": "one-way OD trips/person/month",
+      "mode_usage": "passenger-link traversals/OD trip",
+      "normalized_profit": "USD/person/month",
+      "true_profit": "USD/person/month",
+      "traveler_weights": "dimensionless population-share proxy",
+      "source_od_flow_and_capacity": "TNTP scaled flow units",
+      "solve_time_seconds": "second"
+    },
+    "source_time_to_minutes": 0.6,
+    "mode_order": [
+      "bus",
+      "metro",
+      "bike",
+      "ride_hailing",
+      "car_sharing"
+    ],
+    "mode_availability": "all five modes share every physical link; synthetic travel times and costs",
+    "od_weighting": "segment share times normalized source OD flow; not monthly population",
+    "synthetic_parameters": true,
+    "path_scope": "all multimodal routes; complete vertex separation by shortest paths"
+  },
+  "oracle_cache": "results/sioux_falls_five_modes/dual_vertices.npz",
+  "traveler_types": 1056,
+  "upper_variables": 12,
+  "settings": {
+    "wall_seconds": 180,
+    "nlp_max_iterations": 2000,
+    "max_regions": 30,
+    "recovery": true,
+    "slsqp_restarts": 4,
+    "solver_fallback": false,
+    "check_kkt": false,
+    "seed": 20261102
+  },
+  "initial_profit": 8.271962863794979,
+  "initial_prices": [
+    0.0,
+    29.75305860325465,
+    44.73967259947548
+  ],
+  "initial_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      39.31488898830034,
+      39.86193270645322,
+      19.10796173665578,
+      8.852433392101567,
+      25.269241085226
+    ],
+    [
+      107.33421313812039,
+      74.67838033318641,
+      57.7618273823038,
+      56.69361247871783,
+      61.347758049421415
+    ]
+  ],
+  "initial_assignment_sha256": "745166c93f6c4d579f6c19c99ff02c5cde27d47cf1f6e9a54480a1f2b45f6ca8",
+  "status": "consistent_candidate",
+  "valid": true,
+  "nlp_attempts": [
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.5391422499960754,
+      "iterations": 147,
+      "objective": 16.31284594935484,
+      "max_violation": 5.1457504923746455e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 18,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.3982994999969378,
+      "iterations": 121,
+      "objective": 15.039405216665216,
+      "max_violation": 9.379164112033322e-13,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 21,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.5677193749870639,
+      "iterations": 139,
+      "objective": 14.500352841602545,
+      "max_violation": 1.0459189070388675e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 23,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.4086050000041723,
+      "iterations": 107,
+      "objective": 14.29915127044825,
+      "max_violation": 1.2251177849975647e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 24,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.43788804099312983,
+      "iterations": 90,
+      "objective": 15.227028808002354,
+      "max_violation": 8.483880264975596e-12,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 24,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.32175954201375134,
+      "iterations": 63,
+      "objective": 14.723526643027872,
+      "max_violation": 1.5631940186722204e-13,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 25,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.2348980000242591,
+      "iterations": 57,
+      "objective": 14.663558513753369,
+      "max_violation": 6.529887741635321e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 27,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.350382125005126,
+      "iterations": 90,
+      "objective": 18.82773676875632,
+      "max_violation": 3.780087354243733e-12,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 22,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.3035324169904925,
+      "iterations": 58,
+      "objective": 14.755847884647192,
+      "max_violation": 1.1186784831807017e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 25,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.39871279199724086,
+      "iterations": 59,
+      "objective": 14.752665250208658,
+      "max_violation": 6.966160981392022e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 26,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.6690413750184234,
+      "iterations": 136,
+      "objective": 15.774114150815063,
+      "max_violation": 1.4787815416639205e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 18,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.26089054098702036,
+      "iterations": 73,
+      "objective": 15.223758465187576,
+      "max_violation": 1.1510792319313623e-12,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 22,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.1338208749948535,
+      "iterations": 37,
+      "objective": 14.77521193416297,
+      "max_violation": 2.219024963778793e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 24,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.057416916999500245,
+      "iterations": 16,
+      "objective": 14.7693854376867,
+      "max_violation": 1.1385736797819845e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 25,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 2.4840070829959586,
+      "iterations": 230,
+      "objective": 17.80074685415743,
+      "max_violation": 0.0,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 18,
+      "variables": 12,
+      "attempts": 4,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "recovery chain [scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:success]; final: Optimization terminated successfully",
+      "attempt_history": [
+        {
+          "solver": "scipy-SLSQP",
+          "status": "infeasible",
+          "time_seconds": 0.96758199998294,
+          "iterations": 72,
+          "objective": 17.839699154161487,
+          "max_violation": 2.352393528326502e-05,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 18,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 8,
+          "message": "Positive directional derivative for linesearch",
+          "initial_prices": [
+            0.0,
+            25.378170232758684,
+            60.762760881776835
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              43.88500410473,
+              24.10139986309014,
+              16.2232372499657,
+              7.141758685240776,
+              1.6607035596338384e-14
+            ],
+            [
+              0.0,
+              1.5436888628824903,
+              1.483327292140421e-17,
+              82.14068251732665,
+              24.135541583649633
+            ]
+          ]
+        },
+        {
+          "solver": "scipy-SLSQP",
+          "status": "infeasible",
+          "time_seconds": 0.6229271249903832,
+          "iterations": 60,
+          "objective": 17.780632431312824,
+          "max_violation": 1.4559666794866644e-05,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 18,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 8,
+          "message": "Positive directional derivative for linesearch",
+          "initial_prices": [
+            0.0,
+            25.378170776195887,
+            60.762760983635125
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              43.88500279457762,
+              24.10139942431031,
+              16.22323717085399,
+              7.141759971841493,
+              1.7477137637624964e-07
+            ],
+            [
+              4.5182556437572495e-08,
+              1.5436889601767907,
+              4.0100042238479704e-17,
+              82.14068262641284,
+              24.135541688026436
+            ]
+          ]
+        },
+        {
+          "solver": "scipy-SLSQP",
+          "status": "infeasible",
+          "time_seconds": 0.5256277500011493,
+          "iterations": 52,
+          "objective": 17.785831525346705,
+          "max_violation": 3.595712882997759e-07,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 18,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 8,
+          "message": "Positive directional derivative for linesearch",
+          "initial_prices": [
+            0.0,
+            25.378170233995778,
+            60.76276099464271
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              43.885004040337286,
+              24.10139990767781,
+              16.223237237377898,
+              7.141758682982817,
+              1.3512962959567812e-09
+            ],
+            [
+              0.0,
+              1.5436888631981736,
+              1.4833242338948047e-17,
+              82.14068260319321,
+              24.13554158744576
+            ]
+          ]
+        },
+        {
+          "solver": "scipy-SLSQP",
+          "status": "success",
+          "time_seconds": 0.3678702080214862,
+          "iterations": 46,
+          "objective": 17.80074685415743,
+          "max_violation": 0.0,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 18,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": true,
+          "raw_status": 0,
+          "message": "Optimization terminated successfully",
+          "initial_prices": [
+            0.0,
+            25.353970841404905,
+            60.713783943903685
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              43.940163296393166,
+              24.06205827486472,
+              16.22973306829205,
+              7.148287981750622,
+              0.0
+            ],
+            [
+              0.0,
+              1.5422993537602068,
+              0.0006297320595023852,
+              82.16114069347937,
+              24.101757836466906
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.643804082996212,
+      "iterations": 109,
+      "objective": 14.880312209135944,
+      "max_violation": 2.721947112149792e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 20,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.5744135840213858,
+      "iterations": 63,
+      "objective": 14.832416969486827,
+      "max_violation": 1.2400391824485268e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 22,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.2554679169843439,
+      "iterations": 72,
+      "objective": 15.352465441899177,
+      "max_violation": 2.8563817977556027e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 16,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.21068087499588728,
+      "iterations": 68,
+      "objective": 15.166395971004969,
+      "max_violation": 4.831690603168681e-12,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 18,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.20579179198830388,
+      "iterations": 59,
+      "objective": 14.950377055424765,
+      "max_violation": 6.81126266499632e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 20,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.1894744999881368,
+      "iterations": 62,
+      "objective": 15.17621202134299,
+      "max_violation": 4.8252957185468404e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 18,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.3882025830098428,
+      "iterations": 68,
+      "objective": 15.083505212736233,
+      "max_violation": 4.0813574742060155e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 20,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.31439008298912086,
+      "iterations": 51,
+      "objective": 15.013305584297198,
+      "max_violation": 5.5990767577895895e-12,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 22,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.4490522090054583,
+      "iterations": 91,
+      "objective": 15.117881936164567,
+      "max_violation": 4.668265773943858e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 20,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.147224250016734,
+      "iterations": 38,
+      "objective": 15.063037941798237,
+      "max_violation": 6.394884621840902e-13,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 22,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.26709695800673217,
+      "iterations": 57,
+      "objective": 15.105610616969637,
+      "max_violation": 9.805489753489383e-13,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 22,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.16928162501426414,
+      "iterations": 44,
+      "objective": 15.099332332349467,
+      "max_violation": 9.947598300641403e-13,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 23,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.23903562501072884,
+      "iterations": 30,
+      "objective": 15.138494876054212,
+      "max_violation": 5.2445159326452995e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 24,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.5287492499919608,
+      "iterations": 100,
+      "objective": 15.969178465151954,
+      "max_violation": 2.8137492336099967e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 16,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.19260337500600144,
+      "iterations": 61,
+      "objective": 15.419105875992365,
+      "max_violation": 1.6342482922482304e-12,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 20,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.3306977500033099,
+      "iterations": 65,
+      "objective": 15.218602561520985,
+      "max_violation": 5.115907697472721e-13,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 21,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.24438929199823178,
+      "iterations": 48,
+      "objective": 15.187250564763774,
+      "max_violation": 2.6290081223123707e-12,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 23,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.6027272919891402,
+      "iterations": 78,
+      "objective": 15.368255122446811,
+      "max_violation": 1.1721112969098613e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 24,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.4556013749970589,
+      "iterations": 36,
+      "objective": 15.239468319082631,
+      "max_violation": 4.143174692217144e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 27,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.5795577089884318,
+      "iterations": 134,
+      "objective": 16.065693964233486,
+      "max_violation": 8.913048077374697e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 14,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.14340904098935425,
+      "iterations": 52,
+      "objective": 15.515837768006428,
+      "max_violation": 1.5307932699215598e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 18,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.38809095800388604,
+      "iterations": 78,
+      "objective": 15.32797336230112,
+      "max_violation": 1.2460077414289117e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 19,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.0889043329807464,
+      "iterations": 18,
+      "objective": 15.286494627557959,
+      "max_violation": 1.3868373116565635e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 21,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.4286577500170097,
+      "iterations": 129,
+      "objective": 19.44204862846289,
+      "max_violation": 4.831690603168681e-13,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 14,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.30517191701801494,
+      "iterations": 68,
+      "objective": 15.352671318536903,
+      "max_violation": 1.2022383089060895e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 17,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.2320302079897374,
+      "iterations": 40,
+      "objective": 15.323380503976981,
+      "max_violation": 3.5552716326492373e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 19,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully",
+      "attempt_history": []
+    }
+  ],
+  "elapsed_seconds": 27.694171999988612,
+  "best_observed_profit": 15.915158906690747,
+  "best_observed_prices": [
+    0.0,
+    40.67774390000538,
+    63.65354795996411
+  ],
+  "best_observed_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      7.495768304604257,
+      12.559945932011141,
+      14.050709090185668,
+      43.72754632773861,
+      3.580711467553994
+    ],
+    [
+      1.4880187222082957,
+      4.429616113315962,
+      5.2541858740617376e-11,
+      85.47951430527367,
+      27.22292322591814
+    ]
+  ],
+  "diagnostics": {
+    "status": "consistent_candidate",
+    "valid": true,
+    "assignment_consistent": true,
+    "full_separation": true,
+    "regional_success": true,
+    "regional_kkt": null,
+    "user_ties": 10,
+    "double_ties": 0
+  },
+  "diagnostic_message": "candidate passes regional checks and completed boundary search; not a second-order certificate; exploratory candidate: independent KKT was not checked",
+  "candidate_metrics": {
+    "status": "consistent",
+    "regions": 14,
+    "assignment_changes": 13,
+    "assignment_revisits": 0,
+    "changed_travelers": 40,
+    "generation_iterations": 41,
+    "nlp_solves": 44,
+    "regional_objective": 15.323380503976981,
+    "boundary_trials": 0,
+    "boundary_returns": 0,
+    "boundary_search_complete": true,
+    "true_profit": 15.323380503976981,
+    "time_seconds": 27.35688937501982
+  },
+  "candidate_prices": [
+    0.0,
+    22.945635377512563,
+    62.24813039294034
+  ],
+  "candidate_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      26.78614814642385,
+      33.17693947536872,
+      17.39001852023555,
+      1.0499388394836837,
+      9.533679115340147e-09
+    ],
+    [
+      3.734566749430002e-07,
+      6.755392245742066e-06,
+      0.0,
+      79.17724448546903,
+      22.305353532262114
+    ]
+  ],
+  "candidate_assignment_counts": [
+    448,
+    276,
+    332
+  ],
+  "candidate_assignment_sha256": "23ecd8ce36d19b0bfb8ee8666a06014bd3b6a171dbbb145edd7732ac0a7623e2",
+  "candidate_region_history": [
+    {
+      "region": 1,
+      "assumed_assignment_sha256": "745166c93f6c4d579f6c19c99ff02c5cde27d47cf1f6e9a54480a1f2b45f6ca8",
+      "revisited_assignment": false,
+      "regional_objective": 14.29915127044825,
+      "true_profit": 14.31468471393075,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 12,
+      "double_ties": 0,
+      "generation_iterations": 4,
+      "nlp_objectives": [
+        16.31284594935484,
+        15.039405216665216,
+        14.500352841602545,
+        14.29915127044825
+      ],
+      "prices": [
+        0.0,
+        26.961945472829353,
+        58.625228057739285
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          49.45121681331441,
+          24.61683508998435,
+          10.218133906634531,
+          10.465989379143238,
+          3.097685834765981e-14
+        ],
+        [
+          0.0,
+          3.4546577380808383,
+          0.0,
+          85.31895855252986,
+          22.899335772553158
+        ]
+      ]
+    },
+    {
+      "region": 2,
+      "assumed_assignment_sha256": "019f6e427c1831af237cb3fa345aaabed85429e9a1b71a858df4ff11cfe7a41d",
+      "revisited_assignment": false,
+      "regional_objective": 14.663558513753369,
+      "true_profit": 14.673496451646457,
+      "accepted": true,
+      "changed_travelers": 4,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 12,
+      "double_ties": 0,
+      "generation_iterations": 3,
+      "nlp_objectives": [
+        15.227028808002354,
+        14.723526643027872,
+        14.663558513753369
+      ],
+      "prices": [
+        0.0,
+        25.584570878485316,
+        60.398090267263434
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          48.96662037665921,
+          18.936992386653397,
+          13.662250203361868,
+          9.593554792201122,
+          3.3471350810218102e-15
+        ],
+        [
+          7.924598589250932e-16,
+          3.8456606391860917,
+          0.0,
+          80.52660850464447,
+          24.99996765080718
+        ]
+      ]
+    },
+    {
+      "region": 3,
+      "assumed_assignment_sha256": "3f66a604bb2551d3c3aab824793516fefa90bc958f004b7d1455773779dce3f6",
+      "revisited_assignment": false,
+      "regional_objective": 14.752665250208658,
+      "true_profit": 14.767541561245247,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 12,
+      "double_ties": 0,
+      "generation_iterations": 3,
+      "nlp_objectives": [
+        18.82773676875632,
+        14.755847884647192,
+        14.752665250208658
+      ],
+      "prices": [
+        0.0,
+        25.392379502657782,
+        60.766670238734996
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          43.8758157206495,
+          24.203102281569592,
+          16.32223585597943,
+          7.118365933041704,
+          1.0759368091997138e-05
+        ],
+        [
+          5.7278792699802266e-12,
+          1.3584833062875556,
+          1.1130439971005676e-17,
+          82.37793551032004,
+          24.11870299791117
+        ]
+      ]
+    },
+    {
+      "region": 4,
+      "assumed_assignment_sha256": "a605d46b7c305b6de670e0779c4a2a78da5f386cef1a338454c1080aef984632",
+      "revisited_assignment": false,
+      "regional_objective": 14.7693854376867,
+      "true_profit": 14.81647464446579,
+      "accepted": true,
+      "changed_travelers": 4,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 14,
+      "double_ties": 0,
+      "generation_iterations": 4,
+      "nlp_objectives": [
+        15.774114150815063,
+        15.223758465187576,
+        14.77521193416297,
+        14.7693854376867
+      ],
+      "prices": [
+        0.0,
+        25.378170232758684,
+        60.762760881776835
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          43.88500410473,
+          24.10139986309014,
+          16.2232372499657,
+          7.141758685240776,
+          1.6607035596338384e-14
+        ],
+        [
+          0.0,
+          1.5436888628824903,
+          1.483327292140421e-17,
+          82.14068251732665,
+          24.135541583649633
+        ]
+      ]
+    },
+    {
+      "region": 5,
+      "assumed_assignment_sha256": "4d715fb7d72cfbb6b9904e7622f70e04c743f826fff57b368d727e405b637e82",
+      "revisited_assignment": false,
+      "regional_objective": 14.832416969486827,
+      "true_profit": 14.88698281068114,
+      "accepted": true,
+      "changed_travelers": 6,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 16,
+      "double_ties": 0,
+      "generation_iterations": 3,
+      "nlp_objectives": [
+        17.80074685415743,
+        14.880312209135944,
+        14.832416969486827
+      ],
+      "prices": [
+        0.0,
+        25.350881974388702,
+        60.894554099823104
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          42.245623155464564,
+          26.036044463555914,
+          16.54986732173854,
+          6.3301709042295045,
+          1.8193472953426577e-10
+        ],
+        [
+          1.5135559530317714e-07,
+          7.999485214768944e-07,
+          0.0,
+          84.14798568491801,
+          23.126841072263712
+        ]
+      ]
+    },
+    {
+      "region": 6,
+      "assumed_assignment_sha256": "0334cb9b34a766233664eef9f9187b9a55425ff6b412419c3da8afd456a334bf",
+      "revisited_assignment": false,
+      "regional_objective": 14.950377055424765,
+      "true_profit": 14.955210467853734,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 10,
+      "double_ties": 0,
+      "generation_iterations": 3,
+      "nlp_objectives": [
+        15.352465441899177,
+        15.166395971004969,
+        14.950377055424765
+      ],
+      "prices": [
+        0.0,
+        24.654951260899953,
+        60.82932190272482
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          40.01442951634014,
+          24.36553579838723,
+          20.854456534007394,
+          6.146835500856439,
+          3.449232329078461e-14
+        ],
+        [
+          1.0056423948758622e-15,
+          4.595249794927854,
+          1.1339598935939527e-17,
+          74.48344727558457,
+          25.882963314711915
+        ]
+      ]
+    },
+    {
+      "region": 7,
+      "assumed_assignment_sha256": "0c010ad0f462c420acf260b48c45363f9b33b705a89e82e03f60eff3ee5f2242",
+      "revisited_assignment": false,
+      "regional_objective": 15.013305584297198,
+      "true_profit": 15.042337638569599,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 12,
+      "double_ties": 0,
+      "generation_iterations": 3,
+      "nlp_objectives": [
+        15.17621202134299,
+        15.083505212736233,
+        15.013305584297198
+      ],
+      "prices": [
+        0.0,
+        24.435423169382386,
+        61.24449602230538
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          35.922945169934046,
+          28.930078960595214,
+          16.21921663122423,
+          4.090163833778517,
+          8.450607602612978e-15
+        ],
+        [
+          1.2430524510569309e-05,
+          0.8358177489251092,
+          2.6583666806236632e-18,
+          77.99420960701676,
+          25.464133037111345
+        ]
+      ]
+    },
+    {
+      "region": 8,
+      "assumed_assignment_sha256": "11b253cce54b929244a1abf4bbc92355afdece911d5d8e51ad4fb12f5ae81033",
+      "revisited_assignment": false,
+      "regional_objective": 15.063037941798237,
+      "true_profit": 15.072646259681285,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 12,
+      "double_ties": 0,
+      "generation_iterations": 2,
+      "nlp_objectives": [
+        15.117881936164567,
+        15.063037941798237
+      ],
+      "prices": [
+        0.0,
+        24.271361809117828,
+        61.52390196281942
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          33.43785416958682,
+          30.840449289523896,
+          20.07264430768755,
+          3.2141118596726854,
+          2.024578406924383e-14
+        ],
+        [
+          0.0,
+          0.0,
+          6.644787032173224e-18,
+          80.70895563800238,
+          22.681275062586742
+        ]
+      ]
+    },
+    {
+      "region": 9,
+      "assumed_assignment_sha256": "7522dc4f143ac2c253946602bbf73961129f7c18281d082d036324039a2d8ef3",
+      "revisited_assignment": false,
+      "regional_objective": 15.099332332349467,
+      "true_profit": 15.1324862175124,
+      "accepted": true,
+      "changed_travelers": 4,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 14,
+      "double_ties": 0,
+      "generation_iterations": 2,
+      "nlp_objectives": [
+        15.105610616969637,
+        15.099332332349467
+      ],
+      "prices": [
+        0.0,
+        23.838871847061153,
+        61.64728654889483
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          31.644446535390355,
+          30.9814801199666,
+          19.89297369859348,
+          2.6907951468941556,
+          4.439556163268558e-14
+        ],
+        [
+          0.0,
+          0.13011015358579162,
+          0.0,
+          77.15065941685873,
+          25.472838232532464
+        ]
+      ]
+    },
+    {
+      "region": 10,
+      "assumed_assignment_sha256": "1d7d60e30363664064b9198ac8e4292c4adf1cc85d9440f51774fb8972f20dda",
+      "revisited_assignment": false,
+      "regional_objective": 15.138494876054212,
+      "true_profit": 15.16669037164308,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 12,
+      "double_ties": 0,
+      "generation_iterations": 1,
+      "nlp_objectives": [
+        15.138494876054212
+      ],
+      "prices": [
+        0.0,
+        23.63916343842472,
+        61.69965964507037
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          30.898174285744755,
+          30.8763787443828,
+          20.857200488239776,
+          2.524500180961753,
+          2.7253545152536575e-13
+        ],
+        [
+          2.7018099547020583e-13,
+          1.15897162726568,
+          7.424153302228536e-18,
+          75.86228396149725,
+          25.459050565378686
+        ]
+      ]
+    },
+    {
+      "region": 11,
+      "assumed_assignment_sha256": "81a17312d0c2d55dcbc9fac8013a2502ada978c60dcbe06a09f18e23091b8246",
+      "revisited_assignment": false,
+      "regional_objective": 15.187250564763774,
+      "true_profit": 15.23821986416091,
+      "accepted": true,
+      "changed_travelers": 4,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 14,
+      "double_ties": 0,
+      "generation_iterations": 4,
+      "nlp_objectives": [
+        15.969178465151954,
+        15.419105875992365,
+        15.218602561520985,
+        15.187250564763774
+      ],
+      "prices": [
+        0.0,
+        23.176095563383672,
+        62.14982586700824
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          27.52367078253325,
+          33.01126783244398,
+          19.689902800085974,
+          1.3335424487258487,
+          6.727511620682059e-21
+        ],
+        [
+          0.0,
+          3.4199830698969506e-14,
+          0.0,
+          79.44491327755946,
+          22.14800784920555
+        ]
+      ]
+    },
+    {
+      "region": 12,
+      "assumed_assignment_sha256": "2e1f93abdcecf23d54db5582e3ac9ca4278f389d51500357d560d1e4efbd7025",
+      "revisited_assignment": false,
+      "regional_objective": 15.239468319082631,
+      "true_profit": 15.285702165704329,
+      "accepted": true,
+      "changed_travelers": 4,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 14,
+      "double_ties": 0,
+      "generation_iterations": 2,
+      "nlp_objectives": [
+        15.368255122446811,
+        15.239468319082631
+      ],
+      "prices": [
+        0.0,
+        23.091904801250685,
+        62.16853149368564
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          27.363652542684942,
+          32.95807238919697,
+          18.641763185088433,
+          1.2658660412306468,
+          2.2757076619996842e-12
+        ],
+        [
+          0.0,
+          1.54574960237437e-13,
+          1.6379717064085068e-18,
+          78.94256863627714,
+          22.64532931295041
+        ]
+      ]
+    },
+    {
+      "region": 13,
+      "assumed_assignment_sha256": "8259f971445ac85122591185d31b1e3cc4405db6f305a3992bc10662d8b47424",
+      "revisited_assignment": false,
+      "regional_objective": 15.286494627557959,
+      "true_profit": 15.323354197753602,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 12,
+      "double_ties": 0,
+      "generation_iterations": 4,
+      "nlp_objectives": [
+        16.065693964233486,
+        15.515837768006428,
+        15.32797336230112,
+        15.286494627557959
+      ],
+      "prices": [
+        0.0,
+        22.972673105411374,
+        62.232895671842726
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          26.888662289309913,
+          33.13418326253401,
+          17.66891800335949,
+          1.090836654439123,
+          6.539133765547341e-07
+        ],
+        [
+          0.0,
+          9.363379799175235e-14,
+          3.1122873160482353e-19,
+          79.10765678368129,
+          22.391093040777783
+        ]
+      ]
+    },
+    {
+      "region": 14,
+      "assumed_assignment_sha256": "23ecd8ce36d19b0bfb8ee8666a06014bd3b6a171dbbb145edd7732ac0a7623e2",
+      "revisited_assignment": false,
+      "regional_objective": 15.323380503976981,
+      "true_profit": 15.323380503976981,
+      "accepted": true,
+      "changed_travelers": 0,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 10,
+      "double_ties": 0,
+      "generation_iterations": 3,
+      "nlp_objectives": [
+        19.44204862846289,
+        15.352671318536903,
+        15.323380503976981
+      ],
+      "prices": [
+        0.0,
+        22.945635377512563,
+        62.24813039294034
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          26.78614814642385,
+          33.17693947536872,
+          17.39001852023555,
+          1.0499388394836837,
+          9.533679115340147e-09
+        ],
+        [
+          3.734566749430002e-07,
+          6.755392245742066e-06,
+          0.0,
+          79.17724448546903,
+          22.305353532262114
+        ]
+      ]
+    }
+  ]
+}

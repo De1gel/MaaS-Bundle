@@ -420,8 +420,14 @@ def solve_fixed_assignment(
                     feasibility_tolerance=violation_tolerance,
                     stationarity_tolerance=getattr(solver, "optimality_tolerance", 1e-5),
                     active_tolerance=getattr(solver, "active_set_tolerance", 1e-4),
+                    check_stationarity=getattr(solver, "check_kkt", True),
                 )
-                if certificate.satisfies_kkt:
+                accepted = (
+                    certificate.satisfies_kkt
+                    if certificate.stationarity_checked
+                    else certificate.primal_violation <= violation_tolerance
+                )
+                if accepted:
                     solve_result = replace(
                         solve_result,
                         menu=feasible_anchor,
@@ -429,7 +435,11 @@ def solve_fixed_assignment(
                         maximum_constraint_violation=certificate.primal_violation,
                         first_order_certificate=certificate,
                         message=solve_result.message
-                        + "; retained certified CG anchor after roundoff loss",
+                        + (
+                            "; retained certified CG anchor after roundoff loss"
+                            if certificate.stationarity_checked
+                            else "; retained feasible CG anchor after roundoff loss (KKT unchecked)"
+                        ),
                     )
         menu = solve_result.menu
         valuation = problem.evaluate_valuations(menu)
@@ -563,8 +573,13 @@ def _regional_checks_at_menu(
         feasibility_tolerance=result.feasibility_tolerance,
         stationarity_tolerance=certificate.stationarity_tolerance,
         active_tolerance=result.feasibility_tolerance,
+        check_stationarity=certificate.stationarity_checked,
     )
-    return checked.satisfies_kkt
+    return (
+        checked.satisfies_kkt
+        if certificate.stationarity_checked
+        else checked.primal_violation <= result.feasibility_tolerance
+    )
 
 
 def find_assignment_consistent_menu(

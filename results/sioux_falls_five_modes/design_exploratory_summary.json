@@ -1,0 +1,53 @@
+{
+  "run_status": "time_limit",
+  "full_search_completed": false,
+  "candidate_source": "best observed menu; independently recomputed optimistic assignment",
+  "initial_profit": 13.726680809761495,
+  "verified_profit": 14.915883077091548,
+  "improvement_percent": 8.66343644039842,
+  "elapsed_seconds": 180.301297833008,
+  "completed_restricted_nlp_solves": 3,
+  "native_successes": 3,
+  "solver_attempts": 3,
+  "prices": [
+    0.0,
+    25.811278738876936,
+    45.96613067835126
+  ],
+  "allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      14.345484955795069,
+      0.9309319761775983,
+      0.0,
+      22.40490293624047,
+      7.883201859940297
+    ],
+    [
+      12.545404049700252,
+      47.231552874519856,
+      3.688018633412797e-05,
+      48.2230148004309,
+      2.060121602161018e-05
+    ]
+  ],
+  "assignment_counts": [
+    544,
+    98,
+    414
+  ],
+  "weighted_shares": [
+    0.5021353300055472,
+    0.1615779256794232,
+    0.33628674431503025
+  ],
+  "maximum_choice_violation": 1.9753088054130785e-12,
+  "maximum_price_order_violation": 0.0,
+  "independent_kkt_checked": false
+}

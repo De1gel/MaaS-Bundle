@@ -20,7 +20,17 @@
 
 ## 运行 Sioux Falls 多初值实验
 
-命令保持不变：
+五模式重叠网络先保存完整下层极点，再从缓存启动设计；两个阶段可在不同进程运行：
+
+```bash
+maas-bundle preprocess sioux-falls --output results/sioux_falls_five_modes/dual_vertices.npz
+maas-bundle example sioux-falls --oracle-cache results/sioux_falls_five_modes/dual_vertices.npz
+```
+
+缓存含几何指纹；不匹配或缺少所需 OD 时会报错。
+详见[五模式实验记录](sioux_falls_experiment.md)。
+
+不指定缓存时，原命令仍按需预处理：
 
 ```bash
 maas-bundle multistart sioux-falls --starts 30 --seed 20260901 > sioux_falls_multistart.json

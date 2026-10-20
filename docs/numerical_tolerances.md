@@ -43,6 +43,11 @@ certificate 更宽松，就临时扩大 tie 集。求解结果报告的约束违
 不能只收紧其中一个参数。adapter 的非负坐标和价格顺序残差仍使用其可行性阈值，
 KKT 驻点残差、活跃集阈值保留各自意义；这些不作为 margin 判定标准。
 
+探索模式 `ScipyRegionalSolver(check_kkt=False)` 不计算独立驻点残差，也不再用该残差
+或额外的原生 `optimality` 阈值拒绝解。它采用原生 `success`，仍严格检查可行性。
+KKT 指标记录为未检查，而非通过；重启与回退继承此设置。
+五模式 Sioux Falls 的默认 benchmark 设置已采用探索模式。
+
 ## Margin、double tie 与最终验证
 
 对每位旅客先生成：

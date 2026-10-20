@@ -17,6 +17,8 @@ def test_custom_run_settings_are_separate_from_instance_config(monkeypatch, name
         nlp_max_iterations=321,
         nlp_ftol=2e-8,
         profit_tolerance=3e-8,
+        slsqp_restarts=3,
+        solver_fallback=False,
     )
     config = replace(DEFAULT_SIOUX_FALLS_CONFIG, initial_prices_usd_per_month=(0, 22, 44))
     kwargs = {"settings": settings}
@@ -29,8 +31,10 @@ def test_custom_run_settings_are_separate_from_instance_config(monkeypatch, name
         constructions.append(kw)
         return problem
 
-    def make_solver(method, *, options):
-        solvers.append((method, options))
+    def make_solver(method, *, options, check_kkt=True, slsqp_restarts=1,
+                    enable_fallback=True, numerical_constraint_recovery=False):
+        solvers.append((method, options, check_kkt, slsqp_restarts, enable_fallback,
+                        numerical_constraint_recovery))
         return solver
 
     def generate(count, **kw):
@@ -52,7 +56,7 @@ def test_custom_run_settings_are_separate_from_instance_config(monkeypatch, name
     assert getattr(module, f"run_{name}_multistart")(2, seed=7, **kwargs) is result
     expected_config = {"config": config} if name == "sioux_falls" else {}
     assert constructions == [expected_config, expected_config]
-    assert solvers == [("SLSQP", {"maxiter": 321, "ftol": 2e-8})] * 2
+    assert solvers == [("SLSQP", {"maxiter": 321, "ftol": 2e-8}, True, 3, False, False)] * 2
     assert generations == [
         (2, dict(seed=7, problem=problem, minimum_profit=3e-8, **expected_config))
     ]
@@ -73,6 +77,12 @@ def test_custom_run_settings_are_separate_from_instance_config(monkeypatch, name
         ("nlp_ftol", float("nan")),
         ("profit_tolerance", -1),
         ("profit_tolerance", float("inf")),
+        ("check_kkt", 1),
+        ("slsqp_restarts", -1),
+        ("slsqp_restarts", True),
+        ("slsqp_restarts", 1.5),
+        ("solver_fallback", 1),
+        ("numerical_constraint_recovery", 1),
     ],
 )
 def test_invalid_benchmark_settings_fail_before_building_an_instance(field, value):

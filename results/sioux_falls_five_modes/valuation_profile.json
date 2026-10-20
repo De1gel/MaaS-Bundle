@@ -1,0 +1,58 @@
+{
+  "traveler_types": 1056,
+  "bundle_count": 3,
+  "mode_count": 5,
+  "oracle_evaluations_per_menu": 3168,
+  "vertex_rows_scanned_per_menu": 857730,
+  "menu_evaluation_timings": {
+    "initial": {
+      "seconds": [
+        0.23511037501157261,
+        0.23367924999911338,
+        0.23417075000179466
+      ],
+      "median_seconds": 0.23417075000179466
+    },
+    "observed": {
+      "seconds": [
+        0.23658066599455196,
+        0.23608375000185333,
+        0.23611837498901878
+      ],
+      "median_seconds": 0.23611837498901878
+    }
+  },
+  "profile_functions": [
+    {
+      "function": "_build_upper_hull",
+      "calls": 3168,
+      "self_seconds": 0.017045332,
+      "cumulative_seconds": 0.023539891
+    },
+    {
+      "function": "_best_line_per_slope",
+      "calls": 3168,
+      "self_seconds": 0.15843248100000001,
+      "cumulative_seconds": 0.182901438
+    },
+    {
+      "function": "evaluate_valuations",
+      "calls": 1,
+      "self_seconds": 0.002444721,
+      "cumulative_seconds": 0.40989383300000004
+    },
+    {
+      "function": "build_piecewise_phi",
+      "calls": 3168,
+      "self_seconds": 0.024161001,
+      "cumulative_seconds": 0.273772291
+    },
+    {
+      "function": "expected_valuation",
+      "calls": 3168,
+      "self_seconds": 0.036004623,
+      "cumulative_seconds": 0.40741836400000003
+    }
+  ],
+  "profile_total_seconds": 0.40902867000000004
+}

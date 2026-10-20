@@ -1,0 +1,59 @@
+{
+  "objective": "sum_i w_i [C_assignment(i) - k @ allowance_assignment(i)]",
+  "weight_definition": "segment_share * OD_flow / total_OD_flow",
+  "weight_sum": 1.0,
+  "traveler_classes": 1056,
+  "total_source_od_flow": 360600.0,
+  "unit_provision_costs": [
+    0.05,
+    0.08,
+    0.02,
+    0.15,
+    0.1
+  ],
+  "weighted_revenue": 22.65629316857594,
+  "weighted_provision_cost": 5.088893290150944,
+  "weighted_profit": 17.567399878424993,
+  "direct_traveler_sum": 17.56739987842495,
+  "unweighted_class_sum_not_population_profit": 23053.830102522552,
+  "equal_class_mean_not_used": 21.83127850617666,
+  "rows": [
+    {
+      "bundle": 0,
+      "traveler_classes": 298,
+      "weighted_share": 0.36024681087077065,
+      "price_per_subscriber": 0.0,
+      "provision_cost_per_subscriber": 0.0,
+      "margin_per_subscriber": 0.0,
+      "weighted_revenue": 0.0,
+      "weighted_provision_cost": 0.0,
+      "weighted_profit": 0.0
+    },
+    {
+      "bundle": 1,
+      "traveler_classes": 444,
+      "weighted_share": 0.430185801442042,
+      "price_per_subscriber": 20.624854505315344,
+      "provision_cost_per_subscriber": 4.331118056949931,
+      "margin_per_subscriber": 16.293736448365415,
+      "weighted_revenue": 8.872519564994592,
+      "weighted_provision_cost": 1.8631854924691058,
+      "weighted_profit": 7.009334072525487
+    },
+    {
+      "bundle": 2,
+      "traveler_classes": 314,
+      "weighted_share": 0.20956738768718855,
+      "price_per_subscriber": 65.77251239184095,
+      "provision_cost_per_subscriber": 15.392222202515125,
+      "margin_per_subscriber": 50.38029018932582,
+      "weighted_revenue": 13.783773603581345,
+      "weighted_provision_cost": 3.2257077976818382,
+      "weighted_profit": 10.558065805899506
+    }
+  ],
+  "payg_platform_margin": 0,
+  "overage_revenue_included_in_platform_objective": false,
+  "provision_cost_basis": "full offered allowance per subscriber, independent of realized use",
+  "profit_unit": "USD per representative weighted person per month; population scale not supplied"
+}

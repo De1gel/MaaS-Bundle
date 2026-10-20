@@ -49,6 +49,59 @@ def test_problem_evaluates_valuations_independently_of_assignment() -> None:
     np.testing.assert_allclose(valuation.expected_omega, np.zeros((2, 2, 1)))
 
 
+def test_selected_valuations_and_exact_allowance_cache_match_direct_oracle(monkeypatch) -> None:
+    oracle = RouteValueOracle([[0, 0], [2, 0.5], [4, 2]])
+    problem = BundleDesignProblem(
+        traveler_weights=np.ones(3),
+        unit_allowance_cost=np.array([0.2]),
+        route_oracles=((oracle, oracle, oracle),) * 3,
+        demand_distributions=tuple(UniformDemandDistribution(0, n) for n in (1, 2, 3)),
+    )
+    original = RouteValueOracle.expected_valuation
+    calls = []
+
+    def counted(self, allowance, distribution, **kwargs):
+        calls.append((tuple(allowance), distribution.upper))
+        return original(self, allowance, distribution, **kwargs)
+
+    monkeypatch.setattr(RouteValueOracle, "expected_valuation", counted)
+    menu = BundleMenu(np.array([0, 1, 2]), np.array([[0], [0.5], [2]]))
+    selected = problem.evaluate_valuations_for_travelers(menu, [2, 0])
+    assert len(calls) == 6
+    for row, traveler in enumerate((2, 0)):
+        for bundle in range(3):
+            reference = original(
+                oracle, menu.allowances[bundle], problem.demand_distributions[traveler]
+            )
+            assert selected.route_values[row, bundle] == pytest.approx(reference.value)
+            np.testing.assert_allclose(
+                selected.expected_omega[row, bundle], reference.expected_omega
+            )
+    # Changing only prices must not rebuild any envelope.
+    prices_only = BundleMenu(np.array([0, 4, 7]), menu.allowances)
+    repeated = problem.evaluate_valuations_for_travelers(prices_only, [2, 0])
+    assert len(calls) == 6
+    np.testing.assert_array_equal(repeated.route_values, selected.route_values)
+    # Only the changed bundle is invalidated, not PAYG or the other bundle.
+    changed = BundleMenu(prices_only.prices, np.array([[0], [0.7], [2]]))
+    updated = problem.evaluate_valuations_for_travelers(changed, [2, 0])
+    assert len(calls) == 8
+    assert not np.allclose(updated.route_values[:, 1], selected.route_values[:, 1])
+    # Full separation must still visit the omitted traveler, with every bundle.
+    full = problem.evaluate_valuations(changed)
+    assert len(calls) == 11
+    np.testing.assert_array_equal(full.route_values[[2, 0]], updated.route_values)
+    assert full.route_values.shape == (3, 3)
+
+
+@pytest.mark.parametrize("travelers", [[-1], [2], [0.5], [[0]]])
+def test_selected_valuations_reject_invalid_traveler_indices(travelers) -> None:
+    with pytest.raises(ValueError):
+        _example_problem().evaluate_valuations_for_travelers(
+            BundleMenu(np.zeros(2), np.zeros((2, 1))), travelers
+        )
+
+
 def test_problem_evaluates_complete_optimistic_assignment() -> None:
     problem = _example_problem()
     menu = BundleMenu(np.array([0.0, 1.0]), np.array([[0.0], [1.0]]))

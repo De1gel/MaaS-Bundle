@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
@@ -26,7 +26,7 @@ from maas_bundle.design.tolerances import (
 )
 from maas_bundle.design.valuation import ValuationTable
 from maas_bundle.oracle.demand_distribution import TripFrequencyDistribution
-from maas_bundle.oracle.route_value import RouteValueOracle
+from maas_bundle.oracle.route_value import RouteValuation, RouteValueOracle
 
 
 @dataclass(frozen=True, init=False)
@@ -45,6 +45,9 @@ class BundleDesignProblem:
     demand_distributions: Sequence[TripFrequencyDistribution]
     price_upper_bounds: NDArray[np.float64]
     allowance_upper_bounds: NDArray[np.float64]
+    _valuation_cache: dict[tuple[int, int], tuple[bytes, RouteValuation]] = field(
+        init=False, repr=False, compare=False
+    )
 
     def __init__(
         self,
@@ -69,6 +72,9 @@ class BundleDesignProblem:
         object.__setattr__(self, "demand_distributions", demand_distributions)
         object.__setattr__(self, "price_upper_bounds", price_upper_bounds)
         object.__setattr__(self, "allowance_upper_bounds", allowance_upper_bounds)
+        # At most one exact allowance entry per traveler/bundle. PAYG's entry
+        # remains valid across menus because its allowance is fixed at zero.
+        object.__setattr__(self, "_valuation_cache", {})
         self.__post_init__()
 
     def __post_init__(self) -> None:
@@ -163,19 +169,51 @@ class BundleDesignProblem:
     def evaluate_valuations(self, menu: BundleMenu) -> ValuationTable:
         """Evaluate all ``G_ib`` and expected shadow prices at a menu."""
 
+        return self._evaluate_selected_valuations(menu, range(self.traveler_count))
+
+    def evaluate_valuations_for_travelers(
+        self, menu: BundleMenu, travelers: Sequence[int]
+    ) -> ValuationTable:
+        """Return compact rows in the requested order, including all bundle columns.
+
+        Custom problem adapters that override the full evaluator retain their
+        own semantics: select rows from their implementation instead.
+        """
+
+        indices = np.asarray(travelers)
+        if indices.ndim != 1 or (indices.size and not np.issubdtype(indices.dtype, np.integer)):
+            raise ValueError("travelers must be a one-dimensional integer sequence")
+        indices = indices.astype(np.int64)
+        if np.any(indices < 0) or np.any(indices >= self.traveler_count):
+            raise ValueError("traveler index out of range")
+        if type(self).evaluate_valuations is not BundleDesignProblem.evaluate_valuations:
+            full = self.evaluate_valuations(menu)
+            return ValuationTable(full.route_values[indices], full.expected_omega[indices])
+        return self._evaluate_selected_valuations(menu, indices)
+
+    def _evaluate_selected_valuations(self, menu: BundleMenu, travelers) -> ValuationTable:
         self._validate_menu(menu)
-        route_values = np.empty((self.traveler_count, self.bundle_count), dtype=float)
+        route_values = np.empty((len(travelers), self.bundle_count), dtype=float)
         expected_omega = np.empty(
-            (self.traveler_count, self.bundle_count, self.mode_count),
+            (len(travelers), self.bundle_count, self.mode_count),
             dtype=float,
         )
-        for traveler, (distribution, oracle_row) in enumerate(
-            zip(self.demand_distributions, self.route_oracles, strict=True)
-        ):
-            for bundle, oracle in enumerate(oracle_row):
-                valuation = oracle.expected_valuation(menu.allowances[bundle], distribution)
-                route_values[traveler, bundle] = valuation.value
-                expected_omega[traveler, bundle] = valuation.expected_omega
+        cache: dict[tuple[int, int], tuple[bytes, RouteValuation]] = self._valuation_cache
+        for bundle, allowance in enumerate(menu.allowances):
+            key = allowance.tobytes()
+            for row, traveler in enumerate(travelers):
+                pair = (int(traveler), bundle)
+                cached = cache.get(pair)
+                if cached is None or cached[0] != key:
+                    oracle = self.route_oracles[traveler][bundle]
+                    valuation = oracle.expected_valuation(
+                        allowance, self.demand_distributions[traveler]
+                    )
+                    cache[pair] = (key, valuation)
+                else:
+                    valuation = cached[1]
+                route_values[row, bundle] = valuation.value
+                expected_omega[row, bundle] = valuation.expected_omega
         return ValuationTable(route_values=route_values, expected_omega=expected_omega)
 
     def evaluate_assignment(

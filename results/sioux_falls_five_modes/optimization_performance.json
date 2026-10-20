@@ -1,0 +1,168 @@
+{
+  "critical_constraints": 32,
+  "critical_travelers": 32,
+  "value_and_jacobian_reference_points_checked": 6,
+  "previous_full_uncached": {
+    "median_seconds": 0.2593835419975221,
+    "samples": [
+      {
+        "seconds": 0.2597195419948548,
+        "oracle_calls": 3168,
+        "vertex_rows": 857730
+      },
+      {
+        "seconds": 0.2588942500005942,
+        "oracle_calls": 3168,
+        "vertex_rows": 857730
+      },
+      {
+        "seconds": 0.2600447089935187,
+        "oracle_calls": 3168,
+        "vertex_rows": 857730
+      },
+      {
+        "seconds": 0.2593835419975221,
+        "oracle_calls": 3168,
+        "vertex_rows": 857730
+      },
+      {
+        "seconds": 0.25783975000376813,
+        "oracle_calls": 3168,
+        "vertex_rows": 857730
+      }
+    ]
+  },
+  "optimized_restricted_callbacks": {
+    "median_seconds": 0.0050494590104790404,
+    "samples": [
+      {
+        "seconds": 0.004976957992766984,
+        "oracle_calls": 64,
+        "vertex_rows": 14216
+      },
+      {
+        "seconds": 0.005107416000100784,
+        "oracle_calls": 64,
+        "vertex_rows": 14216
+      },
+      {
+        "seconds": 0.0050582080002641305,
+        "oracle_calls": 64,
+        "vertex_rows": 14216
+      },
+      {
+        "seconds": 0.005048167004133575,
+        "oracle_calls": 64,
+        "vertex_rows": 14216
+      },
+      {
+        "seconds": 0.0050494590104790404,
+        "oracle_calls": 64,
+        "vertex_rows": 14216
+      }
+    ]
+  },
+  "optimized_price_only_callbacks": {
+    "median_seconds": 5.379199865274131e-05,
+    "samples": [
+      {
+        "seconds": 5.78339968342334e-05,
+        "oracle_calls": 0,
+        "vertex_rows": 0
+      },
+      {
+        "seconds": 5.379199865274131e-05,
+        "oracle_calls": 0,
+        "vertex_rows": 0
+      },
+      {
+        "seconds": 5.545800377149135e-05,
+        "oracle_calls": 0,
+        "vertex_rows": 0
+      },
+      {
+        "seconds": 5.00410096719861e-05,
+        "oracle_calls": 0,
+        "vertex_rows": 0
+      },
+      {
+        "seconds": 5.020799289923161e-05,
+        "oracle_calls": 0,
+        "vertex_rows": 0
+      }
+    ]
+  },
+  "optimized_full_separation_valuation": {
+    "median_seconds": 0.18935329200758133,
+    "samples": [
+      {
+        "seconds": 0.18676829199830536,
+        "oracle_calls": 2112,
+        "vertex_rows": 571820
+      },
+      {
+        "seconds": 0.18915570800891146,
+        "oracle_calls": 2112,
+        "vertex_rows": 571820
+      },
+      {
+        "seconds": 0.19390774999919813,
+        "oracle_calls": 2112,
+        "vertex_rows": 571820
+      },
+      {
+        "seconds": 0.1894695840019267,
+        "oracle_calls": 2112,
+        "vertex_rows": 571820
+      },
+      {
+        "seconds": 0.18935329200758133,
+        "oracle_calls": 2112,
+        "vertex_rows": 571820
+      }
+    ]
+  },
+  "nlp_comparison": [
+    {
+      "before_seconds": 44.30104749999009,
+      "after_seconds": 0.937300374993356,
+      "identical_iterations": 121,
+      "identical_objective": 16.158481770352573
+    },
+    {
+      "before_seconds": 45.221197750011925,
+      "after_seconds": 1.0180754589964636,
+      "identical_iterations": 120,
+      "identical_objective": 14.678967910031849
+    },
+    {
+      "before_seconds": 40.70075254200492,
+      "after_seconds": 0.9570186249911785,
+      "identical_iterations": 97,
+      "identical_objective": 14.594877877779444
+    }
+  ],
+  "final_candidate": {
+    "status": "consistent_candidate",
+    "profit": 15.424579320829451,
+    "profit_improvement_percent": 12.369330463782081,
+    "elapsed_seconds": 13.310960165996221,
+    "regions": 3,
+    "nlp_calls": 13,
+    "full_choice_violation": 3.824141003860859e-11,
+    "weighted_shares": [
+      0.41066278424847485,
+      0.24115363283416485,
+      0.34818358291735974
+    ],
+    "independent_kkt_checked": false
+  },
+  "verification": {
+    "core_tests_passed": 405,
+    "core_scale_tests_skipped": 2,
+    "full_suite_passed": 509,
+    "full_suite_failed": 2,
+    "full_suite_seconds": 159.29,
+    "failures": "same two pre-existing stylized certification failures reproduced before this optimization"
+  }
+}

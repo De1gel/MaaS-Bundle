@@ -13,6 +13,7 @@
 \usepackage[capitalise]{cleveref}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{placeins}
+\usepackage{booktabs}
 
 %%%%%%%%%% EXACT 1in MARGINS %%%%%%%                                   %%
 \setlength{\textwidth}{6.5in}     %%                                   %%
@@ -725,7 +726,7 @@ assignment, identifying critical traveler classes can substantially
 reduce the size of the design problem by retaining only one choice
 constraint per ordered option pair.
 
-\section{\color{red}{Single-Level Reformulations}}
+\section{Single-Level Reformulations}
 \label{sec:single-level-reformulations}
 
 Under the optimistic rule, the selection of traveler responses is
@@ -862,63 +863,59 @@ oracle in Section~\ref{sec:bundle-valuation-oracle} and the critical-traveler
 conditions in Section~\ref{sec:bundle-segmentation} to develop a regional
 search algorithm.
 
-\subsection{Fixed-Assignment Subproblem}
+\subsection{Fixed-Assignment Subproblem and Constraint Generation}
 \label{sec:assignment-regions}
 
-For a fixed assignment $\bm\alpha$ and the assigned traveler sets
-defined in Section~\ref{sec:bundle-segmentation}, we formulate the
-continuous menu-design subproblem.
-
-The total demand assigned to option $b$ is
+Fixing the assignment $\bm\alpha$ reduces the menu-design problem to
+the continuous nonconvex nonlinear program
 \begin{equation}
-    D_b(\bm\alpha)
-    :=
-    \sum_{i\in\mathcal I_b(\bm\alpha)}
-    Q_i.
-    \label{eq:regional-demand}
-\end{equation}
-
-Conditional on $\bm\alpha$, the platform objective becomes
-\begin{equation}
-    \Pi_{\bm\alpha}(\bm C,\bm\varepsilon)
-    :=
-    \sum_{b\in\mathcal B_0}
-    D_b(\bm\alpha)
-    \left(
-        C_b-K_b(\bm\varepsilon_b)
-    \right).
-    \label{eq:regional-objective}
-\end{equation}
-
-Using the traveler-choice conditions in Section~\ref{sec:bundle-segmentation},
-the weak assignment region associated with $\bm\alpha$ is
-\begin{equation}
-    \mathcal R_{\bm\alpha}
-    :=
-    \left\{
-        (\bm C,\bm\varepsilon)\in\mathcal D:
+    \begin{aligned}
+        \max_{(\bm C,\bm\varepsilon)\in\mathcal D}
+        \quad &
+        \Pi_{\bm\alpha}(\bm C,\bm\varepsilon)
+        :=
+        \sum_{b\in\mathcal B_0}
+        D_b(\bm\alpha)
+        \left(C_b-K_b(\bm\varepsilon_b)\right)
+        \\
+        \text{s.t.}\quad &
         \eqref{eq:regional-choice-condition}
-        \text{ holds for all }i,b,a
-    \right\},
-    \label{eq:assignment-region}
-\end{equation}
-and the corresponding regional problem is
-\begin{equation}
-    \max_{(\bm C,\bm\varepsilon)\in\mathcal R_{\bm\alpha}}
-    \Pi_{\bm\alpha}(\bm C,\bm\varepsilon).
+        \quad \text{for all assigned classes and alternatives}.
+    \end{aligned}
     \label{eq:regional-problem}
 \end{equation}
+Here $D_b(\bm\alpha):=\sum_{i\in\mathcal I_b(\bm\alpha)}Q_i$
+is the total demand assigned to option $b$. We denote the feasible set
+of~\eqref{eq:regional-problem} by $\mathcal R_{\bm\alpha}$, the weak
+assignment region associated with $\bm\alpha$.
 
-We solve~\eqref{eq:regional-problem} using the valuation oracle in
-Section~\ref{sec:bundle-valuation-oracle} and traveler constraint
-generation. The feasible region-entry menu is retained as an incumbent
-throughout the procedure.
-
-The complete regional problem may contain many traveler-choice
-constraints. We therefore maintain a restricted set
-$\mathcal S_{ba}\subseteq\mathcal I_b(\bm\alpha)$ for each ordered option
-pair $(b,a)$. After solving the restricted NLP, we evaluate the omitted
-constraints through
+By Lemma~\ref{lem:pairwise-boundary-compression}, the choice constraints
+for each ordered option pair are governed by a critical traveler class.
+Since this class can change with the allowances, we identify the relevant
+constraints through constraint generation. For each ordered pair
+$(b,a)$, we retain a subset
+$\mathcal S_{ba}\subseteq\mathcal I_b(\bm\alpha)$ and solve the
+restricted NLP
+\begin{equation}
+    \begin{aligned}
+        \max_{(\bm C,\bm\varepsilon)\in\mathcal D}
+        \quad &
+        \Pi_{\bm\alpha}(\bm C,\bm\varepsilon)
+        \\
+        \text{s.t.}\quad &
+        C_b-C_a
+        \leq
+        \delta_{iba}(\bm\varepsilon_a,\bm\varepsilon_b),
+        \\
+        & i\in\mathcal S_{ba},\quad
+        b\in\mathcal B_0,\quad
+        a\in\mathcal B_0\setminus\{b\}.
+    \end{aligned}
+    \label{eq:restricted-regional-problem}
+\end{equation}
+At each solution of~\eqref{eq:restricted-regional-problem}, the valuation
+oracle in Section~\ref{sec:bundle-valuation-oracle} evaluates the omitted
+traveler constraints using the slack
 \begin{equation}
     s_{iba}
     :=
@@ -927,38 +924,52 @@ constraints through
     (C_b-C_a).
     \label{eq:traveler-separation}
 \end{equation}
-For each ordered pair with a violated constraint, the most violated
-traveler is added to $\mathcal S_{ba}$, and the restricted problem is
-re-solved. This procedure continues until all traveler-choice
-constraints are satisfied.
+For each ordered pair with a negative omitted slack, a traveler attaining
+the minimum slack is added to $\mathcal S_{ba}$ and the restricted NLP is
+re-solved. Once all omitted slacks are nonnegative, the solution is
+feasible for the complete problem~\eqref{eq:regional-problem}.
+The feasible region-entry menu is retained as an incumbent throughout
+the procedure.
+
+Let $x^*=(\bm C^*,\bm\varepsilon^*)$ denote a local maximizer of the
+final restricted problem~\eqref{eq:restricted-regional-problem} returned
+by this procedure.
+
+\begin{lemma}[Interior local optimality]
+If all
+traveler-choice inequalities~\eqref{eq:regional-choice-condition} are
+strict at $x^*$, then $x^*$ is a local maximizer of the original
+optimistic bundle-design problem.
+\label{lem:interior-regional-optimality}
+\end{lemma}
+
+\begin{proof}
+Since $x^*$ is feasible for the complete regional problem, whose feasible
+set is contained in that of the final restricted problem, $x^*$ is also
+a local maximizer of the complete regional problem. By continuity of the
+traveler costs and finiteness of
+the traveler and option sets, the strict inequalities persist in a
+sufficiently small feasible neighborhood of $x^*$. The assignment is
+uniquely $\bm\alpha$ throughout that neighborhood, where
+$\Pi^{\mathrm{opt}}=\Pi_{\bm\alpha}$. Regional local optimality therefore
+implies local optimality of the original optimistic problem.
+\end{proof}
 
 \subsection{Regional Search and Boundary Transitions}
 \label{sec:regional-search-procedure}
 
-Inside a region where all inequalities in
-\eqref{eq:regional-choice-condition} are strict, every traveler class
-strictly prefers its assigned option. The assignment is therefore
-unchanged under sufficiently small perturbations of the menu. A change
-of assignment can occur only when at least one traveler-choice
-constraint becomes binding. The boundaries of
-$\mathcal R_{\bm\alpha}$ thus identify the bundle comparisons through
-which neighboring assignment regions can be reached.
-
-Using the minimum-cost option set defined
-in~\eqref{eq:min-cost-bundle-set}, an optimistic extreme-point response
-assigns class $i$ to
-\begin{equation}
-    \alpha_i^+
-    \in
-    \arg\max_{b\in\mathcal B_i^*(\bm C,\bm\varepsilon)}
-    M_b(C_b,\bm\varepsilon_b).
-    \label{eq:optimistic-assignment}
-\end{equation}
+By Lemma~\ref{lem:interior-regional-optimality},
+further search is needed only if at least one choice
+inequality~\eqref{eq:regional-choice-condition} is binding. At such a
+boundary menu, tied minimum-cost options permit a change of assignment.
+The following proposition shows that switching assignment regions at a
+traveler-choice boundary under the optimistic rule never decreases
+platform profit.
 
 \begin{proposition}[Optimistic boundary dominance]
 Let $(\bm C,\bm\varepsilon)\in\mathcal R_{\bm\alpha}$, and let
-$\bm\alpha^+$ be an optimistic assignment generated by
-\eqref{eq:optimistic-assignment} at the same menu. Then
+$\bm\alpha^+$ be an optimistic assignment at the same menu under
+the selection rule~\eqref{eq:optimistic-response-set}. Then
 \begin{equation}
     \Pi_{\bm\alpha^+}(\bm C,\bm\varepsilon)
     \geq
@@ -973,7 +984,7 @@ to a tied minimum-cost option with a strictly larger platform margin.
 \begin{proof}
 Since $(\bm C,\bm\varepsilon)\in\mathcal R_{\bm\alpha}$,
 $\alpha_i\in\mathcal B_i^*(\bm C,\bm\varepsilon)$ for every class
-$i$. By \eqref{eq:optimistic-assignment},
+$i$. By the optimistic rule~\eqref{eq:optimistic-response-set},
 \begin{equation}
     M_{\alpha_i^+}
     (C_{\alpha_i^+},\bm\varepsilon_{\alpha_i^+})
@@ -986,36 +997,45 @@ gives \eqref{eq:optimistic-boundary-dominance}. The inequality is
 strict whenever it is strict for at least one class.
 \end{proof}
 
-Starting from a feasible menu $x^0$ with strictly positive optimistic
-profit, we compute its optimistic assignment $\bm\alpha$ and solve the
-fixed-assignment subproblem by the procedure in
-Section~\ref{sec:assignment-regions}. Let
-$x^*=(\bm C^*,\bm\varepsilon^*)$ denote the resulting regional
-solution. We evaluate the optimistic response at $x^*$. If a tied
-minimum-cost option provides a strictly larger platform margin, the
-corresponding traveler is reassigned according to the optimistic rule.
-By Proposition~\ref{prop:optimistic-boundary-dominance}, this transition
-strictly increases platform profit at the same menu. The new assignment
-defines the next region, with $x^*$ used as its warm start.
+We recompute the optimistic assignment at $x^*$. If this yields a strict
+profit increase, we solve the corresponding regional problem using
+$x^*$ as a feasible warm start.
 
-A double tie requires an adjacent-region check. Suppose two options
-are tied in both traveler cost and platform margin. Switching the tied
-assignment leaves profit unchanged at $x^*$, and the same menu is feasible
-for the adjacent region. We solve that region from $x^*$, obtaining a
-local maximizer $x^+$ whose profit is no lower than the entry incumbent.
-If $x^+\neq x^*$, the new menu is accepted even when its profit is equal
-to the incumbent's. The optimistic assignment is recomputed at $x^+$,
-and the search continues from that menu. If $x^+=x^*$, the neighboring
-region has also been locally optimized at the current menu and is marked
-as resolved. The original region need not be re-solved at the same point.
+A double tie occurs when a traveler class has multiple minimum-cost
+options that also share the largest platform margin.
 
-The resolved-region record applies only to the current menu and is reset
-whenever the menu changes. Once the ordinary optimistic response is
-stable, unresolved adjacent assignments generated by double ties are
-checked in turn. When several double ties occur simultaneously, all
-relevant locally adjacent assignment combinations must be resolved at
-the terminal menu before local optimality is declared. In the generic
-single-boundary case, this requires only one additional regional solve.
+\begin{lemma}[Local optimality at double ties]
+If $x^*$ is a local maximizer of every regional problem associated with a combination
+of tied minimum-cost, maximum-margin choices, then $x^*$ is a local
+maximizer of the original optimistic bundle-design problem.
+\label{lem:double-tie-local-optimality}
+\end{lemma}
+
+\begin{proof}
+The tied assignments are precisely those feasible at $x^*$ that attain
+$\Pi^{\mathrm{opt}}(x^*)$. By assumption, $x^*$ is a local maximizer in
+each corresponding region. Any other assignment is either infeasible
+at $x^*$ or has strictly lower profit there. Since assignment regions
+are closed and regional objectives are continuous, these other
+assignments cannot yield a profit above $\Pi^{\mathrm{opt}}(x^*)$ in a
+sufficiently small neighborhood. There are finitely many assignments,
+so a common neighborhood can be chosen in which none improves on
+$x^*$. Thus, $x^*$ is a local maximizer of the original optimistic
+problem.
+\end{proof}
+
+Once optimistic reassignment yields no strict profit increase, we check
+the unresolved regions generated by double ties using $x^*$ as their
+incumbent. A strictly improving menu is accepted. Otherwise, the region
+is marked as resolved if
+$x^*$ is established as a local maximizer there; if this has not been
+established, the search continues from the returned menu at equal profit.
+
+Whenever a new menu is accepted, we recompute its optimistic assignment,
+reset the resolved-region record, and continue regional exploration.
+If all relevant regions are resolved at the current menu, the algorithm
+terminates there with local optimality guaranteed by
+Lemma~\ref{lem:double-tie-local-optimality}.
 
 Algorithm~\ref{alg:regional-search} summarizes the procedure.
 
@@ -1037,11 +1057,14 @@ Algorithm~\ref{alg:regional-search} summarizes the procedure.
                 \State Add the most violated traveler to $\mathcal S_{ba}$
             \EndFor
         \Until{all traveler-choice constraints are satisfied}
-        \State Let $x^*$ be the locally optimal regional solution
+        \State $x^*\gets$ the regional solution
         \If{$x^*\neq x$}
             \State $\mathcal V\gets\emptyset$
         \EndIf
         \State $x\gets x^*$; $\mathcal V\gets\mathcal V\cup\{\bm\alpha\}$
+    \EndIf
+    \If{all traveler-choice inequalities are strict at $x$}
+        \State \Return $(x,\bm\alpha)$ \Comment{Lemma~\ref{lem:interior-regional-optimality}}
     \EndIf
     \State Compute the optimistic assignment $\bm\alpha^{\mathrm{opt}}$ at $x$
     \If{$\Pi_{\bm\alpha^{\mathrm{opt}}}(x)>\Pi_{\bm\alpha}(x)$}
@@ -1057,33 +1080,36 @@ Algorithm~\ref{alg:regional-search} summarizes the procedure.
     \State Select an unresolved adjacent assignment $\bm\alpha'$
     \State Solve its regional problem by the same constraint-generation
     procedure, using $x$ as incumbent; let $x^+$ be its local maximizer
-    \If{$x^+\neq x$}
+    \If{$\Pi_{\bm\alpha'}(x^+)=\Pi_{\bm\alpha'}(x)$ and $x$ is verified locally optimal in $\mathcal R_{\bm\alpha'}$}
+        \State $\mathcal V\gets\mathcal V\cup\{\bm\alpha'\}$
+    \Else
         \State $x\gets x^+$; $\mathcal V\gets\{\bm\alpha'\}$
         \State Recompute the optimistic assignment $\bm\alpha$ at $x$
         \State \textbf{continue}
-    \Else
-        \State $\mathcal V\gets\mathcal V\cup\{\bm\alpha'\}$
     \EndIf
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
 
-The method reduces the computational burden in two directions.
-Constraint generation keeps the regional NLP small by introducing
-traveler constraints only when they become relevant. Regional search
-uses the bundle-choice boundaries to explore only locally connected
-assignments. The full assignment space is therefore replaced by a
-sequence of regional NLPs guided by the optimistic response.
+The method addresses two distinct sources of computational growth.
+Constraint generation handles the large number of traveler classes by
+including their choice constraints in each regional NLP only as needed.
+Regional search addresses the exponential growth in possible
+class-to-option assignments by exploring neighboring regions through
+traveler-choice boundaries, guided by the optimistic response. Together,
+these mechanisms reduce the constraint burden within each regional solve
+and avoid exhaustive enumeration of the assignment space.
 
 \subsection{Convergence and Local Optimality}
 
 We now establish the convergence properties of the two levels of the
 regional search. We assume that each regional NLP is solved to a local
 maximizer with an objective value no lower than its feasible region-entry
-incumbent. At a double tie, the neighboring region is marked as resolved
-at the current menu only when its regional solution remains at that menu.
-If the menu changes, the search continues from the new menu regardless
-of whether the profit increase is strict. The outside-option costs
+incumbent. At a double tie, a region is marked as resolved once local
+optimality of the current menu in that region has been established.
+This includes non-strict local maximizers on a flat optimal set.
+If a new menu is accepted, all regional checks refer to that new menu.
+The outside-option costs
 $e_{i0}$ are finite for all traveler classes.
 
 We first consider the traveler constraint generation within a fixed
@@ -1130,19 +1156,6 @@ traveler to a tied option with a strictly larger platform margin.
 Proposition~\ref{prop:optimistic-boundary-dominance} therefore gives a
 strict increase in profit at the same menu.
 
-At a double tie,
-\begin{equation}
-    e_{ia}(x^k)=e_{ib}(x^k),
-    \qquad
-    M_a(x^k)=M_b(x^k),
-    \label{eq:double-tie}
-\end{equation}
-the assignment can be switched without changing the current profit.
-The same menu is feasible for the adjacent region and is used as its
-incumbent. Its regional solution has no smaller profit. A changed menu is
-accepted even at equal profit, followed by a fresh optimistic assignment
-check. An unchanged menu resolves the neighboring region at that point.
-
 \begin{theorem}[Monotone convergence of the regional search]
 The sequence of accepted platform profits generated by the regional
 search satisfies
@@ -1163,14 +1176,11 @@ For an ordinary transition, the optimistic boundary rule gives a
 strictly higher-margin assignment at the same menu. The next regional
 solve starts from this improved point and preserves its incumbent value.
 
-For a double tie, switching the tied assignment leaves the platform
-profit unchanged. Since the boundary menu remains feasible for the
-adjacent region, the incumbent-preserving regional solve gives a value
-no smaller than the current one. Whether or not the gain is strict, a
-changed menu is accepted and the optimistic assignment is recomputed.
-If the regional solution remains at the same menu, local optimality in
-the adjacent region has been established there, so that region is marked
-as resolved without a further solve of the original region.
+At a double tie, reassignment preserves profit and feasibility at the
+current menu. Retaining that menu as the regional incumbent therefore
+ensures nondecrease. Recomputing the optimistic assignment at an
+accepted menu also cannot decrease profit by
+Proposition~\ref{prop:optimistic-boundary-dominance}.
 
 Hence, the accepted profit sequence is nondecreasing. To establish an
 upper bound, let $b=\alpha_i^k$ be the option assigned to class $i$.
@@ -1193,44 +1203,12 @@ profit and cannot belong to the all-PAYG assignment region.
 
 The outer convergence result concerns the platform objective, not the
 menu sequence. In particular, accepting an equal-profit changed menu
-alone does not rule out flat-region cycling. Local optimality is claimed
-only at a terminal menu where all assignment regions attaining the
-optimistic profit at that menu have been resolved.
-
-\begin{theorem}[Local optimality of a resolved terminal point]
-Let $x^*$ be a terminal point of the regional search with optimistic
-assignment $\bm\alpha^*$. Suppose that $x^*$ is a local maximizer of
-$\mathcal R_{\bm\alpha^*}$ and that every feasible assignment attaining
-the optimistic profit at $x^*$ through active double ties has also been
-resolved at $x^*$. Then $x^*$ is a local maximizer of the original
-optimistic bundle-design problem.
-\label{thm:local-optimality}
-\end{theorem}
-
-\begin{proof}
-Within $\mathcal R_{\bm\alpha^*}$, local optimality follows from
-Theorem~\ref{thm:inner-convergence}.
-
-There are finitely many assignment patterns. A pattern infeasible at
-$x^*$ cannot become feasible arbitrarily close to $x^*$, since its
-assignment region is closed. Among patterns feasible at $x^*$, those
-with profit strictly below $\Pi^{\mathrm{opt}}(x^*)$ remain below this
-value in a sufficiently small neighborhood by continuity. Ordinary
-ties that select a lower-margin option belong to this latter category.
-
-The remaining patterns attain $\Pi^{\mathrm{opt}}(x^*)$ at $x^*$. They
-are precisely the relevant combinations of minimum-cost,
-maximum-margin tied choices; relative to $\bm\alpha^*$, their changes
-are generated by active double ties. By assumption, $x^*$ is a local
-maximizer of each corresponding regional problem. Since the number of
-patterns is finite, their local neighborhoods can be chosen jointly.
-Thus no sufficiently nearby menu has greater optimistic profit.
-\end{proof}
-
-For a generic point with a single active boundary, a double tie requires
-only one additional regional solve. When several double ties occur
-simultaneously, the same argument applies after resolving the locally
-adjacent assignment combinations generated by those ties.
+alone does not rule out flat-region cycling. At a terminal menu with
+strict traveler-choice inequalities, local optimality follows from
+Lemma~\ref{lem:interior-regional-optimality}. At a terminal menu with
+ties, all assignment regions attaining the optimistic profit must be
+resolved at that menu; local optimality then follows from
+Lemma~\ref{lem:double-tie-local-optimality}.
 
 \section{Numerical Results}
 
@@ -1335,8 +1313,97 @@ This also explains the relation between the two panels. For a fixed allowance ve
 
 \subsection{Bundle-Design Insights}
 
+\FloatBarrier
 \subsection{Large-Scale Computational Experiments}
 
+We conduct a preliminary experiment on the Sioux Falls network with 24
+nodes and 76 directed physical links. Five transport modes share these
+links. Each of the 528 positive-demand directed OD pairs contributes two
+traveler classes, giving 1,056 classes in total. The menu contains PAYG
+and two subscription bundles, with 12 design variables. Class weights
+are normalized to sum to one, so profits are reported in USD per
+representative traveler per month. Complete lower-level dual-vertex
+preprocessing takes 57.4 seconds and is reused across all starts.
+
+We solve the menu-design problem from one fixed and 99 randomly
+generated positive-profit initial menus. All 100 starts return feasible,
+assignment-consistent candidates. The mean and median per-start
+runtimes are 10.65 and 6.76 seconds, respectively, with a 95th
+percentile of 30.72 seconds. Runtime includes all solver attempts for
+each start and excludes the shared preprocessing step.
+The mean, median and best final profits are 14.0657, 14.3596 and
+17.5674, respectively. The best result is obtained at start 14 and is
+3.49\% above the best result from the first ten starts; subsequent
+starts do not improve it.
+
+Table~\ref{tab:sioux-regional-workload} summarizes the completed search
+trajectories for all 100 starts. A region transition changes the full
+traveler assignment; the initial region is not counted as a transition.
+One constraint-generation (CG) round consists of a restricted NLP solve followed by separation
+over all traveler-choice constraints. This count includes the initial
+restricted solve. Thus, $r$ CG rounds require $r-1$ rounds of adding
+constraints and re-solving. Several violated traveler constraints may be
+added in one round; solver retries within a round do not increase this
+count.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Regional-search and constraint-generation effort for 100
+    completed search trajectories. Per-region statistics cover 304 regional solves.}
+    \label{tab:sioux-regional-workload}
+    \small
+    \begin{tabular}{lrrrr}
+        \toprule
+        Measure & Mean & Median & 95th percentile & Maximum \\
+        \midrule
+        Regions visited per start & 3.04 & 2 & 9 & 14 \\
+        Region transitions per start & 2.04 & 1 & 8 & 13 \\
+        CG rounds per start & 7.95 & 5 & 28.1 & 41 \\
+        CG rounds per region & 2.62 & 3 & 5 & 6 \\
+        Constraint-addition rounds per region & 1.62 & 2 & 4 & 5 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Figure~\ref{fig:sioux-regional-workload} shows the corresponding
+distributions. Thirty-six trajectories finish in their initial region,
+while the remaining 64 make at least one transition. All assignments
+visited within each completed trajectory are distinct. Of the 304
+regional solves, 250 (82.2\%) finish within three CG rounds and 286
+(94.1\%) within four; 49 require no additional constraints after the
+initial solve.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/sioux_falls_regional_workload.pdf}
+    \caption{Distribution of (a) region transitions across 100 completed
+    search trajectories and (b) CG rounds across their 304 regional solves. Bar labels
+    give counts. The initial restricted NLP solve counts as one CG round.}
+    \label{fig:sioux-regional-workload}
+\end{figure}
+
+The completed trajectory with the most transitions is start 85, which
+visits 14 distinct regions and makes 13 transitions.
+Figure~\ref{fig:sioux-longest-trajectory} shows its profit trajectory and
+the number of traveler-choice constraints in each region. Profit
+increases from 8.2720 at the initial menu to 15.3234 at termination.
+The initial restricted problems contain 14--24 traveler-choice
+constraints, increasing to 19--27 after constraint generation.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/sioux_falls_longest_trajectory.pdf}
+    \caption{Start 85, the completed trajectory with the most region
+    transitions. Panel~(a) reports profit after recomputing the optimistic
+    traveler response at each regional solution; point zero is the
+    initial menu. Panel~(b) shows the initial traveler-choice constraints
+    and those added by constraint generation in each region. Bar labels
+    give the final number of traveler-choice constraints; variable bounds
+    and menu-ordering constraints are excluded.}
+    \label{fig:sioux-longest-trajectory}
+\end{figure}
+
+\FloatBarrier
 \section{Conclusion}
 
 \small

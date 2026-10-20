@@ -2,7 +2,7 @@
 
 The 24-node, 76-link network and 360,600-trip OD table are transcribed from
 the Transportation Networks for Research TNTP data.  The original data are a
-road traffic-assignment instance; the two MaaS credit modes, traveler demand
+road traffic-assignment instance; the five MaaS credit modes, traveler demand
 distributions, mode preferences, and bundle costs below are synthetic and are
 kept explicit so experimental results do not imply that they came from TNTP.
 
@@ -13,7 +13,10 @@ users to cite the Transportation Networks for Research Core Team.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from functools import lru_cache
+from pathlib import Path
 
 import networkx as nx
 import numpy as np
@@ -23,6 +26,7 @@ from maas_bundle.design.menu import BundleMenu
 from maas_bundle.design.problem import BundleDesignProblem
 from maas_bundle.examples.sioux_falls_config import (
     DEFAULT_SIOUX_FALLS_CONFIG,
+    MODE_NAMES,
     TNTP_TIME_TO_MINUTES,
     SiouxFallsExperimentConfig,
 )
@@ -30,13 +34,14 @@ from maas_bundle.oracle.demand_distribution import (
     TriangularDemandDistribution,
     UniformDemandDistribution,
 )
-from maas_bundle.oracle.route_value import RouteValueOracle, build_route_value_oracle
+from maas_bundle.oracle.network import build_network_route_value_oracle
+from maas_bundle.oracle.route_value import RouteValueOracle
+from maas_bundle.oracle.vertex_cache import load_vertex_cache
 
 SOURCE_URL = "https://github.com/bstabler/TransportationNetworks/tree/master/SiouxFalls"
 SOURCE_TOTAL_OD_FLOW = 360_600.0
 NODE_COUNT = 24
 DIRECTED_LINK_COUNT = 76
-MODE_NAMES = ("trunk", "feeder")
 TRAVELER_SEGMENTS_PER_OD = 2
 
 # The TNTP network is symmetric. Each tuple is
@@ -115,7 +120,7 @@ def build_sioux_falls_graph() -> nx.DiGraph:
     """Return the source network with physical travel times in minutes.
 
     Source length is an arbitrary copy of source time, not a distance. Source
-    capacity and OD flow are used only for classification and relative weights.
+    capacity is preserved as source metadata; OD flow defines relative weights.
     """
 
     graph = nx.DiGraph(name="TNTP Sioux Falls", time_unit="minute")
@@ -141,6 +146,7 @@ def sioux_falls_od_matrix() -> NDArray[np.float64]:
 def build_sioux_falls_problem(
     *,
     maximum_od_pairs: int | None = None,
+    oracle_cache_path: str | Path | None = None,
     config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
 ) -> BundleDesignProblem:
     """Build the large two-segment-per-OD synthetic MaaS instance."""
@@ -161,12 +167,33 @@ def build_sioux_falls_problem(
     if maximum_od_pairs is not None:
         positive_pairs = positive_pairs[: int(maximum_od_pairs)]
 
+    cached = (
+        None
+        if oracle_cache_path is None
+        else load_vertex_cache(
+            oracle_cache_path,
+            signature=sioux_falls_geometry_signature(config),
+            mode_count=len(MODE_NAMES),
+        )
+    )
+    if cached is not None and any(
+        (origin, destination, segment) not in cached
+        for _, origin, destination in positive_pairs
+        for segment in range(TRAVELER_SEGMENTS_PER_OD)
+    ):
+        raise ValueError("vertex cache is incomplete for the requested OD pairs")
     total_selected_flow = sum(flow for flow, _, _ in positive_pairs)
     traveler_weights: list[float] = []
     route_oracles = []
     distributions = []
     for flow, origin, destination in positive_pairs:
-        od_oracles = _od_route_oracles(origin, destination, config)
+        od_oracles = (
+            _od_route_oracles(origin, destination, config)
+            if cached is None
+            else tuple(
+                cached[origin, destination, segment] for segment in range(TRAVELER_SEGMENTS_PER_OD)
+            )
+        )
         for segment, share in enumerate(config.segment_shares):
             oracle = od_oracles[segment]
             traveler_weights.append(share * flow / total_selected_flow)
@@ -196,70 +223,67 @@ def initial_sioux_falls_menu(
     )
 
 
+def build_sioux_falls_multimodal_graph(
+    config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
+) -> nx.MultiDiGraph:
+    """Five modal arcs on every physical link; transfers at nodes have no penalty.
+
+    These are synthetic modal layers, not measured Sioux Falls services.
+    Physical topology stays at 24 nodes / 76 links; modal topology has 380 arcs.
+    """
+
+    graph = nx.MultiDiGraph()
+    graph.add_nodes_from(range(1, NODE_COUNT + 1))
+    for tail, head, edge in build_sioux_falls_graph().edges(data=True):
+        for mode, (name, factor) in enumerate(
+            zip(MODE_NAMES, config.travel_time_factors, strict=True)
+        ):
+            graph.add_edge(
+                tail,
+                head,
+                key=name,
+                mode=name,
+                mode_index=mode,
+                travel_time=edge["free_flow_time"] * factor,
+            )
+    return graph
+
+
+def sioux_falls_geometry_signature(config=DEFAULT_SIOUX_FALLS_CONFIG) -> str:
+    """Hash geometry only; prices, quotas and trip distributions do not affect vertices."""
+
+    geometry = {
+        "schema": "overlapping-modal-arcs-v1",
+        "physical_links": _UNDIRECTED_LINKS,
+        "mode_order": MODE_NAMES,
+        "time_factors": config.travel_time_factors,
+        "value_of_time": config.value_of_time_usd_per_minute,
+        "preferences": config.preference_usd_per_link_use,
+        "tariffs": config.payg_usd_per_link_use,
+    }
+    return hashlib.sha256(json.dumps(geometry, sort_keys=True).encode()).hexdigest()
+
+
 @lru_cache(maxsize=2 * NODE_COUNT * (NODE_COUNT - 1))
 def _od_route_oracles(
     origin: int,
     destination: int,
     config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
 ) -> tuple[RouteValueOracle, ...]:
-    """Cache complete dual vertices for both segments of this fixed benchmark.
+    """Enumerate complete dual vertices by exact shortest-path separation."""
 
-    Geometry is independent of menus, allowances, and trip-frequency draws.
-    Immutable oracles are shared across bundle options and repeated runs in
-    this process; the temporary all-path arrays need not remain in memory.
-    """
-
-    path_costs, mode_usage = _od_path_data(
-        build_sioux_falls_graph(),
-        origin,
-        destination,
-        trunk_capacity_threshold=config.trunk_capacity_threshold_source_flow_units,
-    )
     oracles = []
-    for value_of_time, preference in zip(
-        config.value_of_time_usd_per_minute,
-        config.preference_usd_per_link_use,
-        strict=True,
-    ):
-        generalized_costs = value_of_time * path_costs + np.asarray(preference) @ mode_usage
+    for segment, beta in enumerate(config.value_of_time_usd_per_minute):
+        graph = build_sioux_falls_multimodal_graph(config)
+        preference = config.preference_usd_per_link_use[segment]
+        for _, _, edge in graph.edges(data=True):
+            edge["generalized_cost"] = beta * edge["travel_time"] + preference[edge["mode_index"]]
         oracles.append(
-            build_route_value_oracle(
-                generalized_costs,
-                mode_usage,
-                payg_tariff=np.asarray(config.payg_usd_per_link_use),
+            build_network_route_value_oracle(
+                graph, origin, destination, config.payg_usd_per_link_use
             )
         )
     return tuple(oracles)
-
-
-def _od_path_data(
-    graph: nx.DiGraph,
-    origin: int,
-    destination: int,
-    *,
-    trunk_capacity_threshold: float = (
-        DEFAULT_SIOUX_FALLS_CONFIG.trunk_capacity_threshold_source_flow_units
-    ),
-) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
-    """Use every simple OD path, without a path-count or length cutoff.
-
-    All benchmark edge costs are positive and mode usage is nonnegative.
-    Removing a cycle can only reduce generalized cost and mode usage, so
-    simple paths suffice for the complete network route-value function.
-    """
-
-    paths = tuple(nx.all_simple_paths(graph, source=origin, target=destination))
-    path_costs = np.zeros(len(paths), dtype=float)
-    mode_usage = np.zeros((len(MODE_NAMES), len(paths)), dtype=float)
-    for path_index, path in enumerate(paths):
-        for tail, head in nx.utils.pairwise(path):
-            edge = graph.edges[tail, head]
-            path_costs[path_index] += edge["free_flow_time"]
-            # High-capacity links form the synthetic trunk network; remaining
-            # links consume feeder credits. This classification is not TNTP data.
-            mode = 0 if edge["capacity"] >= trunk_capacity_threshold else 1
-            mode_usage[mode, path_index] += 1.0
-    return path_costs, mode_usage
 
 
 def draw_sioux_falls_menu(
@@ -272,8 +296,11 @@ def draw_sioux_falls_menu(
     prices = np.concatenate(
         ([0.0], np.sort(random.uniform(*config.sampled_price_bounds_usd_per_month, size=2)))
     )
-    basic = random.uniform(*config.sampled_basic_allowance_bounds_link_uses_per_month, size=2)
-    premium = basic + random.uniform(
-        *config.sampled_premium_increment_bounds_link_uses_per_month, size=2
+    mode_count = len(MODE_NAMES)
+    basic = random.uniform(
+        *config.sampled_basic_allowance_bounds_link_uses_per_month, size=mode_count
     )
-    return BundleMenu(prices=prices, allowances=np.vstack((np.zeros(2), basic, premium)))
+    premium = basic + random.uniform(
+        *config.sampled_premium_increment_bounds_link_uses_per_month, size=mode_count
+    )
+    return BundleMenu(prices=prices, allowances=np.vstack((np.zeros(mode_count), basic, premium)))

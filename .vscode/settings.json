@@ -1,4 +1,5 @@
 {
+  "task.allowAutomaticTasks": "on",
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
@@ -7,26 +8,21 @@
       "source.organizeImports.ruff": "explicit"
     }
   },
-
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.autoImportCompletions": true,
-
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,
   "python.testing.pytestArgs": [
     "tests"
   ],
   "python.testing.cwd": "${workspaceFolder}",
-
   "ruff.importStrategy": "fromEnvironment",
-
   "files.exclude": {
     "**/__pycache__": true,
     "**/.pytest_cache": true,
     "**/.ruff_cache": true,
     "**/*.pyc": true
   },
-
   "search.exclude": {
     "**/.git": true,
     "**/__pycache__": true,
@@ -36,7 +32,6 @@
   },
   "python-envs.defaultEnvManager": "ms-python.python:conda",
   "python-envs.defaultPackageManager": "ms-python.python:conda",
-
   "[tex]": {
     "editor.formatOnSave": false
   },
@@ -83,7 +78,9 @@
     },
     {
       "name": "latexmk-pdflatex",
-      "env": { "PATH": "/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" },
+      "env": {
+        "PATH": "/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      },
       "command": "/Library/TeX/texbin/latexmk",
       "args": [
         "-pdf",
@@ -96,7 +93,9 @@
     },
     {
       "name": "latexmk-xelatex",
-      "env": { "PATH": "/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" },
+      "env": {
+        "PATH": "/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      },
       "command": "/Library/TeX/texbin/latexmk",
       "args": [
         "-xelatex",
@@ -109,7 +108,9 @@
     },
     {
       "name": "latexmk-lualatex",
-      "env": { "PATH": "/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" },
+      "env": {
+        "PATH": "/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      },
       "command": "/Library/TeX/texbin/latexmk",
       "args": [
         "-lualatex",
@@ -239,5 +240,9 @@
   ],
   "latex-workshop.view.pdf.viewer": "tab",
   "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
-  "latex-workshop.synctex.afterBuild.enabled": true
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "overleaf-workshop.localReplica.paths": [
+    "Paper/MaaS bundle design"
+  ],
+  "overleaf-workshop.localReplica.syncOnFileChange.enabled": true
 }

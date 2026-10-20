@@ -54,15 +54,11 @@ def _scaled_bounded_price_problem(
     problem = BundleDesignProblem(
         traveler_weights=np.full(traveler_count, 1.0 / traveler_count),
         unit_allowance_cost=np.array([1.0]),
-        route_oracles=tuple(
-            (_constant_oracle(cap), _constant_oracle(0.0)) for cap in caps
-        ),
+        route_oracles=tuple((_constant_oracle(cap), _constant_oracle(0.0)) for cap in caps),
         demand_distributions=tuple(distribution for _ in range(traveler_count)),
     )
     pool = CriticalConstraintSet(np.ones(traveler_count, dtype=np.int64), bundle_count=2)
-    pool.add_all(
-        ChoiceConstraintIndex(traveler, 1, 0) for traveler in range(traveler_count)
-    )
+    pool.add_all(ChoiceConstraintIndex(traveler, 1, 0) for traveler in range(traveler_count))
     return problem, pool
 
 
@@ -235,6 +231,43 @@ def test_regional_reuses_valuation_for_identical_vector() -> None:
     assert first_valuation is second_valuation
 
 
+def test_regional_evaluates_only_noncontiguous_critical_travelers(monkeypatch) -> None:
+    problem = _bounded_price_problem()
+    pool = CriticalConstraintSet([1, 1, 1], bundle_count=2)
+    pool.add(ChoiceConstraintIndex(2, 1, 0))
+    original = RouteValueOracle.expected_valuation
+    evaluated = []
+
+    def counted(self, allowance, distribution, **kwargs):
+        evaluated.append(self)
+        return original(self, allowance, distribution, **kwargs)
+
+    monkeypatch.setattr(RouteValueOracle, "expected_valuation", counted)
+    regional = RestrictedRegionalProblem(problem, pool)
+    np.testing.assert_allclose(regional.constraint_values([1, 0.5]), [-2])
+    np.testing.assert_allclose(regional.constraint_jacobian([1, 0.5]), [[1, 0]])
+    assert len(evaluated) == 2
+    assert all(any(oracle is item for item in problem.route_oracles[2]) for oracle in evaluated)
+    # A new price uses the same G values; changed allowances touch only subscription 1.
+    regional.constraint_values([1.1, 0.5])
+    assert len(evaluated) == 2
+    regional.constraint_values([1.1, 0.6])
+    assert len(evaluated) == 3
+
+
+def test_price_only_region_does_not_evaluate_any_route_oracle(monkeypatch) -> None:
+    problem = _bounded_price_problem()
+    pool = CriticalConstraintSet([1, 1, 1], bundle_count=2)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("an empty critical set must not evaluate traveler valuations")
+
+    monkeypatch.setattr(RouteValueOracle, "expected_valuation", forbidden)
+    regional = RestrictedRegionalProblem(problem, pool)
+    assert regional.constraint_values([1, 0.5]).size == 0
+    assert regional.constraint_jacobian([1, 0.5]).shape == (0, 2)
+
+
 @pytest.mark.parametrize(
     ("vector", "message"),
     [
@@ -398,6 +431,69 @@ def test_slsqp_success_uses_one_attempt_without_recovery(monkeypatch) -> None:
     assert result.metrics()["attempts"] == 1
 
 
+def test_exploration_skips_nnls_and_extra_optimality_gate(monkeypatch) -> None:
+    regional = RestrictedRegionalProblem(_bounded_price_problem(), _critical_pool(3))
+    raw = _synthetic_optimize_result([1.0, 1.0], success=True, status=0)
+    raw.optimality = 1.0
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("exploratory acceptance must not compute independent KKT multipliers")
+
+    monkeypatch.setattr(regional_module, "nnls", forbidden)
+    result = ScipyRegionalSolver(check_kkt=False)._normalize_result(regional, raw, 0.0)
+    assert result.success and result.native_success
+    assert result.metrics()["kkt_checked"] is False
+    assert result.metrics()["kkt_satisfied"] is None
+    assert result.metrics()["kkt_residual"] is None
+    assert not result.first_order_certificate.satisfies_kkt
+
+
+@pytest.mark.parametrize(
+    "vector,success,status,message,expected",
+    [
+        ([6.0, 0.0], True, 0, "success", RegionalSolveStatus.INFEASIBLE),
+        ([3.0, 0.0], False, 9, "Iteration limit reached", RegionalSolveStatus.ITERATION_LIMIT),
+    ],
+)
+def test_exploration_still_rejects_infeasibility_and_native_failure(
+    vector, success, status, message, expected
+) -> None:
+    regional = RestrictedRegionalProblem(_bounded_price_problem(), _critical_pool(3))
+    raw = _synthetic_optimize_result(vector, success=success, status=status, message=message)
+    result = ScipyRegionalSolver(check_kkt=False)._normalize_result(regional, raw, 0.0)
+    assert result.status is expected
+    assert not result.success
+    assert result.metrics()["raw_status"] == status
+    assert result.metrics()["message"] == message
+
+
+def test_exploration_retains_restart_and_fallback_policy(monkeypatch) -> None:
+    regional = RestrictedRegionalProblem(_bounded_price_problem(), _critical_pool(3))
+    initial = BundleMenu(np.array([0.0, 1.0]), np.zeros((2, 1)))
+    results = iter(
+        [
+            _synthetic_optimize_result([1.0, 1.0]),
+            _synthetic_optimize_result([1.0, 1.0]),
+            _synthetic_optimize_result([1.0, 1.0], success=True, status=1),
+        ]
+    )
+    methods = []
+
+    def fake_minimize(**kwargs):
+        methods.append(kwargs["method"])
+        return next(results)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("fallback must preserve check_kkt=False")
+
+    monkeypatch.setattr(regional_module, "nnls", forbidden)
+    monkeypatch.setattr(regional_module, "minimize", fake_minimize)
+    result = ScipyRegionalSolver(check_kkt=False).solve(regional, initial)
+    assert methods == ["SLSQP", "SLSQP", "trust-constr"]
+    assert result.success and result.attempt_count == 3
+    assert result.metrics()["kkt_checked"] is False
+
+
 def test_certified_warm_start_is_retained_after_roundoff_profit_loss(monkeypatch) -> None:
     regional = RestrictedRegionalProblem(_bounded_price_problem(), _critical_pool(3))
     initial = BundleMenu(np.array([0.0, 3.0]), np.zeros((2, 1)))
@@ -465,6 +561,85 @@ def test_slsqp_restarts_once_from_feasible_nonstationary_point(monkeypatch) -> N
     assert result.iteration_count == 5
     assert result.attempted_solvers == ("scipy-SLSQP", "scipy-SLSQP")
     assert "recovery chain" in result.message
+
+
+def test_multiple_slsqp_restarts_perturb_feasibly_and_log_each_attempt(monkeypatch) -> None:
+    regional = RestrictedRegionalProblem(_bounded_price_problem(), _critical_pool(3))
+    initial = BundleMenu(np.array([0.0, 1.0]), np.zeros((2, 1)))
+    calls = []
+
+    def fake_minimize(**arguments):
+        calls.append(arguments)
+        if len(calls) == 4:
+            return _synthetic_optimize_result([3.0, 0.0], success=True, status=0)
+        return _synthetic_optimize_result([1.0, 1.0], message=f"stop {len(calls)}")
+
+    monkeypatch.setattr(regional_module, "minimize", fake_minimize)
+    result = ScipyRegionalSolver(
+        check_kkt=False, slsqp_restarts=4, enable_fallback=False
+    ).solve(regional, initial)
+    assert result.success and result.attempt_count == 4
+    assert [call["method"] for call in calls] == ["SLSQP"] * 4
+    assert not np.array_equal(calls[1]["x0"], calls[2]["x0"])
+    for call in calls[1:]:
+        assert regional.maximum_constraint_violation(call["x0"]) <= 1e-7
+    history = result.metrics()["attempt_history"]
+    assert [step["message"] for step in history[:3]] == ["stop 1", "stop 2", "stop 3"]
+    assert history[2]["initial_prices"] is not None
+
+
+@pytest.mark.parametrize("restarts,recovery,expected", [(4, True, 5), (0, True, 1), (4, False, 1)])
+def test_failed_slsqp_retries_are_bounded_without_backend_switch(
+    monkeypatch, restarts, recovery, expected
+) -> None:
+    regional = RestrictedRegionalProblem(_bounded_price_problem(), _critical_pool(3))
+    initial = BundleMenu(np.array([0.0, 1.0]), np.zeros((2, 1)))
+    methods = []
+
+    def fake_minimize(**kwargs):
+        methods.append(kwargs["method"])
+        return _synthetic_optimize_result([1.0, 1.0])
+
+    monkeypatch.setattr(regional_module, "minimize", fake_minimize)
+    result = ScipyRegionalSolver(
+        check_kkt=False, slsqp_restarts=restarts,
+        enable_recovery=recovery, enable_fallback=False,
+    ).solve(regional, initial)
+    assert not result.success
+    assert methods == ["SLSQP"] * expected
+    assert result.attempt_count == expected
+
+
+@pytest.mark.parametrize("value", [-1, 1.5, True])
+def test_invalid_slsqp_restart_count(value) -> None:
+    with pytest.raises(ValueError, match="slsqp_restarts"):
+        ScipyRegionalSolver(slsqp_restarts=value)
+
+
+def test_invalid_fallback_flag() -> None:
+    with pytest.raises(ValueError, match="enable_fallback"):
+        ScipyRegionalSolver(enable_fallback=1)
+
+
+def test_final_numerical_constraint_retry_uses_slsqp_within_attempt_budget(monkeypatch) -> None:
+    regional = RestrictedRegionalProblem(_bounded_price_problem(), _critical_pool(3))
+    initial = BundleMenu(np.array([0.0, 1.0]), np.zeros((2, 1)))
+    calls = []
+
+    def fake_minimize(**arguments):
+        calls.append(arguments)
+        return _synthetic_optimize_result([1.0, 1.0])
+
+    monkeypatch.setattr(regional_module, "minimize", fake_minimize)
+    result = ScipyRegionalSolver(
+        check_kkt=False, slsqp_restarts=4,
+        numerical_constraint_recovery=True, enable_fallback=False,
+    ).solve(regional, initial)
+    assert len(calls) == result.attempt_count == 5
+    assert [call["method"] for call in calls] == ["SLSQP"] * 5
+    assert all("jac" in call["constraints"][0] for call in calls[:-1])
+    assert "jac" not in calls[-1]["constraints"][0]
+    assert calls[-1]["options"]["eps"] == 1e-6
 
 
 def test_slsqp_backtracks_infeasible_result_before_restart(monkeypatch) -> None:
@@ -605,9 +780,7 @@ def test_solver_scale_and_known_global_optimum(traveler_count, record_property) 
 
     for method in ("SLSQP", "trust-constr"):
         options = (
-            {"maxiter": 500, "ftol": 1e-10}
-            if method == "SLSQP"
-            else {"maxiter": 500, "gtol": 1e-9}
+            {"maxiter": 500, "ftol": 1e-10} if method == "SLSQP" else {"maxiter": 500, "gtol": 1e-9}
         )
         result = ScipyRegionalSolver(method=method, options=options).solve(regional, initial)
         known_global_optimum = (

@@ -1,0 +1,67 @@
+{
+  "start": 14,
+  "seed": 20261031,
+  "source": "start_014.json",
+  "profit": 17.567399878424993,
+  "check_kkt": false,
+  "mode_order": [
+    "bus",
+    "metro",
+    "bike",
+    "ride_hailing",
+    "car_sharing"
+  ],
+  "prices": [
+    0.0,
+    20.624854505315344,
+    65.77251239184095
+  ],
+  "allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      19.917917590990193,
+      23.879827816154634,
+      5.518672519084227,
+      8.763083344842443,
+      0.0
+    ],
+    [
+      4.1550935184095606e-16,
+      3.4337581722604567,
+      0.0,
+      85.66508263374142,
+      22.677591536730755
+    ]
+  ],
+  "metrics": {
+    "status": "consistent",
+    "regions": 4,
+    "assignment_changes": 3,
+    "assignment_revisits": 0,
+    "changed_travelers": 14,
+    "generation_iterations": 11,
+    "nlp_solves": 11,
+    "regional_objective": 17.567399878424993,
+    "boundary_trials": 0,
+    "boundary_returns": 0,
+    "boundary_search_complete": true,
+    "true_profit": 17.567399878424993,
+    "time_seconds": 9.758603750000475
+  },
+  "diagnostics": {
+    "status": "consistent_candidate",
+    "valid": true,
+    "assignment_consistent": true,
+    "full_separation": true,
+    "regional_success": true,
+    "regional_kkt": null,
+    "user_ties": 10,
+    "double_ties": 0
+  }
+}

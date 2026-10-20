@@ -2,7 +2,6 @@
 
 from dataclasses import replace
 
-import networkx as nx
 import numpy as np
 import pytest
 from scipy.optimize import linprog
@@ -35,6 +34,32 @@ def test_sioux_falls_source_network_and_od_table() -> None:
     assert np.sum(demand) == SOURCE_TOTAL_OD_FLOW
 
 
+def test_five_modes_share_each_physical_link() -> None:
+    graph = sioux_module.build_sioux_falls_multimodal_graph()
+    assert graph.number_of_nodes() == 24
+    assert graph.number_of_edges() == 380
+    for tail, head in build_sioux_falls_graph().edges:
+        assert set(graph[tail][head]) == set(sioux_module.MODE_NAMES)
+        for mode, name in enumerate(sioux_module.MODE_NAMES):
+            assert graph[tail][head][name]["mode_index"] == mode
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("payg_usd_per_link_use", (0.45, 0.75)),
+        ("provision_usd_per_link_use", (0.05,) * 4 + (-0.1,)),
+        ("preference_usd_per_link_use", ((0.0,) * 5,)),
+        ("initial_allowances_link_uses_per_month", ((0.0,) * 2,) * 3),
+        ("travel_time_factors", (1.0, 2.0)),
+        ("travel_time_factors", (1.0, 1.0, 1.0, 1.0, 0.0)),
+    ],
+)
+def test_five_mode_config_rejects_inconsistent_dimensions(field, value) -> None:
+    with pytest.raises(ValueError):
+        replace(DEFAULT_SIOUX_FALLS_CONFIG, **{field: value})
+
+
 def test_sioux_falls_problem_can_select_highest_demand_od_pairs() -> None:
     full_problem = build_sioux_falls_problem()
     problem = build_sioux_falls_problem(maximum_od_pairs=3)
@@ -42,7 +67,7 @@ def test_sioux_falls_problem_can_select_highest_demand_od_pairs() -> None:
     assert full_problem.traveler_count == 1056
     assert problem.traveler_count == 6
     assert problem.bundle_count == 3
-    assert problem.mode_count == 2
+    assert full_problem.mode_count == problem.mode_count == 5
     assert np.sum(problem.traveler_weights) == pytest.approx(1.0)
     assert [type(item).__name__ for item in problem.demand_distributions] == [
         "UniformDemandDistribution",
@@ -60,58 +85,34 @@ def test_sioux_falls_problem_can_select_highest_demand_od_pairs() -> None:
     assert problem.demand_distributions[1].upper == 44
 
 
-def test_sioux_falls_paths_include_a_better_route_beyond_the_first_five() -> None:
-    graph = nx.DiGraph()
-    for via in range(1, 7):
-        # The sixth path is slower in free-flow time but cheaper with PAYG.
-        attributes = {
-            "free_flow_time": 1.0 + 0.01 * via,
-            "capacity": 20000.0 if via == 6 else 5000.0,
-        }
-        graph.add_edge(0, via, **attributes)
-        graph.add_edge(via, 7, **attributes)
-
-    times, usage = sioux_module._od_path_data(graph, 0, 7)
-    assert times.size == 6
-    costs = 0.18 * times + np.array([0.02, 0.10]) @ usage
-    oracle = sioux_module.build_route_value_oracle(costs, usage, [0.45, 0.75])
-    expected = 0.18 * 2.12 + 2 * 0.02 + 2 * 0.45
-    assert oracle.value(1.0, [0.0, 0.0]) == pytest.approx(expected)
-    first_five = np.argsort(times)[:5]
-    truncated = sioux_module.build_route_value_oracle(
-        costs[first_five], usage[:, first_five], [0.45, 0.75]
-    )
-    assert truncated.value(1.0, [0.0, 0.0]) > expected + 0.5
-
-
 @pytest.mark.parametrize(("origin", "destination"), [(1, 24), (10, 16), (3, 20)])
 @pytest.mark.parametrize("segment", [0, 1])
 def test_full_network_oracle_matches_independent_link_flow_lp(origin, destination, segment) -> None:
     """Verify the all-path oracle against a formulation with every network arc."""
 
-    graph = build_sioux_falls_graph()
+    graph = sioux_module.build_sioux_falls_multimodal_graph()
     edges = list(graph.edges(data=True))
     edge_count = len(edges)
-    incidence = np.zeros((NODE_COUNT, edge_count + 2))
-    usage = np.zeros((2, edge_count + 2))
-    costs = np.zeros(edge_count + 2)
+    incidence = np.zeros((NODE_COUNT, edge_count + 5))
+    usage = np.zeros((5, edge_count + 5))
+    costs = np.zeros(edge_count + 5)
     config = DEFAULT_SIOUX_FALLS_CONFIG
     beta = config.value_of_time_usd_per_minute[segment]
     preference = config.preference_usd_per_link_use[segment]
     for column, (tail, head, edge) in enumerate(edges):
         incidence[tail - 1, column] = 1.0
         incidence[head - 1, column] = -1.0
-        mode = 0 if edge["capacity"] >= config.trunk_capacity_threshold_source_flow_units else 1
+        mode = edge["mode_index"]
         usage[mode, column] = 1.0
-        costs[column] = beta * edge["free_flow_time"] + preference[mode]
-    usage[:, -2:] = -np.eye(2)
-    costs[-2:] = config.payg_usd_per_link_use
+        costs[column] = beta * edge["travel_time"] + preference[mode]
+    usage[:, -5:] = -np.eye(5)
+    costs[-5:] = config.payg_usd_per_link_use
     oracle = sioux_module._od_route_oracles(origin, destination)[segment]
     for mu in (0.0, 8.0, 32.0):
         balance = np.zeros(NODE_COUNT)
         balance[origin - 1] = mu
         balance[destination - 1] = -mu
-        for allowance in ([0.0, 0.0], [32.0, 16.0], [0.0, 120.0], [120.0, 0.0]):
+        for allowance in (np.zeros(5), [16, 16, 4, 6, 6], *list(120 * np.eye(5))):
             reference = linprog(
                 costs,
                 A_ub=usage,
@@ -131,12 +132,12 @@ def test_sioux_falls_reuses_precomputed_geometry_across_menus(monkeypatch) -> No
     def unexpected_rebuild(*args, **kwargs):
         pytest.fail("cached oracle must not rebuild paths or enumerate vertices")
 
-    monkeypatch.setattr(sioux_module, "_od_path_data", unexpected_rebuild)
-    monkeypatch.setattr(sioux_module, "build_route_value_oracle", unexpected_rebuild)
+    monkeypatch.setattr(sioux_module, "build_sioux_falls_multimodal_graph", unexpected_rebuild)
+    monkeypatch.setattr(sioux_module, "build_network_route_value_oracle", unexpected_rebuild)
     assert sioux_module._od_route_oracles(1, 24) is cached
     for oracle in cached:
-        assert np.isfinite(oracle.value(3.0, [2.0, 8.0]))
-        assert np.isfinite(oracle.value(9.0, [20.0, 0.0]))
+        assert np.isfinite(oracle.value(3.0, [2.0, 8.0, 1.0, 4.0, 6.0]))
+        assert np.isfinite(oracle.value(9.0, [20.0, 0.0, 4.0, 2.0, 8.0]))
 
 
 def test_sioux_falls_changed_economic_config_cannot_reuse_old_vertices() -> None:
@@ -145,7 +146,9 @@ def test_sioux_falls_changed_economic_config_cannot_reuse_old_vertices() -> None
     original = sioux_module._od_route_oracles(1, 24, config)
     updated = sioux_module._od_route_oracles(1, 24, changed)
     assert updated is not original
-    assert updated[0].value(8.0, [32.0, 16.0]) > original[0].value(8.0, [32.0, 16.0])
+    assert updated[0].value(8.0, [16.0, 16.0, 4.0, 6.0, 6.0]) > original[0].value(
+        8.0, [16.0, 16.0, 4.0, 6.0, 6.0]
+    )
     menu = initial_sioux_falls_menu(
         config=replace(config, initial_prices_usd_per_month=(0, 22, 44))
     )

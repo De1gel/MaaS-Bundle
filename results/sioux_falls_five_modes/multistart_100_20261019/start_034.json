@@ -1,0 +1,555 @@
+{
+  "experiment": {
+    "parameters": {
+      "version": "sioux-falls-monthly-usd-overlapping-five-mode-v3",
+      "segment_shares": [
+        0.45,
+        0.55
+      ],
+      "value_of_time_usd_per_minute": [
+        0.18,
+        0.32
+      ],
+      "preference_usd_per_link_use": [
+        [
+          0.02,
+          0.04,
+          0.06,
+          0.08,
+          0.1
+        ],
+        [
+          0.08,
+          0.065,
+          0.05,
+          0.04,
+          0.03
+        ]
+      ],
+      "travel_time_factors": [
+        1.5,
+        1.0,
+        2.5,
+        0.65,
+        0.85
+      ],
+      "payg_usd_per_link_use": [
+        0.3,
+        0.6,
+        0.1,
+        1.2,
+        0.9
+      ],
+      "provision_usd_per_link_use": [
+        0.05,
+        0.08,
+        0.02,
+        0.15,
+        0.1
+      ],
+      "low_frequency_trips_per_month": [
+        8.0,
+        20.0
+      ],
+      "high_frequency_trips_per_month": [
+        20.0,
+        32.0,
+        44.0
+      ],
+      "initial_prices_usd_per_month": [
+        0.0,
+        20.0,
+        40.0
+      ],
+      "initial_allowances_link_uses_per_month": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          16.0,
+          16.0,
+          4.0,
+          6.0,
+          6.0
+        ],
+        [
+          40.0,
+          40.0,
+          12.0,
+          18.0,
+          18.0
+        ]
+      ],
+      "sampled_price_bounds_usd_per_month": [
+        4.0,
+        64.0
+      ],
+      "sampled_basic_allowance_bounds_link_uses_per_month": [
+        0.0,
+        48.0
+      ],
+      "sampled_premium_increment_bounds_link_uses_per_month": [
+        0.0,
+        72.0
+      ]
+    },
+    "billing_period": "month",
+    "currency": "USD",
+    "units": {
+      "free_flow_time": "minute",
+      "source_free_flow_time": "0.01 hour",
+      "prices": "USD/person/month",
+      "allowances": "passenger-link traversals/person/month",
+      "trip_frequency": "one-way OD trips/person/month",
+      "mode_usage": "passenger-link traversals/OD trip",
+      "normalized_profit": "USD/person/month",
+      "true_profit": "USD/person/month",
+      "traveler_weights": "dimensionless population-share proxy",
+      "source_od_flow_and_capacity": "TNTP scaled flow units",
+      "solve_time_seconds": "second"
+    },
+    "source_time_to_minutes": 0.6,
+    "mode_order": [
+      "bus",
+      "metro",
+      "bike",
+      "ride_hailing",
+      "car_sharing"
+    ],
+    "mode_availability": "all five modes share every physical link; synthetic travel times and costs",
+    "od_weighting": "segment share times normalized source OD flow; not monthly population",
+    "synthetic_parameters": true,
+    "path_scope": "all multimodal routes; complete vertex separation by shortest paths"
+  },
+  "oracle_cache": "results/sioux_falls_five_modes/dual_vertices.npz",
+  "traveler_types": 1056,
+  "upper_variables": 12,
+  "settings": {
+    "wall_seconds": 120,
+    "nlp_max_iterations": 2000,
+    "max_regions": 30,
+    "recovery": true,
+    "check_kkt": false,
+    "seed": 20261051
+  },
+  "initial_profit": 8.134219387905716,
+  "initial_prices": [
+    0.0,
+    17.863578479667286,
+    53.91268967692516
+  ],
+  "initial_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      27.96724532984355,
+      9.050863122653155,
+      19.11313521530342,
+      34.171056390726555,
+      19.900359058241143
+    ],
+    [
+      47.691834058544714,
+      72.4125835409096,
+      46.466183698196154,
+      92.63573032074879,
+      38.40669847762943
+    ]
+  ],
+  "initial_assignment_sha256": "ac264b77dac31f43ea435c7fd05f1c5ff6022af050a7ea8f28a713e75b0a49ef",
+  "status": "consistent_candidate",
+  "valid": true,
+  "nlp_attempts": [
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 2.1114608329953626,
+      "iterations": 212,
+      "objective": 14.53611465722237,
+      "max_violation": 1.2789769243681803e-12,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 46,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully"
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.8378466669964837,
+      "iterations": 92,
+      "objective": 13.244599320526255,
+      "max_violation": 9.094947017729282e-13,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 47,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully"
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.5281370839948067,
+      "iterations": 76,
+      "objective": 13.635305346293428,
+      "max_violation": 2.0266099909349578e-10,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 36,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully"
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.7762545839941595,
+      "iterations": 115,
+      "objective": 14.15201900380008,
+      "max_violation": 1.8747670083030243e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 34,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully"
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.5208291250019101,
+      "iterations": 76,
+      "objective": 14.120101874538568,
+      "max_violation": 7.672440460737562e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 35,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully"
+    },
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 0.9292496250127442,
+      "iterations": 80,
+      "objective": 14.32248378777707,
+      "max_violation": 1.2391865311656147e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 50,
+      "variables": 12,
+      "attempts": 1,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "Optimization terminated successfully"
+    }
+  ],
+  "elapsed_seconds": 7.344989041986992,
+  "best_observed_profit": 14.32248378777707,
+  "best_observed_prices": [
+    0.0,
+    15.908343561527127,
+    85.3234716733413
+  ],
+  "best_observed_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      11.483362693830445,
+      23.40008631320588,
+      0.0003428143283132269,
+      9.79021771791581,
+      1.3119487222567414e-05
+    ],
+    [
+      2.8942394809807805e-06,
+      4.5922421737506065,
+      1.975668598864046e-13,
+      114.05918346959146,
+      30.384043357973734
+    ]
+  ],
+  "diagnostics": {
+    "status": "consistent_candidate",
+    "valid": true,
+    "assignment_consistent": true,
+    "full_separation": true,
+    "regional_success": true,
+    "regional_kkt": null,
+    "user_ties": 24,
+    "double_ties": 0
+  },
+  "diagnostic_message": "candidate passes regional checks and completed boundary search; not a second-order certificate; exploratory candidate: independent KKT was not checked",
+  "candidate_metrics": {
+    "status": "consistent",
+    "regions": 4,
+    "assignment_changes": 3,
+    "assignment_revisits": 0,
+    "changed_travelers": 6,
+    "generation_iterations": 6,
+    "nlp_solves": 6,
+    "regional_objective": 14.32248378777707,
+    "boundary_trials": 0,
+    "boundary_returns": 0,
+    "boundary_search_complete": true,
+    "true_profit": 14.32248378777707,
+    "time_seconds": 6.9982065410004
+  },
+  "candidate_prices": [
+    0.0,
+    15.908343561527127,
+    85.3234716733413
+  ],
+  "candidate_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      11.483362693830445,
+      23.40008631320588,
+      0.0003428143283132269,
+      9.79021771791581,
+      1.3119487222567414e-05
+    ],
+    [
+      2.8942394809807805e-06,
+      4.5922421737506065,
+      1.975668598864046e-13,
+      114.05918346959146,
+      30.384043357973734
+    ]
+  ],
+  "candidate_assignment_counts": [
+    154,
+    716,
+    186
+  ],
+  "candidate_assignment_sha256": "0e957b35d5ca6d8299c52427598896a4a47ce6e471d06244cffbdb6fae0e8cdf",
+  "candidate_region_history": [
+    {
+      "region": 1,
+      "assumed_assignment_sha256": "ac264b77dac31f43ea435c7fd05f1c5ff6022af050a7ea8f28a713e75b0a49ef",
+      "revisited_assignment": false,
+      "regional_objective": 13.244599320526255,
+      "true_profit": 13.327817200452357,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 10,
+      "double_ties": 0,
+      "generation_iterations": 2,
+      "nlp_objectives": [
+        14.53611465722237,
+        13.244599320526255
+      ],
+      "prices": [
+        0.0,
+        17.57263038806949,
+        78.8603828807711
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          15.246677457276318,
+          3.8721821466729422,
+          5.691791616478505e-09,
+          31.535150497756074,
+          1.6922437639666188e-17
+        ],
+        [
+          8.115445568316934,
+          13.482746923801674,
+          7.63657800190165e-16,
+          113.90719867255615,
+          30.524381919757342
+        ]
+      ]
+    },
+    {
+      "region": 2,
+      "assumed_assignment_sha256": "2c70dff6b91d0349d4fce278ea41d41aef7d429dce467af06cd5d3bf0c2d3f84",
+      "revisited_assignment": false,
+      "regional_objective": 13.635305346293428,
+      "true_profit": 13.663922130759854,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 10,
+      "double_ties": 0,
+      "generation_iterations": 1,
+      "nlp_objectives": [
+        13.635305346293428
+      ],
+      "prices": [
+        0.0,
+        17.377263592013072,
+        80.27575869912489
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          15.086725136267257,
+          9.822103513965738,
+          2.767263554020512e-08,
+          25.597828358365064,
+          2.7709749732864734e-18
+        ],
+        [
+          7.629822415579214,
+          10.568286625529149,
+          1.3915719981754474e-12,
+          114.25374667322525,
+          30.07746581216626
+        ]
+      ]
+    },
+    {
+      "region": 3,
+      "assumed_assignment_sha256": "ea293963c401eac331671063a3ffbd3e061f5f2d69aead24c63fbf5e023e69c0",
+      "revisited_assignment": false,
+      "regional_objective": 14.120101874538568,
+      "true_profit": 14.242322803452158,
+      "accepted": true,
+      "changed_travelers": 2,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 26,
+      "double_ties": 0,
+      "generation_iterations": 2,
+      "nlp_objectives": [
+        14.15201900380008,
+        14.120101874538568
+      ],
+      "prices": [
+        0.0,
+        16.648092480107792,
+        83.6230876010444
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          10.242025861512984,
+          22.482414789513598,
+          4.725339559561238e-19,
+          14.160316252454711,
+          2.640226350512579e-06
+        ],
+        [
+          0.24052805858926218,
+          14.584018233389642,
+          7.470126375445317e-18,
+          113.98655335941324,
+          30.502030628239982
+        ]
+      ]
+    },
+    {
+      "region": 4,
+      "assumed_assignment_sha256": "0e957b35d5ca6d8299c52427598896a4a47ce6e471d06244cffbdb6fae0e8cdf",
+      "revisited_assignment": false,
+      "regional_objective": 14.32248378777707,
+      "true_profit": 14.32248378777707,
+      "accepted": true,
+      "changed_travelers": 0,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": 24,
+      "double_ties": 0,
+      "generation_iterations": 1,
+      "nlp_objectives": [
+        14.32248378777707
+      ],
+      "prices": [
+        0.0,
+        15.908343561527127,
+        85.3234716733413
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          11.483362693830445,
+          23.40008631320588,
+          0.0003428143283132269,
+          9.79021771791581,
+          1.3119487222567414e-05
+        ],
+        [
+          2.8942394809807805e-06,
+          4.5922421737506065,
+          1.975668598864046e-13,
+          114.05918346959146,
+          30.384043357973734
+        ]
+      ]
+    }
+  ]
+}

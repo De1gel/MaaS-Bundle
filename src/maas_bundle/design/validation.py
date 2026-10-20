@@ -111,14 +111,16 @@ def validate_candidate(
             status,
             candidate,
             regional_solve_succeeded=final_solve.success,
-            regional_kkt_satisfied=first_order.satisfies_kkt,
+            regional_kkt_satisfied=(
+                first_order.satisfies_kkt if first_order.stationarity_checked else None
+            ),
             first_order_certificate=first_order,
             message=message,
         )
 
     # CONSISTENT is produced only after solve_fixed_assignment returns
-    # CONVERGED.  That earlier transition already guarantees solver/KKT
-    # acceptance and feasible full separation, so do not recompute them here.
+    # CONVERGED. That transition guarantees acceptance under the selected
+    # solver policy and feasible full separation; do not recompute them here.
     assignment = candidate.terminal_iteration.true_assignment
     assert assignment is not None
     tied = assignment.has_numerical_cost_ties
@@ -139,13 +141,17 @@ def validate_candidate(
         )
     else:
         message = "candidate passes regional checks; boundary search was not recorded"
+    if not first_order.stationarity_checked:
+        message += "; exploratory candidate: independent KKT was not checked"
     return CandidateDiagnostics(
         status=status,
         candidate=candidate,
         assignment_consistent=True,
         full_separation_satisfied=True,
         regional_solve_succeeded=True,
-        regional_kkt_satisfied=True,
+        regional_kkt_satisfied=(
+            first_order.satisfies_kkt if first_order.stationarity_checked else None
+        ),
         active_user_tie_count=tie_count,
         double_tie_count=double_tie_count,
         first_order_certificate=first_order,

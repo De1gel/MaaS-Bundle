@@ -1,0 +1,44 @@
+{
+  "start": 14,
+  "seed": 20261031,
+  "source": "start_014.json",
+  "profit": 17.853056958233136,
+  "status": "intermediate_feasible_menu",
+  "regional_search_completed_for_this_menu": false,
+  "independently_recomputed_profit_error": 0.0,
+  "prices": [
+    0.0,
+    25.010500539432204,
+    70.7396361570599
+  ],
+  "allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.4326076139304769e-08,
+      0.2740171827135314,
+      3.2679070870146573e-07,
+      30.080437836394577,
+      2.6836605310847967
+    ],
+    [
+      4.743932130678136e-13,
+      3.4095281288399573,
+      9.752864243017007e-17,
+      85.65123471941,
+      22.713095219685698
+    ]
+  ],
+  "mode_order": [
+    "bus",
+    "metro",
+    "bike",
+    "ride_hailing",
+    "car_sharing"
+  ]
+}

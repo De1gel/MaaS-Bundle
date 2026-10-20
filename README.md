@@ -114,12 +114,15 @@ pytest tests/benchmarks/test_two_route_comparison.py --run-enumeration
 The repository also includes the standard 24-node, 76-directed-link Sioux
 Falls network and its 360,600-trip OD table from
 [Transportation Networks for Research](https://github.com/bstabler/TransportationNetworks/tree/master/SiouxFalls).
-The source network is unimodal; the two credit modes, two traveler segments
+The source network is unimodal; the five credit modes, two traveler segments
 per positive OD pair, trip-frequency distributions, preferences, and MaaS
 costs are explicitly synthetic extensions. The resulting instance has 528
-positive OD pairs and 1,056 traveler classes.
+positive OD pairs and 1,056 traveler classes. All five synthetic modes
+(bus, metro, bike, ride_hailing, car_sharing) share all 76 physical links,
+yielding 380 modal arcs. Each paid bundle has five allowance variables;
+together with two prices, the upper problem has 12 continuous variables.
 
-The current configuration is `sioux-falls-monthly-usd-v1`: source travel times
+The current configuration is `sioux-falls-monthly-usd-overlapping-five-mode-v3`: source travel times
 are converted from 0.01 hour to minutes (multiply by 0.6), trip frequencies are
 monthly, prices and normalized profit are USD/person/month, and allowances
 count mode-specific passenger-link traversals per person per month. A link
@@ -129,27 +132,28 @@ and [configuration object](src/maas_bundle/examples/sioux_falls_config.py).
 CLI results include the configuration and unit metadata in `experiment`,
 and solver budgets and precision in `benchmark_settings`.
 
-Every simple OD path contributes a constraint to the route-choice dual
-polytope; there is no fixed path-count cutoff. All dual vertices are enumerated
-once per OD/segment and cached within the process, shared by all three bundle
-options and repeated starts. Positive edge costs and nonnegative mode usage
-make cyclic routes unnecessary. Menu evaluations only update the cached
-vertex envelope and integrate it against the demand distribution.
+Complete route-dual vertices are obtained by vertex enumeration and
+shortest-path separation over the multimodal network, without a path-count
+cutoff. Preprocess and persist all 1,056 vertex sets before bundle design:
 
 ```bash
-maas-bundle example sioux-falls
-# The short alias requested for experiments also works:
-maas-bundle example souxf
+maas-bundle preprocess sioux-falls --output results/sioux_falls_five_modes/dual_vertices.npz
+maas-bundle example sioux-falls --oracle-cache results/sioux_falls_five_modes/dual_vertices.npz
 ```
+
+The cache records geometry fingerprints and can resume preprocessing.
+See the experiment document for saved vertex counts and trial results.
 
 Ordinary ties follow optimistic reassignment. Equal-margin neighbors are checked
 at the current menu, and a return at a different menu requires fresh regional
 optimization. The full single-start regression requires successful completion;
 the earlier 30-region limit exit was a boundary-search implementation error.
-With the monthly configuration and complete path geometry, the default start
+With the historical two-mode monthly configuration and complete path geometry, the default start
 finishes in 5 regional solves (9 NLP calls), with profit about
 `10.16182917 USD/person/month`. Earlier results `3.27138465` (complete paths,
 old parameters) and `2.60624935` (five paths per OD) belong to superseded setups.
+These two-mode figures do not describe the new five-mode configuration; see
+the experiment document for current validation.
 
 The complete 30-start experiment is substantially slower than the two-route
 case and is invoked explicitly:

@@ -57,16 +57,24 @@ def generate_sioux_falls_initial_menus(
 
 def run_sioux_falls_example(
     *,
+    oracle_cache_path=None,
     config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
     settings: BenchmarkSettings = DEFAULT_SIOUX_FALLS_SETTINGS,
 ) -> CandidateDiagnostics:
     """Run the full primal pipeline on the large Sioux Falls instance."""
 
     solver = ScipyRegionalSolver(
-        "SLSQP", options={"maxiter": settings.nlp_max_iterations, "ftol": settings.nlp_ftol}
+        "SLSQP",
+        options={"maxiter": settings.nlp_max_iterations, "ftol": settings.nlp_ftol},
+        check_kkt=settings.check_kkt,
+        slsqp_restarts=settings.slsqp_restarts,
+        enable_fallback=settings.solver_fallback,
+        numerical_constraint_recovery=settings.numerical_constraint_recovery,
     )
     return solve_primal(
-        build_sioux_falls_problem(config=config),
+        build_sioux_falls_problem(
+            config=config, **({"oracle_cache_path": oracle_cache_path} if oracle_cache_path else {})
+        ),
         initial_sioux_falls_menu(config=config),
         solver,
         max_region_iterations=settings.max_region_iterations,
@@ -77,6 +85,7 @@ def run_sioux_falls_example(
 def run_sioux_falls_multistart(
     start_count: int = DEFAULT_START_COUNT,
     *,
+    oracle_cache_path=None,
     seed: int | None = DEFAULT_RANDOM_SEED,
     config: SiouxFallsExperimentConfig = DEFAULT_SIOUX_FALLS_CONFIG,
     settings: BenchmarkSettings = DEFAULT_SIOUX_FALLS_SETTINGS,
@@ -84,9 +93,16 @@ def run_sioux_falls_multistart(
     """Run the reproducible multi-start benchmark on Sioux Falls."""
 
     solver = ScipyRegionalSolver(
-        "SLSQP", options={"maxiter": settings.nlp_max_iterations, "ftol": settings.nlp_ftol}
+        "SLSQP",
+        options={"maxiter": settings.nlp_max_iterations, "ftol": settings.nlp_ftol},
+        check_kkt=settings.check_kkt,
+        slsqp_restarts=settings.slsqp_restarts,
+        enable_fallback=settings.solver_fallback,
+        numerical_constraint_recovery=settings.numerical_constraint_recovery,
     )
-    problem = build_sioux_falls_problem(config=config)
+    problem = build_sioux_falls_problem(
+        config=config, **({"oracle_cache_path": oracle_cache_path} if oracle_cache_path else {})
+    )
     return run_multistart(
         problem,
         generate_sioux_falls_initial_menus(

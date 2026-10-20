@@ -133,6 +133,26 @@ def test_solve_primal_returns_valid_consistent_candidate(record_property) -> Non
     assert result.candidate.true_profit == pytest.approx(1.5 - 0.75 * allowance)
 
 
+def test_exploratory_pipeline_does_not_report_unchecked_kkt_as_passed(monkeypatch) -> None:
+    import maas_bundle.design.primal as primal_module
+    import maas_bundle.design.regional as regional_module
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("the exploratory pipeline must not fit KKT multipliers")
+
+    monkeypatch.setattr(regional_module, "nnls", forbidden)
+    problem = _SmoothIntersectionProblem()
+    result = solve_primal(problem, _menu(0.5, 0.0), ScipyRegionalSolver(check_kkt=False))
+    assert result.valid and result.full_separation_satisfied
+    assert result.regional_kkt_satisfied is None
+    assert not result.first_order_certificate.stationarity_checked
+    assert "KKT was not checked" in result.message
+    # Boundary reuse at a nearby feasible menu must respect the same policy.
+    final_region = result.candidate.terminal_iteration.fixed_assignment_result
+    near = _menu(result.candidate.menu.prices[1] - 1e-9, result.candidate.menu.allowances[1, 0])
+    assert primal_module._regional_checks_at_menu(problem, final_region, near)
+
+
 def test_validation_reports_numerical_double_tie() -> None:
     valid = solve_primal(_SmoothIntersectionProblem(), _menu(0.5, 0.0), _solver())
     candidate = valid.candidate

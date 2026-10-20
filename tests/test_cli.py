@@ -10,6 +10,33 @@ import maas_bundle.cli as cli_module
 from maas_bundle.cli import main
 
 
+def test_preprocessing_cli_saves_to_requested_path(monkeypatch, capsys):
+    calls = []
+
+    def preprocess(path, **kwargs):
+        calls.append(path)
+        return {"complete": True, "cache_path": path}
+
+    monkeypatch.setattr(cli_module, "preprocess_sioux_falls_oracles", preprocess)
+    assert main(["preprocess", "sioux-falls", "--output", "vertices.npz"]) == 0
+    assert calls == ["vertices.npz"]
+    assert json.loads(capsys.readouterr().out)["complete"]
+
+
+@pytest.mark.parametrize("command", ["example", "multistart"])
+def test_sioux_falls_cli_forwards_saved_vertices(monkeypatch, capsys, command):
+    calls = []
+
+    def run(*args, **kwargs):
+        calls.append(kwargs)
+        return {"valid": True, "consistent_starts": 1}
+
+    monkeypatch.setattr(cli_module, "_run_sioux_falls", run)
+    monkeypatch.setattr(cli_module, "_multistart_sioux_falls", run)
+    assert main([command, "sioux-falls", "--oracle-cache", "vertices.npz"]) == 0
+    assert calls == [{"oracle_cache_path": "vertices.npz"}]
+
+
 def test_two_route_cli_prints_machine_readable_result(capsys) -> None:
     exit_status = main(["example", "two-route"])
     payload = json.loads(capsys.readouterr().out)
@@ -163,6 +190,13 @@ def test_sioux_falls_example_payload_is_compact(monkeypatch) -> None:
     assert payload["end_to_end_seconds"] >= 0
     assert payload["experiment"]["units"]["prices"] == "USD/person/month"
     assert payload["experiment"]["source_time_to_minutes"] == 0.6
+    assert payload["experiment"]["mode_order"] == [
+        "bus",
+        "metro",
+        "bike",
+        "ride_hailing",
+        "car_sharing",
+    ]
     assert payload["benchmark_settings"]["max_region_iterations"] == 30
     assert "max_region_iterations" not in payload["experiment"]["parameters"]
 

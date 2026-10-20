@@ -1,0 +1,676 @@
+{
+  "experiment": {
+    "parameters": {
+      "version": "sioux-falls-monthly-usd-overlapping-five-mode-v3",
+      "segment_shares": [
+        0.45,
+        0.55
+      ],
+      "value_of_time_usd_per_minute": [
+        0.18,
+        0.32
+      ],
+      "preference_usd_per_link_use": [
+        [
+          0.02,
+          0.04,
+          0.06,
+          0.08,
+          0.1
+        ],
+        [
+          0.08,
+          0.065,
+          0.05,
+          0.04,
+          0.03
+        ]
+      ],
+      "travel_time_factors": [
+        1.5,
+        1.0,
+        2.5,
+        0.65,
+        0.85
+      ],
+      "payg_usd_per_link_use": [
+        0.3,
+        0.6,
+        0.1,
+        1.2,
+        0.9
+      ],
+      "provision_usd_per_link_use": [
+        0.05,
+        0.08,
+        0.02,
+        0.15,
+        0.1
+      ],
+      "low_frequency_trips_per_month": [
+        8.0,
+        20.0
+      ],
+      "high_frequency_trips_per_month": [
+        20.0,
+        32.0,
+        44.0
+      ],
+      "initial_prices_usd_per_month": [
+        0.0,
+        20.0,
+        40.0
+      ],
+      "initial_allowances_link_uses_per_month": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          16.0,
+          16.0,
+          4.0,
+          6.0,
+          6.0
+        ],
+        [
+          40.0,
+          40.0,
+          12.0,
+          18.0,
+          18.0
+        ]
+      ],
+      "sampled_price_bounds_usd_per_month": [
+        4.0,
+        64.0
+      ],
+      "sampled_basic_allowance_bounds_link_uses_per_month": [
+        0.0,
+        48.0
+      ],
+      "sampled_premium_increment_bounds_link_uses_per_month": [
+        0.0,
+        72.0
+      ]
+    },
+    "billing_period": "month",
+    "currency": "USD",
+    "units": {
+      "free_flow_time": "minute",
+      "source_free_flow_time": "0.01 hour",
+      "prices": "USD/person/month",
+      "allowances": "passenger-link traversals/person/month",
+      "trip_frequency": "one-way OD trips/person/month",
+      "mode_usage": "passenger-link traversals/OD trip",
+      "normalized_profit": "USD/person/month",
+      "true_profit": "USD/person/month",
+      "traveler_weights": "dimensionless population-share proxy",
+      "source_od_flow_and_capacity": "TNTP scaled flow units",
+      "solve_time_seconds": "second"
+    },
+    "source_time_to_minutes": 0.6,
+    "mode_order": [
+      "bus",
+      "metro",
+      "bike",
+      "ride_hailing",
+      "car_sharing"
+    ],
+    "mode_availability": "all five modes share every physical link; synthetic travel times and costs",
+    "od_weighting": "segment share times normalized source OD flow; not monthly population",
+    "synthetic_parameters": true,
+    "path_scope": "all multimodal routes; complete vertex separation by shortest paths"
+  },
+  "oracle_cache": "results/sioux_falls_five_modes/dual_vertices.npz",
+  "traveler_types": 1056,
+  "upper_variables": 12,
+  "settings": {
+    "wall_seconds": 180,
+    "nlp_max_iterations": 2000,
+    "max_regions": 30,
+    "recovery": true,
+    "slsqp_restarts": 4,
+    "numerical_constraint_recovery": true,
+    "solver_fallback": false,
+    "check_kkt": false,
+    "seed": 20261095
+  },
+  "initial_profit": 1.757145103898973,
+  "initial_prices": [
+    0.0,
+    8.326868282928347,
+    34.4964438305924
+  ],
+  "initial_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      23.20521284956873,
+      1.007049864461834,
+      45.26784224369603,
+      12.720332451941475,
+      40.33545317596673
+    ],
+    [
+      51.52321067926891,
+      65.44117342557152,
+      106.73109229091989,
+      24.345020633896382,
+      93.81515015699426
+    ]
+  ],
+  "initial_assignment_sha256": "158a237b7d9695891f511436c435bad3f5bd2618cb52a4ccabc896d83e2a03a4",
+  "status": "regional_solve_failed",
+  "valid": false,
+  "nlp_attempts": [
+    {
+      "solver": "scipy-SLSQP",
+      "status": "success",
+      "time_seconds": 47.856533415964805,
+      "iterations": 2243,
+      "objective": 13.732978846765716,
+      "max_violation": 8.989786692836788e-11,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 70,
+      "variables": 12,
+      "attempts": 2,
+      "native_success": true,
+      "raw_status": 0,
+      "message": "recovery chain [scipy-SLSQP:iteration_limit -> scipy-SLSQP:success]; final: Optimization terminated successfully",
+      "attempt_history": [
+        {
+          "solver": "scipy-SLSQP",
+          "status": "iteration_limit",
+          "time_seconds": 45.49412283298443,
+          "iterations": 2000,
+          "objective": 13.755061799943228,
+          "max_violation": 0.0006660938412750284,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 70,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 9,
+          "message": "Iteration limit reached",
+          "initial_prices": [
+            0.0,
+            8.326868282928347,
+            34.4964438305924
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              23.20521284956873,
+              1.007049864461834,
+              45.26784224369603,
+              12.720332451941475,
+              40.33545317596673
+            ],
+            [
+              51.52321067926891,
+              65.44117342557152,
+              106.73109229091989,
+              24.345020633896382,
+              93.81515015699426
+            ]
+          ]
+        },
+        {
+          "solver": "scipy-SLSQP",
+          "status": "success",
+          "time_seconds": 2.362410582980374,
+          "iterations": 243,
+          "objective": 13.732978846765716,
+          "max_violation": 8.989786692836788e-11,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 70,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": true,
+          "raw_status": 0,
+          "message": "Optimization terminated successfully",
+          "initial_prices": [
+            0.0,
+            8.276376344174269,
+            37.145823601931134
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              21.89260294498198,
+              1.8921506496140457,
+              42.69066812519829,
+              11.995911749305082,
+              38.03835650655968
+            ],
+            [
+              48.603394339008126,
+              61.714343260409954,
+              100.84658349487073,
+              27.95241725474163,
+              89.69508722840769
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "solver": "scipy-SLSQP (numerical constraint Jacobian)",
+      "status": "infeasible",
+      "time_seconds": 17.46052479298669,
+      "iterations": 638,
+      "objective": 13.339098847595194,
+      "max_violation": 2.144357015509968e-06,
+      "optimality": null,
+      "kkt_residual": null,
+      "kkt_checked": false,
+      "kkt_satisfied": null,
+      "critical_constraints": 72,
+      "variables": 12,
+      "attempts": 5,
+      "native_success": false,
+      "raw_status": 8,
+      "message": "recovery chain [scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:failed -> scipy-SLSQP:failed -> scipy-SLSQP (numerical constraint Jacobian):infeasible]; final: Positive directional derivative for linesearch",
+      "attempt_history": [
+        {
+          "solver": "scipy-SLSQP",
+          "status": "infeasible",
+          "time_seconds": 1.293988834018819,
+          "iterations": 115,
+          "objective": 13.32656862982358,
+          "max_violation": 5.633811573702019e-06,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 72,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 8,
+          "message": "Positive directional derivative for linesearch",
+          "initial_prices": [
+            0.0,
+            8.332463327380111,
+            35.032328182918285
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              22.899592355335553,
+              1.0951487400840716,
+              44.67164647202456,
+              12.66984316743018,
+              39.804218713907844
+            ],
+            [
+              50.84462886205606,
+              64.60665203437974,
+              105.32540002902391,
+              24.664921346268578,
+              93.40532680277103
+            ]
+          ]
+        },
+        {
+          "solver": "scipy-SLSQP",
+          "status": "infeasible",
+          "time_seconds": 0.9764969579991885,
+          "iterations": 100,
+          "objective": 13.347072803964943,
+          "max_violation": 2.926129491598317e-06,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 72,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 8,
+          "message": "Positive directional derivative for linesearch",
+          "initial_prices": [
+            0.0,
+            8.250391434176978,
+            40.180305399534156
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              20.759222884576864,
+              2.883448200100543,
+              39.63803796867473,
+              11.242203012208993,
+              35.319073179336584
+            ],
+            [
+              45.15253943000034,
+              57.32676312706308,
+              102.0665975246648,
+              31.719038665003872,
+              86.56027724004183
+            ]
+          ]
+        },
+        {
+          "solver": "scipy-SLSQP",
+          "status": "failed",
+          "time_seconds": 1.1434373339870945,
+          "iterations": 115,
+          "objective": 13.331294040133812,
+          "max_violation": 3.8076516162277585e-08,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 72,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 8,
+          "message": "Positive directional derivative for linesearch",
+          "initial_prices": [
+            0.0,
+            8.332463631441422,
+            35.032376895301994
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              22.899567202116398,
+              1.0951502567531408,
+              44.67162052487958,
+              12.669840168768971,
+              39.804258978153584
+            ],
+            [
+              50.844614611046026,
+              64.60666192478811,
+              105.3252464290371,
+              24.664940647754342,
+              93.40533780044001
+            ]
+          ]
+        },
+        {
+          "solver": "scipy-SLSQP",
+          "status": "failed",
+          "time_seconds": 0.8712104169826489,
+          "iterations": 55,
+          "objective": 13.331678668146747,
+          "max_violation": 5.959689630685716e-09,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 72,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 8,
+          "message": "Positive directional derivative for linesearch",
+          "initial_prices": [
+            0.0,
+            7.607682508387997,
+            80.75064959531345
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              3.8420033316419206,
+              17.02300788438439,
+              5.461554914025788e-06,
+              2.3577086746685997e-09,
+              5.145485913102963e-08
+            ],
+            [
+              0.00014834712822607465,
+              0.0002816167302521556,
+              75.38001851533524,
+              87.8336550291042,
+              32.27127413082439
+            ]
+          ]
+        },
+        {
+          "solver": "scipy-SLSQP (numerical constraint Jacobian)",
+          "status": "infeasible",
+          "time_seconds": 13.175391249998938,
+          "iterations": 253,
+          "objective": 13.339098847595194,
+          "max_violation": 2.144357015509968e-06,
+          "optimality": null,
+          "kkt_residual": null,
+          "kkt_checked": false,
+          "kkt_satisfied": null,
+          "critical_constraints": 72,
+          "variables": 12,
+          "attempts": 1,
+          "native_success": false,
+          "raw_status": 8,
+          "message": "Positive directional derivative for linesearch",
+          "initial_prices": [
+            0.0,
+            7.607624592335113,
+            80.75441279810568
+          ],
+          "initial_allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              3.843023020498507,
+              17.02207500113303,
+              4.271971295307961e-06,
+              1.3291552505317702e-13,
+              1.7666452320951785e-09
+            ],
+            [
+              1.9275746831046195e-05,
+              0.0002526802063508655,
+              75.29227086836316,
+              87.88143549027448,
+              32.22465255869154
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "elapsed_seconds": 66.90743333299179,
+  "best_observed_profit": 13.912509976217876,
+  "best_observed_prices": [
+    0.0,
+    8.751687585090211,
+    75.18495284195244
+  ],
+  "best_observed_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.00012731256687310326,
+      7.696201878488552,
+      2.1075002549033603e-05,
+      8.886793183816629,
+      8.11027782385489e-09
+    ],
+    [
+      7.992496878061518e-13,
+      2.07781713740321,
+      9.673573225210985e-13,
+      48.634371426846876,
+      62.69817282969661
+    ]
+  ],
+  "diagnostics": {
+    "status": "regional_solve_failed",
+    "valid": false,
+    "assignment_consistent": false,
+    "full_separation": false,
+    "regional_success": false,
+    "regional_kkt": null,
+    "user_ties": 0,
+    "double_ties": 0
+  },
+  "diagnostic_message": "fixed-assignment generation stopped after a regional NLP failure",
+  "candidate_metrics": {
+    "status": "fixed_assignment_failed",
+    "regions": 1,
+    "assignment_changes": 0,
+    "assignment_revisits": 0,
+    "changed_travelers": 0,
+    "generation_iterations": 2,
+    "nlp_solves": 7,
+    "regional_objective": 13.339098847595194,
+    "boundary_trials": 0,
+    "boundary_returns": 0,
+    "boundary_search_complete": false,
+    "true_profit": 1.757145103898973,
+    "time_seconds": 66.57176541700028
+  },
+  "candidate_prices": [
+    0.0,
+    8.326868282928347,
+    34.4964438305924
+  ],
+  "candidate_allowances": [
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      23.20521284956873,
+      1.007049864461834,
+      45.26784224369603,
+      12.720332451941475,
+      40.33545317596673
+    ],
+    [
+      51.52321067926891,
+      65.44117342557152,
+      106.73109229091989,
+      24.345020633896382,
+      93.81515015699426
+    ]
+  ],
+  "candidate_assignment_counts": [
+    50,
+    770,
+    236
+  ],
+  "candidate_assignment_sha256": "158a237b7d9695891f511436c435bad3f5bd2618cb52a4ccabc896d83e2a03a4",
+  "candidate_region_history": [
+    {
+      "region": 1,
+      "assumed_assignment_sha256": "158a237b7d9695891f511436c435bad3f5bd2618cb52a4ccabc896d83e2a03a4",
+      "revisited_assignment": false,
+      "regional_objective": 13.339098847595194,
+      "true_profit": null,
+      "accepted": false,
+      "changed_travelers": null,
+      "boundary_origin": null,
+      "boundary_returned": false,
+      "user_ties": null,
+      "double_ties": null,
+      "generation_iterations": 2,
+      "nlp_objectives": [
+        13.732978846765716,
+        13.339098847595194
+      ],
+      "prices": [
+        0.0,
+        7.605489580926825,
+        80.80359953028437
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          3.7629842773786426,
+          16.987836945062572,
+          0.8153609540114299,
+          4.783965942893637e-09,
+          1.981629520501774e-08
+        ],
+        [
+          0.09495997344540967,
+          0.0007790029433528614,
+          71.32213747924924,
+          87.97109382321761,
+          32.10615708755967
+        ]
+      ]
+    }
+  ]
+}

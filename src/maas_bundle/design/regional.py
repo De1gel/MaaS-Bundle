@@ -119,6 +119,10 @@ class RestrictedRegionalProblem:
         self.upper_bounds.setflags(write=False)
         self.assigned_bundles = critical_constraints.assigned_bundles
         self.active_indices = critical_constraints.indices()
+        self.valuation_travelers = tuple(sorted({index.traveler for index in self.active_indices}))
+        self._valuation_rows = {
+            traveler: row for row, traveler in enumerate(self.valuation_travelers)
+        }
         self.bundle_demand = aggregate_bundle_demand(
             self.assigned_bundles,
             problem.traveler_weights,
@@ -181,7 +185,9 @@ class RestrictedRegionalProblem:
         menu, valuation = self._evaluate(vector)
         values = np.empty(self.constraint_count, dtype=float)
         for row, index in enumerate(self.active_indices):
-            values[row] = _choice_constraint_value(menu, valuation, index)
+            values[row] = _choice_constraint_value(
+                menu, valuation, index, traveler_row=self._valuation_rows[index.traveler]
+            )
 
         offset = self.active_choice_constraint_count
         designed_prices = menu.prices[1:]
@@ -228,6 +234,7 @@ class RestrictedRegionalProblem:
         feasibility_tolerance: float = DEFAULT_COST_TOLERANCE,
         stationarity_tolerance: float = 1e-6,
         active_tolerance: float = 1e-6,
+        check_stationarity: bool = True,
     ) -> RegionalFirstOrderCertificate:
         """Independently check primal feasibility and first-order KKT stationarity.
 
@@ -244,6 +251,18 @@ class RestrictedRegionalProblem:
         ):
             if not np.isfinite(tolerance) or tolerance < 0:
                 raise ValueError(f"{name} must be finite and nonnegative")
+
+        if not check_stationarity:
+            return RegionalFirstOrderCertificate(
+                primal_violation=self.maximum_constraint_violation(vector),
+                stationarity_residual=None,
+                normalized_stationarity_residual=None,
+                active_inequality_count=0,
+                active_lower_bound_count=0,
+                feasibility_tolerance=float(feasibility_tolerance),
+                stationarity_tolerance=float(stationarity_tolerance),
+                stationarity_checked=False,
+            )
 
         values = self._validate_vector(vector)
         projected = np.maximum(values, 0.0)
@@ -318,7 +337,9 @@ class RestrictedRegionalProblem:
     def _evaluate(self, vector: ArrayLike) -> tuple[BundleMenu, ValuationTable]:
         menu = self._menu(vector)
         if self._cached_valuation is None:
-            self._cached_valuation = self.problem.evaluate_valuations(menu)
+            self._cached_valuation = self.problem.evaluate_valuations_for_travelers(
+                menu, self.valuation_travelers
+            )
         assert self._cached_valuation is not None
         return menu, self._cached_valuation
 
@@ -338,7 +359,7 @@ class RestrictedRegionalProblem:
     ) -> None:
         assigned = index.assigned_bundle
         alternative = index.alternative_bundle
-        traveler = index.traveler
+        traveler = self._valuation_rows[index.traveler]
         if assigned > 0:
             row[assigned - 1] += 1.0
             start = self.layout.designed_bundle_count + (assigned - 1) * self.problem.mode_count
@@ -370,8 +391,8 @@ class RegionalFirstOrderCertificate:
     """
 
     primal_violation: float
-    stationarity_residual: float
-    normalized_stationarity_residual: float
+    stationarity_residual: float | None
+    normalized_stationarity_residual: float | None
     active_inequality_count: int
     active_lower_bound_count: int
     feasibility_tolerance: float
@@ -382,13 +403,16 @@ class RegionalFirstOrderCertificate:
     lower_bound_multipliers: tuple[float, ...] = ()
     active_upper_bound_indices: tuple[int, ...] = ()
     upper_bound_multipliers: tuple[float, ...] = ()
+    stationarity_checked: bool = True
 
     @property
     def satisfies_kkt(self) -> bool:
         """Return whether primal feasibility and stationarity pass tolerance."""
 
         return (
-            self.primal_violation <= self.feasibility_tolerance
+            self.stationarity_checked
+            and self.normalized_stationarity_residual is not None
+            and self.primal_violation <= self.feasibility_tolerance
             and self.normalized_stationarity_residual <= self.stationarity_tolerance
         )
 
@@ -413,6 +437,8 @@ class RegionalSolveResult:
     attempt_count: int = 1
     attempted_solvers: tuple[str, ...] = ()
     initial_menu: BundleMenu | None = None
+    native_success: bool | None = None
+    attempt_history: tuple[dict[str, object], ...] = ()
 
     @property
     def success(self) -> bool:
@@ -420,7 +446,7 @@ class RegionalSolveResult:
 
         return self.status is RegionalSolveStatus.SUCCESS
 
-    def metrics(self) -> dict[str, str | int | float | bool | None]:
+    def metrics(self) -> dict[str, object]:
         """Return a terminal-report-friendly metrics record."""
 
         return {
@@ -432,10 +458,19 @@ class RegionalSolveResult:
             "max_violation": self.maximum_constraint_violation,
             "optimality": self.optimality_measure,
             "kkt_residual": self.first_order_certificate.normalized_stationarity_residual,
-            "kkt_satisfied": self.first_order_certificate.satisfies_kkt,
+            "kkt_checked": self.first_order_certificate.stationarity_checked,
+            "kkt_satisfied": (
+                self.first_order_certificate.satisfies_kkt
+                if self.first_order_certificate.stationarity_checked
+                else None
+            ),
             "critical_constraints": self.active_choice_constraint_count,
             "variables": self.variable_count,
             "attempts": self.attempt_count,
+            "native_success": self.native_success,
+            "raw_status": self.raw_status,
+            "message": self.message,
+            "attempt_history": list(self.attempt_history),
         }
 
 
@@ -462,10 +497,11 @@ class RegionalNlpSolver(Protocol):
 class ScipyRegionalSolver:
     """SciPy local NLP adapter with an on-failure recovery chain.
 
-    A successful first solve returns immediately.  Failed SLSQP solves are
-    restarted once from the best feasible point available and then fall back
-    to ``trust-constr``. An optional numerical constraint Jacobian attempt
-    precedes that fallback. Direct ``trust-constr`` use remains a single attempt.
+    A successful first solve returns immediately. Failed SLSQP solves use a
+    configurable number of restarts, with feasible-point perturbations after
+    the first restart. The final retry can use numerical constraint derivatives.
+    Backend fallback is independently configurable. Direct
+    ``trust-constr`` use remains a single attempt.
     """
 
     method: str = "SLSQP"
@@ -476,6 +512,9 @@ class ScipyRegionalSolver:
     enable_recovery: bool = True
     numerical_constraint_recovery: bool = False
     objective_tolerance: float = DEFAULT_PROFIT_TOLERANCE
+    check_kkt: bool = True
+    slsqp_restarts: int = 1
+    enable_fallback: bool = True
 
     def __post_init__(self) -> None:
         """Validate the algorithm and freeze its option mapping."""
@@ -494,6 +533,16 @@ class ScipyRegionalSolver:
             raise ValueError("enable_recovery must be Boolean")
         if not isinstance(self.numerical_constraint_recovery, (bool, np.bool_)):
             raise ValueError("numerical_constraint_recovery must be Boolean")
+        if not isinstance(self.check_kkt, (bool, np.bool_)):
+            raise ValueError("check_kkt must be Boolean")
+        if (
+            isinstance(self.slsqp_restarts, (bool, np.bool_))
+            or not isinstance(self.slsqp_restarts, (int, np.integer))
+            or self.slsqp_restarts < 0
+        ):
+            raise ValueError("slsqp_restarts must be a nonnegative integer")
+        if not isinstance(self.enable_fallback, (bool, np.bool_)):
+            raise ValueError("enable_fallback must be Boolean")
         if not np.isfinite(self.objective_tolerance) or self.objective_tolerance < 0:
             raise ValueError("objective_tolerance must be finite and nonnegative")
         options = {} if self.options is None else dict(self.options)
@@ -537,30 +586,46 @@ class ScipyRegionalSolver:
             <= self.feasibility_tolerance
             else None
         )
-        restart_menu, feasible_anchor = _prepare_recovery_start(
-            regional_problem,
-            first.menu,
-            feasible_anchor,
-            tolerance=self.feasibility_tolerance,
-        )
-        restarted = self._solve_once(regional_problem, restart_menu)
-        attempts.append(restarted)
-        if restarted.success:
-            return _combine_attempts(attempts)
-
-        if self.numerical_constraint_recovery:
-            # Change the Jacobian strategy at the same local iterate, rather
-            # than drawing a different initial menu. Degenerate active rows
-            # can stall SLSQP despite a nonstationary point.
-            numerical = self._solve_once(regional_problem, restart_menu, numerical_constraints=True)
-            attempts.append(numerical)
-            if numerical.success:
+        restart_menu = initial_menu
+        for restart_number in range(self.slsqp_restarts):
+            restart_menu, candidate_anchor = _prepare_recovery_start(
+                regional_problem,
+                attempts[-1].menu,
+                feasible_anchor,
+                tolerance=self.feasibility_tolerance,
+            )
+            if candidate_anchor is not None and (
+                feasible_anchor is None
+                or regional_problem.profit(regional_problem.layout.pack(candidate_anchor))
+                > regional_problem.profit(regional_problem.layout.pack(feasible_anchor))
+            ):
+                feasible_anchor = candidate_anchor
+            if restart_number:
+                restart_menu = _perturbed_recovery_start(
+                    regional_problem,
+                    feasible_anchor if feasible_anchor is not None else restart_menu,
+                    feasible_anchor,
+                    restart_number=restart_number,
+                    tolerance=self.feasibility_tolerance,
+                )
+            restarted = self._solve_once(
+                regional_problem,
+                restart_menu,
+                numerical_constraints=(
+                    self.numerical_constraint_recovery
+                    and restart_number == self.slsqp_restarts - 1
+                ),
+            )
+            attempts.append(restarted)
+            if restarted.success:
                 return _combine_attempts(attempts)
-            restarted = numerical
+
+        if not self.enable_fallback:
+            return _combine_attempts(attempts)
 
         fallback_menu, _ = _prepare_recovery_start(
             regional_problem,
-            restarted.menu,
+            attempts[-1].menu,
             feasible_anchor,
             tolerance=self.feasibility_tolerance,
         )
@@ -577,6 +642,7 @@ class ScipyRegionalSolver:
             active_set_tolerance=max(self.active_set_tolerance, 1e-3),
             enable_recovery=False,
             objective_tolerance=self.objective_tolerance,
+            check_kkt=self.check_kkt,
         ).solve(regional_problem, fallback_menu)
         attempts.append(fallback)
         return _combine_attempts(attempts)
@@ -669,10 +735,14 @@ class ScipyRegionalSolver:
                 feasibility_tolerance=self.feasibility_tolerance,
                 stationarity_tolerance=self.optimality_tolerance,
                 active_tolerance=self.active_set_tolerance,
+                check_stationarity=self.check_kkt,
             )
-            if certificate.satisfies_kkt and np.all(
-                np.diff(regional_problem.layout.unpack(initial).prices) >= 0
-            ):
+            accepted = (
+                certificate.satisfies_kkt
+                if self.check_kkt
+                else certificate.primal_violation <= self.feasibility_tolerance
+            )
+            if accepted and np.all(np.diff(regional_problem.layout.unpack(initial).prices) >= 0):
                 normalized = replace(
                     normalized,
                     menu=regional_problem.layout.unpack(initial),
@@ -680,7 +750,11 @@ class ScipyRegionalSolver:
                     maximum_constraint_violation=certificate.primal_violation,
                     first_order_certificate=certificate,
                     message=normalized.message
-                    + "; retained certified warm start after roundoff loss",
+                    + (
+                        "; retained certified warm start after roundoff loss"
+                        if self.check_kkt
+                        else "; retained feasible warm start after roundoff loss (KKT unchecked)"
+                    ),
                 )
         return normalized
 
@@ -716,6 +790,7 @@ class ScipyRegionalSolver:
             feasibility_tolerance=self.feasibility_tolerance,
             stationarity_tolerance=self.optimality_tolerance,
             active_tolerance=self.active_set_tolerance,
+            check_stationarity=self.check_kkt,
         )
         certificate = replace(
             certificate, primal_violation=max(violation, certificate.primal_violation)
@@ -724,12 +799,13 @@ class ScipyRegionalSolver:
         message = str(result.message) + (
             "; repaired price-order roundoff and recertified" if repaired_price_order else ""
         )
+        accepted = (
+            acceptable_optimality and certificate.satisfies_kkt
+            if self.check_kkt
+            else bool(getattr(result, "success", False))
+        )
         status = _map_scipy_status(
-            success=(
-                acceptable_optimality
-                and certificate.satisfies_kkt
-                and np.all(np.diff(menu.prices) >= 0)
-            ),
+            success=accepted and np.all(np.diff(menu.prices) >= 0),
             message=message,
             maximum_violation=violation,
             feasibility_tolerance=self.feasibility_tolerance,
@@ -749,6 +825,9 @@ class ScipyRegionalSolver:
             message=message,
             raw_status=int(result.status) if result.status is not None else None,
             attempted_solvers=(self.name,),
+            native_success=(
+                bool(result.success) if getattr(result, "success", None) is not None else None
+            ),
         )
 
 
@@ -823,6 +902,36 @@ def _prepare_recovery_start(
     )
 
 
+def _perturbed_recovery_start(
+    regional_problem: RestrictedRegionalProblem,
+    menu: BundleMenu,
+    feasible_anchor: BundleMenu | None,
+    *,
+    restart_number: int,
+    tolerance: float,
+) -> BundleMenu:
+    """Reproducibly perturb prices/allowances and restore regional feasibility."""
+
+    vector = regional_problem.layout.pack(menu)
+    random = np.random.default_rng(restart_number)
+    scale = min(1e-3 * restart_number, 1e-2) * np.maximum(1.0, np.abs(vector))
+    perturbed = np.clip(
+        vector + scale * random.uniform(-1.0, 1.0, vector.size),
+        0.0,
+        regional_problem.upper_bounds,
+    )
+    count = regional_problem.layout.designed_bundle_count
+    perturbed[:count] = np.minimum(
+        np.maximum.accumulate(perturbed[:count]), regional_problem.upper_bounds[:count]
+    )
+    candidate = regional_problem.layout.unpack(perturbed)
+    if feasible_anchor is None:
+        return candidate
+    return backtrack_to_feasible_menu(
+        regional_problem, candidate, feasible_anchor, tolerance=tolerance
+    )
+
+
 def _combine_attempts(attempts: list[RegionalSolveResult]) -> RegionalSolveResult:
     """Return the final result with cumulative retry metrics."""
 
@@ -838,6 +947,21 @@ def _combine_attempts(attempts: list[RegionalSolveResult]) -> RegionalSolveResul
         attempted_solvers=tuple(
             solver for attempt in attempts for solver in attempt.attempted_solvers
         ),
+        attempt_history=tuple(
+            {
+                **{key: value for key, value in attempt.metrics().items()
+                   if key != "attempt_history"},
+                "initial_prices": (
+                    attempt.initial_menu.prices.tolist()
+                    if attempt.initial_menu is not None else None
+                ),
+                "initial_allowances": (
+                    attempt.initial_menu.allowances.tolist()
+                    if attempt.initial_menu is not None else None
+                ),
+            }
+            for attempt in attempts
+        ),
     )
 
 
@@ -845,8 +969,10 @@ def _choice_constraint_value(
     menu: BundleMenu,
     valuation: ValuationTable,
     index: ChoiceConstraintIndex,
+    *,
+    traveler_row: int,
 ) -> float:
-    traveler = index.traveler
+    traveler = traveler_row
     assigned = index.assigned_bundle
     alternative = index.alternative_bundle
     return float(
