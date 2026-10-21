@@ -111,9 +111,17 @@ def main() -> None:
             polished = solver.solve(regional, final)
             pg = values(polished.menu.allowances) + polished.menu.prices
             pv = float(np.max(pg[np.arange(len(alpha)), alpha] - pg.min(axis=1)))
+            polished_margins = polished.menu.prices.copy()
+            polished_margins[1:] -= polished.menu.allowances[1:] @ problem.unit_allowance_cost
+            direct_profit = float(problem.traveler_weights @ polished_margins[alpha])
+            assert polished.success and pv <= 1e-7, "original-constraint polish failed acceptance"
+            assert abs(direct_profit - polished.objective_value) <= 1e-8
+            assert direct_profit >= profit - 1e-7
             entry["original_constraint_polish"] = {
                 **polished.metrics(),
                 "direct_oracle_choice_violation": pv,
+                "direct_recomputed_profit": direct_profit,
+                "profit_recomputation_difference": direct_profit - polished.objective_value,
                 "prices": polished.menu.prices.tolist(),
                 "allowances": polished.menu.allowances.tolist(),
                 "profit_change": polished.objective_value - profit,
