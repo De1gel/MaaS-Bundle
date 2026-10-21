@@ -78,18 +78,22 @@ def main() -> None:
         args.output.write_text(json.dumps(report, indent=2) + "\n")
 
     # A rank > 1 rules out a differentiable common scalar valuation coordinate.
-    initial_values = problem.evaluate_valuations(initial)
+    coordinate_allowances = initial.allowances.copy()
+    coordinate_allowances[1] += np.array([0.123, 0.456, 0.789, 0.246, 0.357])
+    coordinate_menu = BundleMenu(initial.prices, coordinate_allowances)
+    initial_values = problem.evaluate_valuations(coordinate_menu)
     gradients = -initial_values.expected_omega[:, 1]
     finite_difference = np.empty_like(gradients)
     step = 1e-4
     for mode in range(problem.mode_count):
-        high, low = initial.allowances.copy(), initial.allowances.copy()
+        high, low = coordinate_allowances.copy(), coordinate_allowances.copy()
         high[1, mode] += step
         low[1, mode] -= step
         vh = problem.evaluate_valuations(BundleMenu(initial.prices, high)).route_values[:, 1]
         vl = problem.evaluate_valuations(BundleMenu(initial.prices, low)).route_values[:, 1]
         finite_difference[:, mode] = (vh - vl) / (2 * step)
     report["valuation_coordinate_check"] = {
+        "allowance_point": coordinate_allowances[1].tolist(),
         "oracle_gradient_singular_values": np.linalg.svd(gradients, compute_uv=False).tolist(),
         "finite_difference_singular_values": np.linalg.svd(
             finite_difference, compute_uv=False
@@ -140,11 +144,8 @@ def main() -> None:
         if start == 0:
             menu = initial
         else:
-            record = json.loads(
-                Path(
-                    f"results/sioux_falls_five_modes/multistart_100_20261019/start_{start + 1:03d}.json"
-                ).read_text()
-            )
+            source_dir = Path("results/sioux_falls_five_modes/multistart_100_20261019")
+            record = json.loads((source_dir / f"start_{start + 1:03d}.json").read_text())
             menu = BundleMenu(
                 np.array(record["initial_prices"]), np.array(record["initial_allowances"])
             )
