@@ -119,6 +119,61 @@ def regional_problem(problem, assignment, selected=None):
     return RestrictedRegionalProblem(problem, critical)
 
 
+def refine_improving_ray(problem, menu, optimistic, probes):
+    """Shrink one observed improvement ray; this remains numerical evidence."""
+    choices = [p for p in probes if p["radius"] == 1e-4 and p["best_fixed_improvement"] > 1e-6]
+    if not choices:
+        return []
+    preferred = next(
+        (p for p in choices if p["assignment"] == "optimistic_assignment_at_candidate"), choices[0]
+    )
+    witness = preferred["best_fixed_witness"]
+    displacement = np.array(witness["allowances"]) - menu.allowances
+    alpha = optimistic.bundle_indices
+    ii, aa = np.where(np.arange(3)[None, :] != alpha[:, None])
+    bb = alpha[ii]
+    rows = np.arange(len(ii))
+    matrix = np.zeros((len(ii) + 1, 2))
+    mb, ma = bb > 0, aa > 0
+    matrix[rows[mb], bb[mb] - 1] += 1
+    matrix[rows[ma], aa[ma] - 1] -= 1
+    matrix[-1] = [1, -1]
+    demand = optimistic.bundle_demand
+    checks = []
+    for factor in (1.0, 0.1, 0.01, 0.001):
+        radius = factor * 1e-4
+        allowances = menu.allowances + factor * displacement
+        g = problem.evaluate_valuations(BundleMenu(menu.prices, allowances)).route_values
+        rhs = np.concatenate((g[ii, aa] - g[ii, bb], [0.0]))
+        change = radius * np.maximum(1.0, menu.prices[1:])
+        bounds = list(
+            zip(np.maximum(0, menu.prices[1:] - change), menu.prices[1:] + change, strict=True)
+        )
+        lp = linprog(
+            -demand[1:],
+            A_ub=matrix,
+            b_ub=rhs,
+            bounds=bounds,
+            method="highs",
+            options={"primal_feasibility_tolerance": 1e-9},
+        )
+        entry = {"relative_radius_bound": radius, "price_lp_success": bool(lp.success)}
+        if lp.success:
+            prices = np.concatenate(([0.0], np.maximum(lp.x, 0.0)))
+            trial = BundleMenu(prices, allowances)
+            violation = float(np.max(prices[bb] - prices[aa] + g[ii, bb] - g[ii, aa]))
+            profit = float(demand @ problem.bundle_margins(trial))
+            entry.update(
+                {
+                    "original_choice_violation": max(0.0, violation),
+                    "profit_improvement": profit - optimistic.total_profit,
+                    "improvement_divided_by_radius": (profit - optimistic.total_profit) / radius,
+                }
+            )
+        checks.append(entry)
+    return checks
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -377,6 +432,9 @@ def main():
                 < 1e-8
             )
             case["neighborhood_probes"] = previous[name]["neighborhood_probes"]
+            case["shrinking_improvement_ray"] = refine_improving_ray(
+                problem, menu, optimistic, case["neighborhood_probes"]
+            )
             save()
             continue
 
@@ -480,6 +538,7 @@ def main():
                     flush=True,
                 )
         case["neighborhood_probes"] = probes
+        case["shrinking_improvement_ray"] = refine_improving_ray(problem, menu, optimistic, probes)
         save()
     print(json.dumps({"output": str(args.output), "cases": len(report["cases"])}), flush=True)
 
