@@ -572,6 +572,191 @@ def audit(problem, trace, output):
     return report
 
 
+def write_report(trace, report, output):
+    selection = trace["selection"]
+    calls = report["calls"]
+    attempts = report["attempts"]
+    endpoints = {}
+    for row in calls:
+        endpoints[row["region"]] = row
+    region_rows = []
+    for region, endpoint in sorted(endpoints.items()):
+        members = [row for row in calls if row["region"] == region]
+        region_rows.append(
+            {
+                "region": region,
+                "first_call": members[0]["call"],
+                "last_call": endpoint["call"],
+                "restricted_calls": len(members),
+                "backend_attempts": sum(item["region"] == region for item in attempts),
+                "endpoint_profit": endpoint["restricted_profit"],
+                "full_region_violation": endpoint["full_region_primal_violation"],
+                "stationarity": endpoint["normalized_stationarity"],
+                "complementarity": endpoint["absolute_complementarity"],
+                "selected_branch_min_eigenvalue": endpoint["selected_branch_min_eigenvalue"],
+                "sosc_status": endpoint["sosc_status"],
+            }
+        )
+    with (output / "regions.csv").open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(region_rows[0]))
+        writer.writeheader()
+        writer.writerows(region_rows)
+    label = {
+        "classical_sosc_not_certified_derivative_or_branch": "未确认：导数/分支",
+        "first_order_not_verified": "未通过当前一阶验收",
+        "restricted_nlp_infeasible": "当次 NLP 不可行",
+        "classical_sosc_not_certified_active_set_ambiguous": "未确认：活跃集不稳定",
+        "curvature_screen_inconclusive": "未确认：保守曲率检查不通过",
+        "numerical_sosc_supported_not_rigorous_certificate": "数值 SOSC 支持（非严格证明）",
+    }
+    positive_calls = sum(
+        row["selected_branch_min_eigenvalue"] is None
+        or row["selected_branch_min_eigenvalue"] > 1e-7
+        for row in calls
+    )
+    first_order_failures = [
+        row for row in calls if row["sosc_status"] == "first_order_not_verified"
+    ]
+    final = calls[-1]
+    text = [
+        "# 最长区域切换路径的逐次 NLP SOSC 检查",
+        "",
+        "日期：2026-10-22。",
+        "",
+        f"对象：start {selection['start']}，{selection['regions']} 个区域、"
+        f"{selection['transitions']} 次切换、{len(calls)} 次受限 NLP 调用、"
+        f"{len(attempts)} 次底层 SLSQP 尝试。",
+        "",
+        "**结论：本次没有任何返回点获得经典 SOSC 的数值确认。** "
+        "这是适用条件未确认或前置检查未通过，不等于证明这些点均非局部最优。",
+        "",
+        "## 选取与补录",
+        "",
+        "在工作量统计使用的全部 100 条已完成路径中，按 assignment_changes 选最长路径。"
+        f"实际数据源为 `{selection['source']}`。",
+        "",
+        "旧文件没有保存每个中间 NLP 的完整菜单与约束索引。因此保留原初始菜单、"
+        "原求解器参数、原接受规则及缓存极点，确定性重放补录。"
+        "记录每次受限 NLP 的真实约束子集、固定 assignment、输入菜单、返回菜单，"
+        "并捕获恢复过程中的每次底层尝试。二阶分析在重放之后进行，不影响原路径。",
+        "",
+        f"重放吻合标志：`{trace['matches_saved_fields']}`。",
+        "```json",
+        json.dumps(trace["comparison"], indent=2),
+        "```",
+        "",
+        "原接受配置 `check_kkt=False` 保持不变；本次在求解完成后另行检验。"
+        "所有 44 次底层调用仍为 SLSQP，没有更换后端。第 15 次受限调用发生 4 次底层尝试，"
+        "前三次返回点不满足当次可行性要求，第 4 次被原策略接受。",
+        "",
+        "## 数值判定规则",
+        "",
+        "- 当次受限 NLP 可行性阈值 `1e-7`；归一化一阶平衡阈值 `1e-5`；"
+        "绝对互补残差阈值 `1e-6`。乘子由非负最小二乘拟合。",
+        "- 活跃集以 `1e-4` 建立，另用 `1e-8`、`1e-6` 检查敏感性。",
+        "- 每个返回点同时检查完整固定 assignment 区域的全部旅客约束。"
+        "受限 NLP 的 SOSC 即使成立，也只有在该点对完整区域可行时才可转移。",
+        "- 用当前积分 envelope 构造真实单分支的解析 Hessian，"
+        "不使用 SLSQP 的 BFGS 矩阵。成本为原实例的线性 allowance 成本。",
+        "- 二阶方向使用正乘子约束法向量的零空间，"
+        "它包含所选乘子对应的临界锥。零乘子活跃不等式没有被强行当作等式。"
+        "因此在该较大子空间上正定是保守曲率支持，不通过则不能直接否定真实临界锥上的 SOSC。",
+        "- 对非线性坐标使用相对步长 `1e-3`、`1e-4`、`1e-5` 检查导数及 Hessian，"
+        "下界附近使用单侧公式。平行活跃面、多重交点和支持端点被单独标记。",
+        "- 只有可行性、一阶、互补性、导数/分支、活跃集和曲率的检查全部通过，"
+        "才报告数值 SOSC 支持；仍不当作区间算术意义的严格证明。",
+        "",
+        "## 逐次调用的汇总",
+        "",
+        "```json",
+        json.dumps(report["summary"], indent=2),
+        "```",
+        "",
+        f"{positive_calls}/{len(calls)} 个受限 NLP 返回点的**当前单分支**保守投影最小特征值为正。"
+        "但一阶与导数适用条件不能被这个正特征值替代。",
+        "",
+        "9 个未通过本次一阶验收的调用如下。注意第 18 次调用是一阶平衡通过，"
+        "但互补残差略超过所设阈值；改变验收阈值可能改变这种边界分类。",
+        "",
+        "| NLP 调用 | 区域 | 一阶平衡残差 | 互补残差 |",
+        "| ---: | ---: | ---: | ---: |",
+    ]
+    for row in first_order_failures:
+        text.append(
+            f"| {row['call']} | {row['region']} | {row['normalized_stationarity']:.3e} "
+            f"| {row['absolute_complementarity']:.3e} |"
+        )
+    text.extend(
+        [
+            "",
+            "这说明 solver 原生 success 并未自动完成独立一阶验收。"
+            "反过来，这些拟合残差也不证明不存在其他次梯度或乘子满足某种广义驻点条件。",
+            "",
+            "## 14 个区域终点",
+            "",
+            "| 区域 | NLP 调用范围 | 一阶平衡残差 | 互补残差 | 单分支投影最小特征值 | SOSC 状态 |",
+            "| ---: | --- | ---: | ---: | ---: | --- |",
+        ]
+    )
+    for row in region_rows:
+        eigen = row["selected_branch_min_eigenvalue"]
+        eigen_text = f"{eigen:.3e}" if eigen is not None else "临界子空间为零"
+        text.append(
+            f"| {row['region']} | {row['first_call']}–{row['last_call']} "
+            f"| {row['stationarity']:.3e} | {row['complementarity']:.3e} "
+            f"| {eigen_text} | {label[row['sosc_status']]} |"
+        )
+    text.extend(
+        [
+            "",
+            "14 个终点均对完整区域数值可行。其中第 10、11 区域的终点分别是一阶平衡"
+            "残差约 `3.10e-3` 和 `9.48e-4`，未通过本次一阶验收。其余 12 个终点"
+            "通过选定次梯度下一阶验收，但经典二阶导数条件仍未确认。",
+            "",
+            "## 最后一次 NLP 的具体结果",
+            "",
+            f"第 {final['call']} 次调用，区域 {final['region']}；固定分配利润 "
+            f"`{final['restricted_profit']:.12f}` USD/代表性加权旅客/月。",
+            f"原区域违反量 `{final['full_region_primal_violation']:.3e}`，"
+            f"归一化一阶平衡残差 `{final['normalized_stationarity']:.3e}`，"
+            f"互补残差 `{final['absolute_complementarity']:.3e}`。",
+            "",
+            "该点 premium bike allowance 在零下界。其相关活跃约束的 oracle 次梯度与"
+            "可行侧差分导数的最大差异约 `0.006757`，步长降低后仍存在。"
+            "直接对原 oracle Jacobian 再差分时，和单分支解析 Hessian 的误差从约 "
+            "`0.654` 增长至 `65.52`。这不能当作已获得真实光滑 Hessian。",
+            "",
+            "并列面的存在本身不是对可行域不存在光滑延拓的证明。"
+            "本次结论仅是：当前 oracle 次梯度、单分支 Hessian 与完整经典 SOSC 的适用条件"
+            "尚未建立一致性，因而不颁发经典 SOSC 确认。",
+            "",
+            "## 文件与复现",
+            "",
+            "- `replay.json`：41 次调用、44 次底层尝试的菜单、真实约束索引和固定 assignment。",
+            "- `sosc_checks.json`：每个点的矩阵、乘子残差、导数检查、分支标记及状态。",
+            "- `nlp_calls.csv`：41 次受限 NLP 返回点的汇总。",
+            "- `backend_attempts.csv`：含 3 次失败重试的 44 个返回点汇总。",
+            "- `regions.csv`：14 个完整区域终点。",
+            "",
+            "```sh",
+            "PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 \\",
+            "  /opt/homebrew/Caskroom/miniforge/base/envs/maas-bundle/bin/python \\",
+            "  scripts/check-longest-trajectory-sosc.py",
+            "```",
+            "",
+            "已有完整 `replay.json` 时直接复用；已有逐点审计时断点复用。"
+            "如需从头独立重放，传入一个新的 `--output` 目录。"
+            "原实验、论文和生产求解器均未改写。",
+            "",
+            "方法依据：[临界锥与二阶条件课程资料]"
+            "(https://faculty.ucmerced.edu/mcarreira-perpinan/teaching/EECS260/2014-Fall/lecture-notes.pdf)、"
+            "[IPOPT 导数检查说明](https://coin-or.github.io/Ipopt/SPECIALS.html)。",
+            "",
+        ]
+    )
+    (output / "README.md").write_text("\n".join(text))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -595,6 +780,7 @@ def main():
         trace = replay(problem, selection, source, args.output)
     if args.phase != "replay":
         report = audit(problem, trace, args.output)
+        write_report(trace, report, args.output)
         print(json.dumps(report["summary"]), flush=True)
 
 
