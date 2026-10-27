@@ -92,3 +92,37 @@ def test_affine_lower_bound_and_corner_upper_bound(distribution):
         exact = oracle.expected_value(point, distribution)
         assert max(c + g @ point for c, g, _ in bounds) <= exact + 1e-9
         assert exact <= weights @ [b[2] for b in bounds] + 1e-9
+
+
+def test_summary_excludes_infeasible_objective_gains_and_separates_full_region():
+    original = {"profit": 10.0, "restricted_violation": 0.0, "full_region_violation": 0.0}
+    restricted_only = {
+        "profit": 11.0,
+        "restricted_violation": 0.0,
+        "full_region_violation": 0.1,
+        "start": "restricted_only",
+    }
+    infeasible = {
+        "profit": 20.0,
+        "restricted_violation": 0.01,
+        "full_region_violation": 0.01,
+        "start": "infeasible",
+    }
+    row = _MODULE.summarize_run(
+        {
+            "call": 1,
+            "region": 1,
+            "cg_round": 1,
+            "is_region_endpoint": False,
+            "retained_choice_constraints": 2,
+            "original": original,
+            "price_lp": original,
+            "grids": [],
+            "restarts": [restricted_only, infeasible],
+            "box_bounds": [],
+        }
+    )
+    assert row["best_gain"] == pytest.approx(1.0)
+    assert row["best_full_gain"] == 0.0
+    assert row["best_source"] == "restart_restricted_only"
+    assert row["restart_returns_infeasible"] == 1

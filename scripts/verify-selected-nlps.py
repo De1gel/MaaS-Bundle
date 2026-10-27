@@ -1,4 +1,4 @@
-"""Small independent checks of three saved restricted NLPs.
+"""Independent checks of selected or all saved restricted NLPs.
 
 Profile prices exactly, exhaust a small allowance grid, restart SLSQP with
 numerical constraint derivatives, and bound the objective in explicit boxes
@@ -9,6 +9,7 @@ original NLP is claimed. The production model and saved menus are not changed.
 from __future__ import annotations
 
 import argparse
+import csv
 import importlib.util
 import json
 from itertools import product
@@ -17,6 +18,7 @@ from time import perf_counter
 
 import gurobipy as gp
 import numpy as np
+from scipy.optimize import linprog
 
 from maas_bundle.design.boundary import ChoiceConstraintIndex, CriticalConstraintSet
 from maas_bundle.design.menu import BundleMenu
@@ -306,9 +308,358 @@ def candidate_record(regional, full, menu):
     }
 
 
+def independent_price_check(regional, allowances):
+    """HiGHS prices with a fresh explicit integration of every retained G."""
+    problem = regional.problem
+    values, matrix, rhs = {}, [], []
+    for index in regional.active_indices:
+        i, b, a = index.traveler, index.assigned_bundle, index.alternative_bundle
+        for option in (b, a):
+            if (i, option) not in values:
+                phi = problem.route_oracles[i][option].for_allowance(allowances[option])
+                dist = problem.demand_distributions[i]
+                value = 0.0
+                for j, lower in enumerate(phi.breakpoints):
+                    upper = phi.breakpoints[j + 1] if j + 1 < len(phi.breakpoints) else np.inf
+                    value += phi.slopes[j] * dist.first_moment(lower, upper)
+                    value += phi.intercepts[j] * dist.probability(lower, upper)
+                values[i, option] = value
+        line = np.zeros(2)
+        if b:
+            line[b - 1] += 1
+        if a:
+            line[a - 1] -= 1
+        matrix.append(line)
+        rhs.append(values[i, a] - values[i, b])
+    matrix.append([1, -1])
+    rhs.append(0)
+    solved = linprog(
+        -regional.bundle_demand[1:],
+        A_ub=matrix,
+        b_ub=rhs,
+        bounds=list(zip(np.zeros(2), problem.price_upper_bounds, strict=True)),
+        method="highs",
+        options={"primal_feasibility_tolerance": 1e-9, "dual_feasibility_tolerance": 1e-9},
+    )
+    assert solved.success, solved.message
+    profit = -solved.fun - regional.bundle_demand[1:] @ (
+        allowances[1:] @ problem.unit_allowance_cost
+    )
+    return {
+        "profit": float(profit),
+        "violation": float(max(0, np.max(np.array(matrix) @ solved.x - rhs))),
+        "menu": {"prices": [0, *solved.x.tolist()], "allowances": allowances.tolist()},
+    }
+
+
+def independently_check_outliers(problem, trace, report, output):
+    checks = []
+    for result in report["runs"]:
+        if summarize_run(result)["best_gain"] <= 1e-5:
+            continue
+        call = trace["calls"][result["call"] - 1]
+        alpha = np.array(trace["regions"][call["assignment_sha256"]]["assigned_bundles"])
+        regional = make_regional(problem, alpha, call["choice_constraints"])
+        original = _HELPERS.restore_menu(result["original"]["menu"])
+        candidates = [result["price_lp"], *result["grids"], *result["restarts"]]
+        best = max(
+            (v for v in candidates if v["restricted_violation"] <= 1e-7),
+            key=lambda v: v["profit"],
+        )
+        independent = independent_price_check(regional, np.array(best["menu"]["allowances"]))
+        independent["gain"] = independent["profit"] - result["original"]["profit"]
+        grid = next(g for g in result["grids"] if g["relative_radius"] == 0.01)
+        delta = np.array(grid["menu"]["allowances"]) - original.allowances
+        check = {
+            "call": call["call"],
+            "baseline_profit": result["original"]["profit"],
+            "scope": "same retained NLP; direct interval integration and independent HiGHS LP",
+            "independent_best": independent,
+            "ray_checks": [],
+        }
+        base_profile = independent_price_check(regional, original.allowances)
+        check["baseline_conditionally_optimal_prices"] = base_profile
+        for factor in (1, 0.1, 0.01, 0.001, 0.0001):
+            eps = original.allowances + factor * delta
+            value = independent_price_check(regional, eps)
+            value.update(
+                {
+                    "factor": factor,
+                    "gain": value["profit"] - result["original"]["profit"],
+                    "gain_over_conditionally_priced_baseline": value["profit"]
+                    - base_profile["profit"],
+                    "normalized_allowance_displacement": float(
+                        np.max(
+                            np.abs(eps - original.allowances) / np.maximum(1, original.allowances)
+                        )
+                    ),
+                }
+            )
+            check["ray_checks"].append(value)
+        (output / f"call_{call['call']}_independent_check.json").write_text(
+            json.dumps(check, indent=2) + "\n"
+        )
+        checks.append(check)
+    report["independent_outlier_checks"] = checks
+
+
+def summarize_run(result, feasibility=1e-7):
+    """Never count an infeasible restart as an improvement of the same NLP."""
+    candidates = [("original", result["original"]), ("price_lp", result["price_lp"])]
+    for grid in result["grids"]:
+        candidates.append((f"grid_{grid['relative_radius']}", grid))
+        if "best_noncentral" in grid:
+            candidates.append(
+                (f"noncentral_grid_{grid['relative_radius']}", grid["best_noncentral"])
+            )
+    for restart in result["restarts"]:
+        candidates.append((f"restart_{restart['start']}", restart))
+    feasible = [(name, v) for name, v in candidates if v["restricted_violation"] <= feasibility]
+    name, best = max(feasible, key=lambda pair: pair[1]["profit"])
+    full = [(n, v) for n, v in feasible if v["full_region_violation"] <= feasibility]
+    original = result["original"]
+    row = {
+        "call": result["call"],
+        "region": result["region"],
+        "cg_round": result["cg_round"],
+        "is_region_endpoint": result["is_region_endpoint"],
+        "retained_choice_constraints": result["retained_choice_constraints"],
+        "original_profit": original["profit"],
+        "original_restricted_violation": original["restricted_violation"],
+        "original_full_violation": original["full_region_violation"],
+        "price_gain": result["price_lp"]["profit"] - original["profit"],
+        "grid_gain": max([original["profit"]] + [g["profit"] for g in result["grids"]])
+        - original["profit"],
+        "best_source": name,
+        "best_profit": best["profit"],
+        "best_gain": best["profit"] - original["profit"],
+        "relative_gain": (best["profit"] - original["profit"]) / max(1, abs(original["profit"])),
+        "best_restricted_violation": best["restricted_violation"],
+        "best_full_violation": best["full_region_violation"],
+        "best_full_gain": None,
+        "restart_returns_infeasible": sum(
+            r["restricted_violation"] > feasibility for r in result["restarts"]
+        ),
+    }
+    if full and original["full_region_violation"] <= feasibility:
+        row["best_full_gain"] = max(v["profit"] for _, v in full) - original["profit"]
+    for bound in result["box_bounds"]:
+        row[f"box_upper_gap_{bound['relative_radius']}"] = bound[
+            "upper_bound_minus_original_profit"
+        ]
+    return row
+
+
+def audit_internal_retries(problem, trace, selected_calls):
+    """Record failed intermediate returns separately from the final NLP returns."""
+    retries = []
+    for call in trace["calls"]:
+        if call["call"] not in selected_calls:
+            continue
+        for number in call["backend_attempts"][:-1]:
+            attempt = trace["backend_attempts"][number - 1]
+            alpha = np.array(trace["regions"][call["assignment_sha256"]]["assigned_bundles"])
+            regional = make_regional(problem, alpha, call["choice_constraints"])
+            full = _HELPERS._HELPERS.regional_problem(problem, alpha)
+            retries.append(
+                {
+                    "attempt": number,
+                    "call": call["call"],
+                    "source_metrics": attempt["metrics"],
+                    **candidate_record(regional, full, _HELPERS.restore_menu(attempt["menu"])),
+                }
+            )
+    return retries
+
+
+def write_summary(report, output):
+    rows = [summarize_run(run) for run in report["runs"]]
+    for filename, selected in (
+        ("nlp_calls.csv", rows),
+        ("region_endpoints.csv", [r for r in rows if r["is_region_endpoint"]]),
+    ):
+        with (output / filename).open("w", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+            writer.writeheader()
+            writer.writerows(selected)
+    report["summary"] = {
+        "nlp_calls_checked": len(rows),
+        "region_endpoints_checked": sum(r["is_region_endpoint"] for r in rows),
+        "grid_combinations_checked": sum(
+            g["grid_points"] for run in report["runs"] for g in run["grids"]
+        ),
+        "gain_threshold_counts": {
+            str(t): sum(r["best_gain"] > t for r in rows)
+            for t in (1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2)
+        },
+        "largest_gain": max(rows, key=lambda r: r["best_gain"]),
+        "largest_gain_excluding_worst_call": (
+            sorted((r["best_gain"] for r in rows), reverse=True)[1] if len(rows) > 1 else None
+        ),
+        "maximum_region_endpoint_gain": max(
+            (
+                r["best_full_gain"]
+                for r in rows
+                if r["is_region_endpoint"] and r["best_full_gain"] is not None
+            ),
+            default=None,
+        ),
+        "restart_returns_infeasible": sum(r["restart_returns_infeasible"] for r in rows),
+        "internal_retry_returns_checked": len(report.get("internal_retry_returns", [])),
+        "internal_retry_returns_infeasible": sum(
+            v["restricted_violation"] > report["feasibility_tolerance"]
+            for v in report.get("internal_retry_returns", [])
+        ),
+        "region_endpoints_with_full_feasible_gain_above_1e_5": sum(
+            r["is_region_endpoint"]
+            and r["best_full_gain"] is not None
+            and r["best_full_gain"] > 1e-5
+            for r in rows
+        ),
+        "total_verification_seconds": sum(run["seconds"] for run in report["runs"]),
+    }
+    write_markdown_report(report, rows, output)
+
+
+def write_markdown_report(report, rows, output):
+    selection = report["source_selection"]
+    summary = report["summary"]
+    lines = [
+        "# NLP verification along the longest Sioux Falls path",
+        "",
+        f"Source: start {selection['start']}, {selection['regions']} regions, "
+        f"{selection['transitions']} transitions. The path was selected by the maximum "
+        "transition count across the same 100 completed source trajectories. "
+        "Deterministic replay matched the saved objectives, menus, assignments and "
+        "constraint counts.",
+        "",
+        f"Checked {len(rows)} restricted NLP return points, including "
+        f"{summary['region_endpoints_checked']} final regional endpoints. "
+        f"The source contains {report['backend_attempts_in_source']} backend attempts; "
+        "the per-call rows refer to each combined call's final return. "
+        f"An additional {summary['internal_retry_returns_checked']} internal retry returns "
+        "were checked for feasibility; "
+        f"{summary['internal_retry_returns_infeasible']} were infeasible for their "
+        "retained NLP. These are not alternative feasible optima.",
+        "",
+        "## Method and acceptance",
+        "",
+        "Each comparison uses the exact original fixed assignment and retained choice "
+        "constraints. No reassignment, rounding of dual vertices, or modification of "
+        "the production solver is performed. Original and alternative menus are also "
+        "checked against every choice constraint in that region. Feasibility threshold: "
+        "1e-7. Infeasible restarts are retained in the raw record and excluded from "
+        "objective-gain calculations.",
+        "",
+        "1. Gurobi reoptimizes both prices at the original allowance vector.",
+        "2. Exhaust three allowance grids, with r=0.1, 0.03, 0.01. Coordinate e takes "
+        "max(0,e-r max(1,e)), e, e+r max(1,e). The two-price LP is optimized at "
+        "every combination, using the independently tested exact two-price profiler. "
+        "Grid winners are checked with Gurobi and the original oracle constraints.",
+        "3. Restart SLSQP from the original return and the best noncentral feasible "
+        "grid point, using numerical constraint derivatives (eps=1e-6), maxiter=500, "
+        "ftol=1e-11, with recovery and fallback disabled.",
+        "4. Solve Gurobi LP outer relaxations in allowance boxes at r=0.1, 0.01, "
+        "0.001, 0.0001; prices retain their original domain. For convex G, a convex "
+        "combination of corner values is an upper bound at the same combination of "
+        "corners. Integrated feasible dual selections yield affine lower bounds. "
+        "In each h=C_b-C_a+G_ib-G_ia<=0, replace +G_ib by a lower bound and "
+        "-G_ia by the negative upper bound. This enlarges the feasible set, so "
+        "maximizing the relaxed profit supplies an objective upper bound in that box.",
+        "",
+        "Corner upper values integrate chords of the max over all cached dual "
+        "vertices at support endpoints and envelope breakpoints. These chords "
+        "dominate the convex integrand in trip frequency. Lower constants receive "
+        "-1e-9 padding and upper values +1e-9; Gurobi LP feasibility and optimality "
+        "tolerances are 1e-9. These are floating-point bounds, not interval proofs.",
+        "",
+        "## Results",
+        "",
+        f"Largest observed feasible gain: {summary['largest_gain']['best_gain']:.12g} "
+        f"at call {summary['largest_gain']['call']} "
+        f"(region {summary['largest_gain']['region']}, CG round "
+        f"{summary['largest_gain']['cg_round']}). "
+        f"This is {100 * summary['largest_gain']['relative_gain']:.4f}% of its original profit.",
+        "",
+        f"The largest remaining gain is {summary['largest_gain_excluding_worst_call']}; "
+        "the largest gain among full-region-feasible final endpoints is "
+        f"{summary['maximum_region_endpoint_gain']}. "
+        "A large-gain intermediate call is assessed as its retained NLP, "
+        "not as a feasible solution of its complete region.",
+        "",
+        f"Grid combinations: {summary['grid_combinations_checked']:,}. "
+        f"Total verification time: {summary['total_verification_seconds']:.1f} seconds "
+        "after cached-problem construction.",
+        "",
+        "Number of calls with best feasible gain above each absolute threshold:",
+        "",
+        "| Gain threshold | Calls |",
+        "| --- | ---: |",
+    ]
+    lines += [
+        f"| {threshold} | {count} |"
+        for threshold, count in summary["gain_threshold_counts"].items()
+    ]
+    lines += [
+        "",
+        "The following table includes all checked restricted NLP returns. "
+        "An asterisk denotes the last CG call in its region. A large original "
+        "full-region violation at an intermediate CG call does not invalidate "
+        "its feasibility for the restricted NLP actually solved.",
+        "",
+        "| Call | Region | Original profit | Best feasible gain | Best source | "
+        "Original full-region violation | Best full-region violation |",
+        "| --- | --- | ---: | ---: | --- | ---: | ---: |",
+    ]
+    for row in rows:
+        marker = "*" if row["is_region_endpoint"] else ""
+        lines.append(
+            f"| {row['call']}{marker} | {row['region']} | {row['original_profit']:.12f} | "
+            f"{row['best_gain']:.6g} | {row['best_source']} | "
+            f"{row['original_full_violation']:.4g} | {row['best_full_violation']:.4g} |"
+        )
+    lines += [
+        "",
+        "## Scope of the conclusion",
+        "",
+        "A positive gain is an observed improvement of the same retained NLP, "
+        "not by itself a proof that the original return was not locally optimal. "
+        "No gain found is numerical evidence, not a local or global certificate. "
+        "Full-region improvements are reported separately and require both the "
+        "original and alternative points to be full-region feasible. Box upper "
+        "bounds apply only to the stated boxes, not the entire original "
+        "unbounded allowance domain. SLSQP success is not used as a certificate "
+        "of KKT, SOSC or global optimality.",
+        "",
+        "See nlp_calls.csv for every gain and box bound; region_endpoints.csv "
+        "for the final CG calls; verification.json for all original and "
+        "alternative menus, grid counts, initial points, constraints and statuses.",
+        "For calls with gain above 1e-5, call_N_independent_check.json contains "
+        "a separate direct-interval-integration and HiGHS price-LP check, plus "
+        "a shrinking sequence of feasible improving allowance perturbations. "
+        "These numerical witnesses are not an exact local-optimality theorem.",
+        "",
+        "## Reproduce",
+        "",
+        "```sh",
+        "PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 \\",
+        "  /opt/homebrew/Caskroom/miniforge/base/envs/maas-bundle/bin/python \\",
+        "  scripts/verify-selected-nlps.py --all-calls \\",
+        "  --output results/longest_trajectory_nlp_verification_20261027",
+        "```",
+        "",
+    ]
+    (output / "README.md").write_text("\n".join(lines))
+
+
 def run(args):
     trace = json.loads(args.trace.read_text())
     assert trace["complete"] and trace["matches_saved_fields"]
+    if args.all_calls:
+        selection, _ = _HELPERS.select_longest(Path.cwd())
+        assert selection == trace["selection"], "Saved trace is no longer the selected longest path"
+        args.calls = [call["call"] for call in trace["calls"]]
+    region_ends = {call["region"]: call["call"] for call in trace["calls"]}
     problem = build_sioux_falls_problem(
         oracle_cache_path="results/sioux_falls_five_modes/dual_vertices.npz"
     )
@@ -317,7 +668,9 @@ def run(args):
         "source_trace": str(args.trace),
         "calls_selected": args.calls,
         "gurobi_version": list(gp.gurobi.version()),
-        "scope": "three original restricted NLPs; no reassignment or model normalization",
+        "scope": "original restricted NLP returns; no reassignment or model normalization",
+        "source_selection": trace["selection"],
+        "backend_attempts_in_source": len(trace["backend_attempts"]),
         "feasibility_tolerance": 1e-7,
         "runs": [],
         "full_domain_global_certificate": False,
@@ -338,6 +691,10 @@ def run(args):
             result = {
                 "call": number,
                 "region": call["region"],
+                "cg_round": call["cg_round"],
+                "is_region_endpoint": region_ends[call["region"]] == number,
+                "assignment_sha256": call["assignment_sha256"],
+                "choice_constraints": call["choice_constraints"],
                 "retained_choice_constraints": len(call["choice_constraints"]),
                 "original": baseline,
                 "price_lp": candidate_record(regional, full, priced),
@@ -410,12 +767,16 @@ def run(args):
                 flush=True,
             )
     report["complete"] = True
+    report["internal_retry_returns"] = audit_internal_retries(problem, trace, args.calls)
+    independently_check_outliers(problem, trace, report, args.output)
+    write_summary(report, args.output)
     (args.output / "verification.json").write_text(json.dumps(report, indent=2) + "\n")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--calls", type=int, nargs="+", default=[4, 28, 41])
+    parser.add_argument("--all-calls", action="store_true", help="Audit every call on longest path")
     parser.add_argument(
         "--trace", type=Path, default=Path("results/longest_trajectory_sosc_20261022/replay.json")
     )
