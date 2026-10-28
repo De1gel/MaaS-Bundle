@@ -13,6 +13,8 @@ import csv
 import heapq
 import importlib.util
 import json
+import os
+import tempfile
 from itertools import product
 from pathlib import Path
 from time import perf_counter
@@ -397,7 +399,7 @@ def write_comparison_reports(output):
             {
                 "call": result["call"],
                 "region": result["region"],
-            "is_region_endpoint": endpoint_calls[result["region"]] == result["call"],
+                "is_region_endpoint": endpoint_calls[result["region"]] == result["call"],
                 "slsqp_seconds": result["slsqp_seconds"],
                 "slsqp_profit": source["metrics"]["objective"],
                 "slsqp_feasible": source["metrics"]["max_violation"] <= 1e-7,
@@ -543,6 +545,9 @@ def write_comparison_reports(output):
 
 
 def plot_comparison(output, rows, tolerance):
+    cache = Path(tempfile.gettempdir()) / "maas-global-plot-cache"
+    os.environ.setdefault("MPLCONFIGDIR", str(cache / "matplotlib"))
+    os.environ.setdefault("XDG_CACHE_HOME", str(cache / "xdg"))
     import matplotlib
 
     matplotlib.use("Agg")
