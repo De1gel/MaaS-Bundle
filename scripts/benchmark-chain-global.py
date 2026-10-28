@@ -9,6 +9,7 @@ certificate. Numerical bounds use explicit padding, not interval arithmetic.
 from __future__ import annotations
 
 import argparse
+import csv
 import heapq
 import importlib.util
 import json
@@ -381,6 +382,216 @@ class SpatialSearch:
         }
 
 
+def write_comparison_reports(output):
+    path = output / "global_timing.json"
+    report = json.loads(path.read_text())
+    local = json.loads((output / "single_slsqp.json").read_text())
+    trace = json.loads(Path(report["source_trace"]).read_text())
+    endpoint_calls = {call["region"]: call["call"] for call in trace["calls"]}
+    by_call = {r["call"]: r for r in local["calls"]}
+    rows = []
+    for result in report["calls"]:
+        source = by_call[result["call"]]
+        spent = result["global_total_seconds_including_slsqp"]
+        rows.append(
+            {
+                "call": result["call"],
+                "region": result["region"],
+            "is_region_endpoint": endpoint_calls[result["region"]] == result["call"],
+                "slsqp_seconds": result["slsqp_seconds"],
+                "slsqp_profit": source["metrics"]["objective"],
+                "slsqp_feasible": source["metrics"]["max_violation"] <= 1e-7,
+                "slsqp_native_success": source["metrics"]["native_success"],
+                "global_setup_seconds": result["setup_seconds"],
+                "global_tree_seconds": result["seconds"],
+                "global_measured_seconds_including_local_seed": spent,
+                "global_status": result["status"],
+                "global_certified": result["certified_to_requested_gap"],
+                "global_lower": result["lower_bound"],
+                "global_upper": result["upper_bound"],
+                "global_gap": result["absolute_gap"],
+                "global_relative_gap": result["relative_gap"],
+                "measured_time_ratio": spent / result["slsqp_seconds"],
+                "global_nodes": result["nodes"],
+            }
+        )
+    with (output / "comparison.csv").open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    certified = sum(r["global_certified"] for r in rows)
+    spent = sum(r["global_measured_seconds_including_local_seed"] for r in rows)
+    local_time = sum(r["slsqp_seconds"] for r in rows)
+    report["summary"] = {
+        "calls_checked": len(rows),
+        "global_certified_count": certified,
+        "global_unfinished_count": len(rows) - certified,
+        "regional_endpoints_checked": sum(r["is_region_endpoint"] for r in rows),
+        "regional_endpoints_certified": sum(
+            r["is_region_endpoint"] and r["global_certified"] for r in rows
+        ),
+        "slsqp_feasible_count": sum(r["slsqp_feasible"] for r in rows),
+        "slsqp_total_seconds": local_time,
+        "global_measured_seconds": spent,
+        "measured_aggregate_time_ratio": spent / local_time,
+        "full_certification_total_seconds": spent if certified == len(rows) else None,
+        "full_certification_cost_lower_bound_seconds": spent,
+        "full_certification_cost_lower_bound_ratio": spent / local_time,
+    }
+    save(path, report)
+    tolerance = report["target_absolute_gap"]
+    lines = [
+        "# Full-domain spatial B&B versus one-shot SLSQP",
+        "",
+        "This comparison freezes the 41 original restricted NLP inputs on start 85's "
+        "longest regional path. It does not rerun the outer regional algorithm, whose "
+        "trajectory could change if intermediate NLP solutions change.",
+        "",
+        "SLSQP is called once per saved input, maxiter=2000, ftol=1e-9, with recovery, "
+        "restarts, fallback and KKT acceptance disabled. Its returned menu is checked "
+        "for feasibility. No SLSQP success or objective is called a global certificate.",
+        "",
+        "The global method is a custom spatial branch-and-bound over the exact "
+        "cached valuation oracle, using Gurobi LP node relaxations. It is NOT the "
+        "native Gurobi nonlinear spatial branch-and-bound engine, and these timings "
+        "must not be attributed to that engine. All Gurobi node LPs use one thread; "
+        "BLAS thread counts are also one. Calls are executed sequentially.",
+        "",
+        f"Target absolute profit gap: {tolerance:g}; per-call tree search budget: "
+        f"{report['node_search_time_limit_per_call']:g} seconds. The same one-shot "
+        "SLSQP result may initialize the global incumbent. Its elapsed time is "
+        "included in the global total; no prior recovered or refined solutions are "
+        "used as global warm starts. The zero menu and the saved input also supply "
+        "feasible incumbent candidates through exact conditional price LPs.",
+        "",
+        "## Measured results",
+        "",
+        f"- Checked calls: {len(rows)}.",
+        f"- One-shot SLSQP total: {local_time:.6f} seconds; "
+        f"{report['summary']['slsqp_feasible_count']}/{len(rows)} feasible returns at 1e-7.",
+        f"- Global measured total, including local seeds and setup: {spent:.6f} seconds.",
+        f"- Global gaps closed to {tolerance:g}: {certified}/{len(rows)}.",
+        f"- Measured aggregate cost ratio: {spent / local_time:.3f}.",
+        "",
+    ]
+    if certified < len(rows):
+        lines += [
+            "**Full certification of the whole batch did not finish.** Consequently "
+            "the measured global total is a cost LOWER BOUND, not a completion time. "
+            "A time-limit return is not a global certificate. No completion time is "
+            "extrapolated from the unfinished runs.",
+            "",
+        ]
+    lines += [
+        "| NLP | SLSQP s | Global measured s | Closed? | Global lower | Global upper | Gap |",
+        "| --- | ---: | ---: | --- | ---: | ---: | ---: |",
+    ]
+    for r in rows:
+        lines.append(
+            f"| {r['call']} | {r['slsqp_seconds']:.4f} | "
+            f"{r['global_measured_seconds_including_local_seed']:.4f} | "
+            f"{'Yes' if r['global_certified'] else 'No'} | {r['global_lower']:.8f} | "
+            f"{r['global_upper']:.8f} | {r['global_gap']:.6g} |"
+        )
+    lines += [
+        "",
+        "## Full-domain bound construction",
+        "",
+        "For h_iba=C_b-C_a+G_ib-G_ia<=0 and 0<=G_ib(e)<=G_ib(0), "
+        "C_b<=C_a+G_ia(0). Shortest-path propagation of these difference "
+        "bounds, plus price order, gives finite price caps. For an incumbent "
+        "profit L, every potentially improving point satisfies "
+        "sum_b,m D_b*c_m*e_bm <= sum_b D_b*Ccap_b-L. Positive demands and "
+        "unit costs therefore give finite coordinate bounds on every "
+        "potentially improving allowance. No arbitrary search box is imposed.",
+        "",
+        "Monotonic valuation lower bounds at the initial upper allowance "
+        "corner tighten price caps and cost bounds further. This propagation "
+        "only excludes points below the feasible incumbent. The full global "
+        "optimum remains represented in the search or is already covered by "
+        "the incumbent.",
+        "",
+        "Within a node, integrated feasible dual selections are affine lower "
+        "bounds for +G. Jensen convex combinations of corner upper values "
+        "are upper bounds for the subtracted G. Corner upper values integrate "
+        "chords of the convex trip-frequency envelope. These choices enlarge "
+        "the original feasible set, so node LPs upper-bound profit. Bisection "
+        "children cover their complete parent box; unresolved nodes retain "
+        "their valid inherited upper bound.",
+        "",
+        "Each LP upper bound uses a sign-feasible dual vector and the finite "
+        "variable bounds to correct all residuals: with r=c-A'pi, "
+        "U=pi'b+sum_j max(r_j*l_j,r_j*u_j). Dot products use extended "
+        "precision and an extra 1e-8 padding. These are floating-point "
+        "numerical certificates, not interval-arithmetic proofs.",
+        "",
+        "Calibration/pilot files are retained separately and excluded from "
+        "the reported comparison totals. Cache construction and common problem "
+        "loading are excluded from both solver totals; global setup is included.",
+        "",
+        "## Reproduce",
+        "",
+        "```sh",
+        "PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 \\",
+        "  /opt/homebrew/Caskroom/miniforge/base/envs/maas-bundle/bin/python \\",
+        "  scripts/benchmark-chain-global.py --seconds 20 --gap 0.001",
+        "```",
+        "",
+    ]
+    (output / "README.md").write_text("\n".join(lines))
+    plot_comparison(output, rows, tolerance)
+
+
+def plot_comparison(output, rows, tolerance):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    calls = np.array([r["call"] for r in rows])
+    local = np.array([r["slsqp_seconds"] for r in rows])
+    global_time = np.array([r["global_measured_seconds_including_local_seed"] for r in rows])
+    done = np.array([r["global_certified"] for r in rows])
+    gaps = np.maximum(1e-10, np.array([r["global_gap"] for r in rows]))
+    fig, axes = plt.subplots(2, 1, figsize=(11, 7), sharex=True)
+    axes[0].scatter(calls, local, s=23, color="#2463a6", label="One-shot SLSQP")
+    axes[0].scatter(
+        calls[done], global_time[done], s=38, color="#217a49", label="Global: target gap reached"
+    )
+    axes[0].scatter(
+        calls[~done],
+        global_time[~done],
+        s=38,
+        marker="^",
+        color="#d17420",
+        label="Global: unfinished (time lower bound)",
+    )
+    axes[0].set_yscale("log")
+    axes[0].set_ylabel("Measured time (seconds)")
+    axes[0].legend(loc="lower right", fontsize=9)
+    axes[1].scatter(calls[done], gaps[done], s=34, color="#217a49")
+    axes[1].scatter(calls[~done], gaps[~done], s=34, marker="x", color="#d17420")
+    axes[1].axhline(
+        tolerance,
+        color="#a33232",
+        linestyle="--",
+        linewidth=1,
+        label=f"Target absolute gap = {tolerance:g}",
+    )
+    axes[1].set_yscale("log")
+    axes[1].set_ylabel("Remaining full-domain profit gap")
+    axes[1].set_xlabel("Original NLP call")
+    axes[1].legend(loc="upper right", fontsize=9)
+    for axis in axes:
+        axis.grid(alpha=0.2)
+        axis.set_xlim(0, max(calls) + 1)
+    fig.suptitle("Fixed NLP inputs: one-shot SLSQP versus full-domain spatial B&B")
+    fig.tight_layout()
+    fig.savefig(output / "timings_and_gaps.png", dpi=160)
+    fig.savefig(output / "timings_and_gaps.pdf")
+    plt.close(fig)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--calls", type=int, nargs="+", default=list(range(1, 42)))
@@ -502,6 +713,7 @@ def main():
     )
     report["total_local_seconds"] = sum(r["slsqp_seconds"] for r in report["calls"])
     save(path, report)
+    write_comparison_reports(args.output)
 
 
 if __name__ == "__main__":
