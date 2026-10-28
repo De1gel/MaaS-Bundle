@@ -37,6 +37,31 @@ def save(path, data):
     temp.replace(path)
 
 
+def lp_dual_upper_bound(model):
+    """Use a sign-feasible LP dual and correct all reduced-cost residuals.
+
+    For max c'x, pi'Ax <= pi'b. With finite l<=x<=u, the remaining
+    r'x=(c-A'pi)'x is bounded by sum max(r_j*l_j,r_j*u_j). This remains an
+    upper bound when solver dual/reduced-cost residuals are nonzero.
+    """
+    variables, constraints = model.getVars(), model.getConstrs()
+    lower = np.array(model.getAttr("LB", variables), dtype=np.longdouble)
+    upper = np.array(model.getAttr("UB", variables), dtype=np.longdouble)
+    if np.any(np.abs(lower) >= gp.GRB.INFINITY / 2) or np.any(np.abs(upper) >= gp.GRB.INFINITY / 2):
+        raise ValueError("Residual-corrected dual bound requires finite LP variable bounds")
+    pi = np.array(model.getAttr("Pi", constraints), dtype=np.longdouble)
+    senses = np.array(model.getAttr("Sense", constraints))
+    pi[senses == "<"] = np.maximum(pi[senses == "<"], 0)
+    pi[senses == ">"] = np.minimum(pi[senses == ">"], 0)
+    residual = np.array(model.getAttr("Obj", variables), dtype=np.longdouble)
+    residual -= model.getA().astype(np.longdouble).T @ pi
+    bound = np.longdouble(model.ObjCon) + pi @ np.array(
+        model.getAttr("RHS", constraints), dtype=np.longdouble
+    )
+    bound += np.maximum(residual * lower, residual * upper).sum()
+    return max(float(bound), float(model.ObjVal)) + PAD
+
+
 def price_caps(regional):
     """h_iba<=0 implies C_b<=C_a+G_ia(0), since 0<=G_ib<=G_ib(0)."""
     p = regional.problem
@@ -100,6 +125,29 @@ class SpatialSearch:
             for i, b in self.lower_keys:
                 datum = self.evaluate(i, b, seed.allowances[b])
                 self.seed_planes[i, b].append(datum[:2])
+        self.minimum_g = {key: 0.0 for key in self.keys}
+        # Bound propagation over the incumbent-dominating set. At its upper
+        # allowance corner, monotonic G is a lower bound throughout that box.
+        # This strengthens C_b-C_a <= G_ia(0)-min G_ib, then the cost budget.
+        for _ in range(4):
+            budget = regional.bundle_demand @ self.caps - self.best_value + PAD
+            upper_eps = np.minimum(budget / self.cost_coefficients, self.p.allowance_upper_bounds)
+            for key in self.keys:
+                self.minimum_g[key] = max(
+                    self.minimum_g[key], self.evaluate(*key, upper_eps[key[1] - 1])[3] - PAD
+                )
+            new_caps = self.caps.copy()
+            for _ in range(self.p.bundle_count):
+                for k in regional.active_indices:
+                    if not k.assigned_bundle:
+                        continue
+                    low = self.minimum_g[k.traveler, k.assigned_bundle]
+                    new_caps[k.assigned_bundle] = min(
+                        new_caps[k.assigned_bundle],
+                        new_caps[k.alternative_bundle] + self.g0[k.traveler] - low + PAD,
+                    )
+                new_caps[1] = min(new_caps[1], new_caps[2])
+            self.caps = new_caps
         budget = regional.bundle_demand @ self.caps - self.best_value + PAD
         self.root_lower = np.zeros((2, self.m))
         self.root_upper = np.minimum(budget / self.cost_coefficients, self.p.allowance_upper_bounds)
@@ -163,18 +211,19 @@ class SpatialSearch:
             lower = {}
             for key in self.lower_keys:
                 i, b = key
-                lower[key] = model.addVar(lb=0, ub=self.g0[i] + PAD)
+                lower[key] = model.addVar(lb=self.minimum_g[key], ub=self.g0[i] + PAD)
                 for c, grad in self.seed_planes[key] + [d[:2] for d in data[key]]:
                     model.addConstr(lower[key] >= c + grad @ eps[b])
             upper = {
                 key: np.array([d[2] for d in data[key]]) @ lam[key[1]] for key in self.upper_keys
             }
+            choice_rows = []
             for k in self.regional.active_indices:
                 i, b, a = k.traveler, k.assigned_bundle, k.alternative_bundle
                 cb, ca = prices[b - 1] if b else 0, prices[a - 1] if a else 0
                 gb = lower[i, b] if b else self.g0[i]
                 ga = upper[i, a] if a else self.g0[i]
-                model.addConstr(cb - ca + gb - ga <= 0)
+                choice_rows.append(model.addConstr(cb - ca + gb - ga <= 0))
             model.addConstr(prices[0] <= prices[1])
             objective = self.regional.bundle_demand[1:] @ prices
             for b in (1, 2):
@@ -193,18 +242,26 @@ class SpatialSearch:
                 if model.Status != gp.GRB.OPTIMAL:
                     # No primal LP objective is substituted for an unresolved dual bound.
                     break
-                bound = min(bound, float(model.ObjVal) + PAD)
+                bound = min(bound, lp_dual_upper_bound(model))
                 point = np.array([eps[b].X for b in (1, 2)])
                 point = np.clip(point, lo, hi)
                 self.profile(point)
                 if bound <= self.best_value + self.target_gap:
                     break
-                worst_upper, worst_lower = -1.0, 0.0
+                upper_weights = {key: 0.0 for key in self.upper_keys}
+                for k, constraint in zip(self.regional.active_indices, choice_rows, strict=True):
+                    if k.alternative_bundle:
+                        upper_weights[k.traveler, k.alternative_bundle] += max(
+                            0, float(constraint.Pi)
+                        )
+                worst_upper, worst_lower, worst_score = 0.0, 0.0, -1.0
                 for i, b in self.upper_keys:
                     exact = self.evaluate(i, b, point[b - 1])[3]
                     error = float(upper[i, b].getValue()) - exact
-                    if error > worst_upper:
-                        worst_upper, branch_bundle, branch_traveler = error, b, i
+                    worst_upper = max(worst_upper, error)
+                    score = max(0, error) * (upper_weights[i, b] + 1e-8)
+                    if score > worst_score:
+                        worst_score, branch_bundle, branch_traveler = score, b, i
                 for i, b in self.lower_keys:
                     c, grad, _, exact = self.evaluate(i, b, point[b - 1])
                     worst_lower = max(worst_lower, exact - lower[i, b].X)
@@ -247,7 +304,17 @@ class SpatialSearch:
                     ]
                 )
                 variation = np.ptp(grads, axis=0)
-                scores = widths * np.maximum(variation, 1e-8)
+                fraction = np.divide(
+                    point[bundle - 1] - lo[bundle - 1],
+                    widths,
+                    out=np.zeros_like(widths),
+                    where=widths > 0,
+                )
+                scores = (
+                    widths
+                    * np.maximum(variation, 1e-8)
+                    * np.maximum(fraction * (1 - fraction), 1e-4)
+                )
                 column = int(np.argmax(scores))
                 if widths[column] <= 1e-10:
                     heapq.heappush(heap, (-bound, counter + 1, lo, hi))
@@ -256,8 +323,8 @@ class SpatialSearch:
                 split = float(
                     np.clip(
                         point[bundle - 1, column],
-                        lo[bundle - 1, column] + 0.1 * widths[column],
-                        hi[bundle - 1, column] - 0.1 * widths[column],
+                        lo[bundle - 1, column] + 0.01 * widths[column],
+                        hi[bundle - 1, column] - 0.01 * widths[column],
                     )
                 )
                 for side in (0, 1):

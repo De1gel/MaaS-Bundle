@@ -71,3 +71,27 @@ def test_time_limit_preserves_unsearched_domain_upper_bound(env):
     assert not result["certified_to_requested_gap"]
     assert result["upper_bound"] >= 0.64
     assert result["open_nodes"] == 1
+
+
+def test_lp_dual_residual_correction_is_valid_even_with_zero_duals(env):
+    from types import SimpleNamespace
+
+    with gp.Model(env=env) as model:
+        x = model.addMVar(2, lb=0, ub=2)
+        model.addConstr(x.sum() <= 1)
+        model.setObjective(np.array([3.0, 2.0]) @ x, gp.GRB.MAXIMIZE)
+        model.optimize()
+        assert _MODULE.lp_dual_upper_bound(model) >= 3.0
+        # Without residual correction these zero duals would incorrectly give
+        # objective upper bound zero. The variable bounds safely absorb r'x.
+        inexact = SimpleNamespace(
+            getVars=model.getVars,
+            getConstrs=model.getConstrs,
+            getAttr=lambda attr, objects: (
+                [0.0] * len(objects) if attr == "Pi" else model.getAttr(attr, objects)
+            ),
+            getA=model.getA,
+            ObjCon=model.ObjCon,
+            ObjVal=model.ObjVal,
+        )
+        assert _MODULE.lp_dual_upper_bound(inexact) >= 10.0
