@@ -1,0 +1,720 @@
+{
+  "method": "feasible CCP; convex subproblems solved by LP cutting planes",
+  "scope": "fixed assignment; linear provision cost; bounded step box",
+  "traveler_count": 1056,
+  "mode_count": 5,
+  "upper_variables": 12,
+  "normalized_profit_units": "USD/representative weighted person/month",
+  "feasibility_tolerance": 1e-08,
+  "allowance_step_radius": 48.0,
+  "price_step_radius": 100.0,
+  "outer_iteration_limit": 15,
+  "cut_iteration_limit": 120,
+  "runs": [
+    {
+      "start": 1,
+      "initial_fixed_assignment_profit": 13.726680809761495,
+      "choice_constraint_count": 2112,
+      "initial_prices": [
+        0.0,
+        20.0,
+        40.0
+      ],
+      "initial_allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          16.0,
+          16.0,
+          4.0,
+          6.0,
+          6.0
+        ],
+        [
+          40.0,
+          40.0,
+          12.0,
+          18.0,
+          18.0
+        ]
+      ],
+      "history": [
+        {
+          "iteration": 1,
+          "fixed_assignment_profit": 14.310503612282377,
+          "improvement": 0.5838228025208814,
+          "lp_solves": 28,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 3037,
+          "convex_subproblem_violation": 7.2675945261835295e-09,
+          "original_choice_violation": 7.2675945261835295e-09,
+          "step_inf_norm": 16.314555988250582,
+          "elapsed_seconds": 5.380056082998635
+        },
+        {
+          "iteration": 2,
+          "fixed_assignment_profit": 14.447950084734309,
+          "improvement": 0.13744647245193242,
+          "lp_solves": 37,
+          "lp_upper_minus_candidate_profit": 1.0658141036401503e-14,
+          "lp_cut_count": 3185,
+          "convex_subproblem_violation": 8.54215898016264e-09,
+          "original_choice_violation": 8.154977138019603e-09,
+          "step_inf_norm": 14.576454462596761,
+          "elapsed_seconds": 11.931584707985166
+        },
+        {
+          "iteration": 3,
+          "fixed_assignment_profit": 14.505617733599657,
+          "improvement": 0.05766764886534759,
+          "lp_solves": 42,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2899,
+          "convex_subproblem_violation": 8.179497967830685e-09,
+          "original_choice_violation": 2.4114470420499856e-09,
+          "step_inf_norm": 5.75187881445288,
+          "elapsed_seconds": 19.682595708000008
+        },
+        {
+          "iteration": 4,
+          "fixed_assignment_profit": 14.518998638315438,
+          "improvement": 0.013380904715781128,
+          "lp_solves": 33,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2467,
+          "convex_subproblem_violation": 2.9682922786378185e-09,
+          "original_choice_violation": 5.863398655492347e-11,
+          "step_inf_norm": 1.0823121156168867,
+          "elapsed_seconds": 24.99322754199966
+        },
+        {
+          "iteration": 5,
+          "fixed_assignment_profit": 14.519734132764631,
+          "improvement": 0.0007354944491932969,
+          "lp_solves": 31,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2592,
+          "convex_subproblem_violation": 5.767212485352502e-09,
+          "original_choice_violation": 4.975909462245909e-09,
+          "step_inf_norm": 0.0670538238420626,
+          "elapsed_seconds": 30.535120832995744
+        },
+        {
+          "iteration": 6,
+          "fixed_assignment_profit": 14.51974200847328,
+          "improvement": 7.875708648796831e-06,
+          "lp_solves": 30,
+          "lp_upper_minus_candidate_profit": 5.10524955643632e-12,
+          "lp_cut_count": 2572,
+          "convex_subproblem_violation": 7.967841497702466e-09,
+          "original_choice_violation": 6.94910795573378e-11,
+          "step_inf_norm": 0.03254633825885378,
+          "elapsed_seconds": 36.010164874984184
+        },
+        {
+          "iteration": 7,
+          "fixed_assignment_profit": 14.519742690539893,
+          "improvement": 6.820666129669917e-07,
+          "lp_solves": 38,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2735,
+          "convex_subproblem_violation": 3.47419870649901e-09,
+          "original_choice_violation": 3.47419870649901e-09,
+          "step_inf_norm": 0.009783616977983911,
+          "elapsed_seconds": 42.92916645799414
+        }
+      ],
+      "status": "small_improvement; not a local-optimality certificate",
+      "final_prices": [
+        0.0,
+        20.685337403895833,
+        43.22948949211365
+      ],
+      "final_allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          12.013553757924123,
+          23.023563274682367,
+          1.2132338322237624,
+          8.289521910664492,
+          0.0
+        ],
+        [
+          9.246158269565742,
+          64.50784899100006,
+          0.0,
+          37.39926990326542,
+          0.0
+        ]
+      ],
+      "final_fixed_assignment_profit": 14.519742690539893,
+      "elapsed_seconds": 42.9295111669926
+    },
+    {
+      "start": 2,
+      "initial_fixed_assignment_profit": 4.021765503380685,
+      "choice_constraint_count": 2112,
+      "initial_prices": [
+        0.0,
+        19.163811645594482,
+        48.304435890535544
+      ],
+      "initial_allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          7.111159951929023,
+          25.657228869176173,
+          19.370853158800706,
+          45.9696089832665,
+          45.03814759031948
+        ],
+        [
+          27.724277330655582,
+          82.36021333947483,
+          47.969498176979755,
+          81.37703883731362,
+          55.376219526482465
+        ]
+      ],
+      "history": [
+        {
+          "iteration": 1,
+          "fixed_assignment_profit": 6.835711492669131,
+          "improvement": 2.8139459892884453,
+          "lp_solves": 86,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 4321,
+          "convex_subproblem_violation": 7.684462843826623e-09,
+          "original_choice_violation": 2.2778579022997292e-10,
+          "step_inf_norm": 47.96949792891296,
+          "elapsed_seconds": 16.19397287501488
+        },
+        {
+          "iteration": 2,
+          "fixed_assignment_profit": 8.477911927464534,
+          "improvement": 1.6422004347954031,
+          "lp_solves": 99,
+          "lp_upper_minus_candidate_profit": 4.873079717526707e-11,
+          "lp_cut_count": 3617,
+          "convex_subproblem_violation": 9.046800641954178e-09,
+          "original_choice_violation": 7.211298225229257e-10,
+          "step_inf_norm": 12.833606884536213,
+          "elapsed_seconds": 34.4104655420233
+        },
+        {
+          "iteration": 3,
+          "fixed_assignment_profit": 9.919336301676935,
+          "improvement": 1.441424374212401,
+          "lp_solves": 77,
+          "lp_upper_minus_candidate_profit": 7.815970093361102e-14,
+          "lp_cut_count": 3736,
+          "convex_subproblem_violation": 7.69125563238049e-09,
+          "original_choice_violation": 5.797176072519505e-10,
+          "step_inf_norm": 17.078810867484528,
+          "elapsed_seconds": 49.071210958005395
+        },
+        {
+          "iteration": 4,
+          "fixed_assignment_profit": 10.697661844170867,
+          "improvement": 0.7783255424939313,
+          "lp_solves": 46,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2939,
+          "convex_subproblem_violation": 5.381650680646999e-09,
+          "original_choice_violation": 4.8491024529084825e-09,
+          "step_inf_norm": 19.372970216453396,
+          "elapsed_seconds": 57.856909207999706
+        },
+        {
+          "iteration": 5,
+          "fixed_assignment_profit": 10.970049148293166,
+          "improvement": 0.27238730412229906,
+          "lp_solves": 51,
+          "lp_upper_minus_candidate_profit": -1.7763568394002505e-15,
+          "lp_cut_count": 2933,
+          "convex_subproblem_violation": 5.803954650218657e-09,
+          "original_choice_violation": 5.803954650218657e-09,
+          "step_inf_norm": 17.255251321967606,
+          "elapsed_seconds": 67.45362516702153
+        },
+        {
+          "iteration": 6,
+          "fixed_assignment_profit": 11.050599764935951,
+          "improvement": 0.0805506166427854,
+          "lp_solves": 50,
+          "lp_upper_minus_candidate_profit": 7.16049441962241e-12,
+          "lp_cut_count": 3057,
+          "convex_subproblem_violation": 9.026848601934034e-09,
+          "original_choice_violation": 1.9431141140557884e-09,
+          "step_inf_norm": 9.174172459221921,
+          "elapsed_seconds": 77.10080033302074
+        },
+        {
+          "iteration": 7,
+          "fixed_assignment_profit": 11.091570966704076,
+          "improvement": 0.04097120176812474,
+          "lp_solves": 52,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 3021,
+          "convex_subproblem_violation": 9.136641665463685e-09,
+          "original_choice_violation": 4.842256373649434e-09,
+          "step_inf_norm": 5.525847430127804,
+          "elapsed_seconds": 87.12734987502336
+        },
+        {
+          "iteration": 8,
+          "fixed_assignment_profit": 11.109524125024741,
+          "improvement": 0.017953158320665352,
+          "lp_solves": 52,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2997,
+          "convex_subproblem_violation": 6.6492589212430175e-09,
+          "original_choice_violation": 4.875147396887769e-09,
+          "step_inf_norm": 3.8606591615853887,
+          "elapsed_seconds": 97.15248304200941
+        },
+        {
+          "iteration": 9,
+          "fixed_assignment_profit": 11.117412397449433,
+          "improvement": 0.007888272424692033,
+          "lp_solves": 44,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2853,
+          "convex_subproblem_violation": 6.453035439335508e-09,
+          "original_choice_violation": 4.849468382417399e-09,
+          "step_inf_norm": 2.6605301706494515,
+          "elapsed_seconds": 105.64992845800589
+        },
+        {
+          "iteration": 10,
+          "fixed_assignment_profit": 11.121130013507038,
+          "improvement": 0.0037176160576049,
+          "lp_solves": 42,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2835,
+          "convex_subproblem_violation": 6.071434910381868e-09,
+          "original_choice_violation": 6.071434910381868e-09,
+          "step_inf_norm": 2.0745710401783555,
+          "elapsed_seconds": 113.46642050001537
+        },
+        {
+          "iteration": 11,
+          "fixed_assignment_profit": 11.122974572388708,
+          "improvement": 0.001844558881670011,
+          "lp_solves": 45,
+          "lp_upper_minus_candidate_profit": -1.7763568394002505e-15,
+          "lp_cut_count": 2853,
+          "convex_subproblem_violation": 6.930633844604017e-09,
+          "original_choice_violation": 5.174566553023396e-09,
+          "step_inf_norm": 1.7940754040094724,
+          "elapsed_seconds": 122.19281729200156
+        },
+        {
+          "iteration": 12,
+          "fixed_assignment_profit": 11.123931215398894,
+          "improvement": 0.0009566430101859424,
+          "lp_solves": 38,
+          "lp_upper_minus_candidate_profit": 1.7763568394002505e-15,
+          "lp_cut_count": 2783,
+          "convex_subproblem_violation": 9.099380804400425e-09,
+          "original_choice_violation": 4.831274935668262e-09,
+          "step_inf_norm": 1.5320318039190504,
+          "elapsed_seconds": 129.4448725830007
+        },
+        {
+          "iteration": 13,
+          "fixed_assignment_profit": 11.124443732320373,
+          "improvement": 0.0005125169214785785,
+          "lp_solves": 44,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2823,
+          "convex_subproblem_violation": 6.84289602759236e-09,
+          "original_choice_violation": 3.4330867038079305e-09,
+          "step_inf_norm": 1.2786229664912732,
+          "elapsed_seconds": 137.96966095801326
+        },
+        {
+          "iteration": 14,
+          "fixed_assignment_profit": 11.124725073385177,
+          "improvement": 0.00028134106480415255,
+          "lp_solves": 37,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2728,
+          "convex_subproblem_violation": 5.881304332433501e-09,
+          "original_choice_violation": 1.5998828928331932e-09,
+          "step_inf_norm": 1.039555641913001,
+          "elapsed_seconds": 145.02679566701408
+        },
+        {
+          "iteration": 15,
+          "fixed_assignment_profit": 11.124883200025419,
+          "improvement": 0.00015812664024217327,
+          "lp_solves": 40,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2791,
+          "convex_subproblem_violation": 6.383405803944697e-09,
+          "original_choice_violation": 6.383405803944697e-09,
+          "step_inf_norm": 0.8340840011938653,
+          "elapsed_seconds": 152.8125483750191
+        }
+      ],
+      "status": "outer_iteration_limit",
+      "final_prices": [
+        0.0,
+        18.97534170690558,
+        94.88451134623618
+      ],
+      "final_allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          9.19501984473652,
+          18.465011868905414,
+          0.0,
+          24.723296122778613,
+          2.2653319882036435e-08
+        ],
+        [
+          61.38056954571963,
+          23.866033947340185,
+          0.0,
+          52.18641896707284,
+          68.51302642531068
+        ]
+      ],
+      "final_fixed_assignment_profit": 11.124883200025419,
+      "elapsed_seconds": 152.81308133300627
+    },
+    {
+      "start": 3,
+      "initial_fixed_assignment_profit": 2.0784461803942964,
+      "choice_constraint_count": 2112,
+      "initial_prices": [
+        0.0,
+        12.038996776259006,
+        56.19261990652795
+      ],
+      "initial_allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          41.3006605408024,
+          17.88810180195265,
+          34.251865414880115,
+          43.02176506625306,
+          4.347553112372005
+        ],
+        [
+          107.21401013519989,
+          34.37531494507698,
+          86.99357263252014,
+          114.70739238172513,
+          32.47139228916312
+        ]
+      ],
+      "history": [
+        {
+          "iteration": 1,
+          "fixed_assignment_profit": 8.109519946089842,
+          "improvement": 6.031073765695546,
+          "lp_solves": 53,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 3451,
+          "convex_subproblem_violation": 8.632724757262622e-09,
+          "original_choice_violation": 5.596810126462515e-09,
+          "step_inf_norm": 48.0,
+          "elapsed_seconds": 10.12366620899411
+        },
+        {
+          "iteration": 2,
+          "fixed_assignment_profit": 9.543658064766039,
+          "improvement": 1.4341381186761968,
+          "lp_solves": 51,
+          "lp_upper_minus_candidate_profit": 1.1013412404281553e-13,
+          "lp_cut_count": 3043,
+          "convex_subproblem_violation": 4.905160722046276e-09,
+          "original_choice_violation": 5.185754048397939e-10,
+          "step_inf_norm": 48.0,
+          "elapsed_seconds": 19.63199608400464
+        },
+        {
+          "iteration": 3,
+          "fixed_assignment_profit": 9.640029263198903,
+          "improvement": 0.09637119843286435,
+          "lp_solves": 59,
+          "lp_upper_minus_candidate_profit": -1.7763568394002505e-15,
+          "lp_cut_count": 2803,
+          "convex_subproblem_violation": 7.415252412101836e-09,
+          "original_choice_violation": 5.568811189959888e-09,
+          "step_inf_norm": 4.1905256144146135,
+          "elapsed_seconds": 30.516211916983593
+        },
+        {
+          "iteration": 4,
+          "fixed_assignment_profit": 9.657094245195236,
+          "improvement": 0.017064981996332662,
+          "lp_solves": 59,
+          "lp_upper_minus_candidate_profit": -1.7763568394002505e-15,
+          "lp_cut_count": 2717,
+          "convex_subproblem_violation": 8.120878192130476e-09,
+          "original_choice_violation": 5.112738676871231e-09,
+          "step_inf_norm": 1.5092841142687305,
+          "elapsed_seconds": 41.54337162498268
+        },
+        {
+          "iteration": 5,
+          "fixed_assignment_profit": 9.667633060763714,
+          "improvement": 0.01053881556847891,
+          "lp_solves": 54,
+          "lp_upper_minus_candidate_profit": -1.7763568394002505e-15,
+          "lp_cut_count": 2839,
+          "convex_subproblem_violation": 8.998654266179074e-09,
+          "original_choice_violation": 4.4432901802338165e-09,
+          "step_inf_norm": 1.443298275060318,
+          "elapsed_seconds": 51.566792917001294
+        },
+        {
+          "iteration": 6,
+          "fixed_assignment_profit": 9.67563446608399,
+          "improvement": 0.008001405320275268,
+          "lp_solves": 49,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2691,
+          "convex_subproblem_violation": 7.857266837163479e-09,
+          "original_choice_violation": 1.261067694713347e-09,
+          "step_inf_norm": 1.4030853169036996,
+          "elapsed_seconds": 60.636080416996265
+        },
+        {
+          "iteration": 7,
+          "fixed_assignment_profit": 9.681321521096605,
+          "improvement": 0.0056870550126149055,
+          "lp_solves": 43,
+          "lp_upper_minus_candidate_profit": 1.7763568394002505e-15,
+          "lp_cut_count": 2729,
+          "convex_subproblem_violation": 9.947171974999947e-09,
+          "original_choice_violation": 7.968310455908068e-09,
+          "step_inf_norm": 1.2409407313573197,
+          "elapsed_seconds": 68.57222383399494
+        },
+        {
+          "iteration": 8,
+          "fixed_assignment_profit": 9.683919067757122,
+          "improvement": 0.00259754666051748,
+          "lp_solves": 51,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2681,
+          "convex_subproblem_violation": 7.788827360855066e-09,
+          "original_choice_violation": 7.788827360855066e-09,
+          "step_inf_norm": 1.218102606438892,
+          "elapsed_seconds": 78.03179404200637
+        },
+        {
+          "iteration": 9,
+          "fixed_assignment_profit": 9.686313568885204,
+          "improvement": 0.0023945011280819273,
+          "lp_solves": 47,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2660,
+          "convex_subproblem_violation": 7.118590161780958e-09,
+          "original_choice_violation": 7.118590161780958e-09,
+          "step_inf_norm": 1.224932020312381,
+          "elapsed_seconds": 86.7128010839806
+        },
+        {
+          "iteration": 10,
+          "fixed_assignment_profit": 9.689446434969584,
+          "improvement": 0.003132866084380126,
+          "lp_solves": 49,
+          "lp_upper_minus_candidate_profit": 1.7763568394002505e-15,
+          "lp_cut_count": 2709,
+          "convex_subproblem_violation": 5.565084393310826e-09,
+          "original_choice_violation": 4.764984851135523e-09,
+          "step_inf_norm": 1.2521624495921364,
+          "elapsed_seconds": 95.81227875000332
+        },
+        {
+          "iteration": 11,
+          "fixed_assignment_profit": 9.701805379675738,
+          "improvement": 0.012358944706154062,
+          "lp_solves": 52,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2801,
+          "convex_subproblem_violation": 8.276373364424217e-09,
+          "original_choice_violation": 7.105427357601002e-15,
+          "step_inf_norm": 2.4737769622675607,
+          "elapsed_seconds": 105.53708804197959
+        },
+        {
+          "iteration": 12,
+          "fixed_assignment_profit": 9.85754410582625,
+          "improvement": 0.15573872615051165,
+          "lp_solves": 74,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2673,
+          "convex_subproblem_violation": 5.8956004522769945e-09,
+          "original_choice_violation": 3.3617482131376164e-09,
+          "step_inf_norm": 11.114459404929537,
+          "elapsed_seconds": 119.25613179200445
+        },
+        {
+          "iteration": 13,
+          "fixed_assignment_profit": 10.561732650615692,
+          "improvement": 0.7041885447894423,
+          "lp_solves": 47,
+          "lp_upper_minus_candidate_profit": 1.7763568394002505e-15,
+          "lp_cut_count": 3173,
+          "convex_subproblem_violation": 5.350454301833452e-09,
+          "original_choice_violation": 5.350454301833452e-09,
+          "step_inf_norm": 13.019415646257077,
+          "elapsed_seconds": 128.19915420899633
+        },
+        {
+          "iteration": 14,
+          "fixed_assignment_profit": 10.567396034714035,
+          "improvement": 0.005663384098342661,
+          "lp_solves": 34,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2813,
+          "convex_subproblem_violation": 5.162036131878267e-09,
+          "original_choice_violation": 4.1937262551527965e-09,
+          "step_inf_norm": 0.3711763274367641,
+          "elapsed_seconds": 134.54871158400783
+        },
+        {
+          "iteration": 15,
+          "fixed_assignment_profit": 10.567467169937775,
+          "improvement": 7.113522373991543e-05,
+          "lp_solves": 29,
+          "lp_upper_minus_candidate_profit": 0.0,
+          "lp_cut_count": 2726,
+          "convex_subproblem_violation": 7.9586186529923e-09,
+          "original_choice_violation": 7.68071117818181e-09,
+          "step_inf_norm": 0.23206743816766817,
+          "elapsed_seconds": 139.97538779198658
+        }
+      ],
+      "status": "outer_iteration_limit",
+      "final_prices": [
+        0.0,
+        12.486561215619997,
+        96.33714788656965
+      ],
+      "final_allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          6.583219741771569,
+          5.660528775764367,
+          1.0571951093856572e-07,
+          22.480455700781288,
+          6.914251754062723e-13
+        ],
+        [
+          10.227850399826377,
+          0.0,
+          0.0,
+          115.82000212561003,
+          35.36686135788146
+        ]
+      ],
+      "final_fixed_assignment_profit": 10.567467169937775,
+      "elapsed_seconds": 139.97602712499793
+    }
+  ],
+  "valuation_coordinate_check": {
+    "allowance_point": [
+      16.123,
+      16.456,
+      4.789,
+      6.246,
+      6.357
+    ],
+    "oracle_gradient_singular_values": [
+      33.50833767712776,
+      2.4644213313483343,
+      1.1116257188135297,
+      0.721691941341045,
+      0.2554356397521576
+    ],
+    "finite_difference_singular_values": [
+      33.50833767721599,
+      2.464421331346128,
+      1.1116257188359377,
+      0.7216919413531625,
+      0.25543563976967765
+    ],
+    "gradient_max_difference": 1.9044787968880428e-10
+  },
+  "nonconvex_choice_counterexample": {
+    "traveler_index": 427,
+    "assigned_option": 2,
+    "alternative_option": 1,
+    "basic_allowance_endpoints": [
+      [
+        10.294288321090859,
+        4.103784227111906,
+        1.478079135422261,
+        1.623168474209582,
+        17.880496560500653
+      ],
+      [
+        28.4744707262209,
+        58.781771822109974,
+        62.85807826437172,
+        58.428105841457985,
+        72.6565868088424
+      ]
+    ],
+    "premium_allowance_fixed": [
+      68.4744707262209,
+      98.78177182210997,
+      102.85807826437173,
+      98.42810584145798,
+      112.6565868088424
+    ],
+    "basic_price_fixed": 10.0,
+    "premium_price_endpoints": [
+      93.75795158937115,
+      16.04403440571302
+    ],
+    "endpoint_choice_residuals": [
+      0.0,
+      0.0
+    ],
+    "midpoint_choice_violation": 24.046866136827134,
+    "scope": "one exact choice constraint; not the full assignment region"
+  }
+}

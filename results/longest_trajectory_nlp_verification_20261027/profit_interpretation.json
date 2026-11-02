@@ -1,0 +1,368 @@
+{
+  "start": 85,
+  "saved_final_profit": 15.323380503976981,
+  "saved_best_observed_profit": 15.915158906690747,
+  "menus": [
+    {
+      "call": 1,
+      "region": 1,
+      "fixed_assignment_profit": 16.31284594935484,
+      "constraint_count": 18,
+      "actual_reassignment": [
+        {
+          "choice_tolerance": 1e-09,
+          "profit": 10.196220847072436,
+          "changed_traveler_classes": 300,
+          "changed_population_weight": 0.20415973377703825,
+          "assignment_counts": [
+            512,
+            488,
+            56
+          ]
+        },
+        {
+          "choice_tolerance": 1e-07,
+          "profit": 10.196220847072436,
+          "changed_traveler_classes": 300,
+          "changed_population_weight": 0.20415973377703825,
+          "assignment_counts": [
+            512,
+            488,
+            56
+          ]
+        }
+      ]
+    },
+    {
+      "call": 8,
+      "region": 3,
+      "fixed_assignment_profit": 18.82773676875632,
+      "constraint_count": 22,
+      "actual_reassignment": [
+        {
+          "choice_tolerance": 1e-09,
+          "profit": 13.455139979688123,
+          "changed_traveler_classes": 220,
+          "changed_population_weight": 0.16389351081530787,
+          "assignment_counts": [
+            688,
+            62,
+            306
+          ]
+        },
+        {
+          "choice_tolerance": 1e-07,
+          "profit": 13.455139979688123,
+          "changed_traveler_classes": 220,
+          "changed_population_weight": 0.16389351081530787,
+          "assignment_counts": [
+            688,
+            62,
+            306
+          ]
+        }
+      ]
+    },
+    {
+      "call": 14,
+      "region": 4,
+      "fixed_assignment_profit": 14.7693854376867,
+      "constraint_count": 25,
+      "actual_reassignment": [
+        {
+          "choice_tolerance": 1e-09,
+          "profit": 14.81647464446579,
+          "changed_traveler_classes": 4,
+          "changed_population_weight": 0.0023710482529118136,
+          "assignment_counts": [
+            476,
+            248,
+            332
+          ]
+        },
+        {
+          "choice_tolerance": 1e-07,
+          "profit": 14.81647464446579,
+          "changed_traveler_classes": 4,
+          "changed_population_weight": 0.0023710482529118136,
+          "assignment_counts": [
+            476,
+            248,
+            332
+          ]
+        }
+      ]
+    },
+    {
+      "call": 15,
+      "region": 5,
+      "fixed_assignment_profit": 17.80074685415743,
+      "constraint_count": 18,
+      "actual_reassignment": [
+        {
+          "choice_tolerance": 1e-09,
+          "profit": 15.915158906690747,
+          "changed_traveler_classes": 142,
+          "changed_population_weight": 0.06878813089295618,
+          "assignment_counts": [
+            604,
+            134,
+            318
+          ]
+        },
+        {
+          "choice_tolerance": 1e-07,
+          "profit": 15.915158906690747,
+          "changed_traveler_classes": 142,
+          "changed_population_weight": 0.06878813089295618,
+          "assignment_counts": [
+            604,
+            134,
+            318
+          ]
+        }
+      ]
+    },
+    {
+      "call": 17,
+      "region": 5,
+      "fixed_assignment_profit": 14.832416969486827,
+      "constraint_count": 22,
+      "actual_reassignment": [
+        {
+          "choice_tolerance": 1e-09,
+          "profit": 14.88698281068114,
+          "changed_traveler_classes": 6,
+          "changed_population_weight": 0.002745424292845258,
+          "assignment_counts": [
+            470,
+            254,
+            332
+          ]
+        },
+        {
+          "choice_tolerance": 1e-07,
+          "profit": 14.88698281068114,
+          "changed_traveler_classes": 6,
+          "changed_population_weight": 0.002745424292845258,
+          "assignment_counts": [
+            470,
+            254,
+            332
+          ]
+        }
+      ]
+    },
+    {
+      "call": 28,
+      "region": 10,
+      "fixed_assignment_profit": 15.138494876054212,
+      "constraint_count": 24,
+      "actual_reassignment": [
+        {
+          "choice_tolerance": 1e-09,
+          "profit": 15.16669037164308,
+          "changed_traveler_classes": 2,
+          "changed_population_weight": 0.001497504159733777,
+          "assignment_counts": [
+            458,
+            266,
+            332
+          ]
+        },
+        {
+          "choice_tolerance": 1e-07,
+          "profit": 15.16669037164308,
+          "changed_traveler_classes": 2,
+          "changed_population_weight": 0.001497504159733777,
+          "assignment_counts": [
+            458,
+            266,
+            332
+          ]
+        }
+      ]
+    },
+    {
+      "call": 39,
+      "region": 14,
+      "fixed_assignment_profit": 19.44204862846289,
+      "constraint_count": 14,
+      "actual_reassignment": [
+        {
+          "choice_tolerance": 1e-09,
+          "profit": 13.574555854301531,
+          "changed_traveler_classes": 252,
+          "changed_population_weight": 0.1788269550748752,
+          "assignment_counts": [
+            686,
+            64,
+            306
+          ]
+        },
+        {
+          "choice_tolerance": 1e-07,
+          "profit": 13.574555854301531,
+          "changed_traveler_classes": 252,
+          "changed_population_weight": 0.1788269550748752,
+          "assignment_counts": [
+            686,
+            64,
+            306
+          ]
+        }
+      ]
+    },
+    {
+      "call": 41,
+      "region": 14,
+      "fixed_assignment_profit": 15.323380503976981,
+      "constraint_count": 19,
+      "actual_reassignment": [
+        {
+          "choice_tolerance": 1e-09,
+          "profit": 15.323380503976981,
+          "changed_traveler_classes": 0,
+          "changed_population_weight": 0.0,
+          "assignment_counts": [
+            448,
+            276,
+            332
+          ]
+        },
+        {
+          "choice_tolerance": 1e-07,
+          "profit": 15.323380503976981,
+          "changed_traveler_classes": 0,
+          "changed_population_weight": 0.0,
+          "assignment_counts": [
+            448,
+            276,
+            332
+          ]
+        }
+      ]
+    }
+  ],
+  "additional_true_profit_checks": [
+    {
+      "menu": "saved_best_observed",
+      "actual_profit": 15.915158906690747,
+      "assignment_counts": [
+        604,
+        134,
+        318
+      ],
+      "menu_record": {
+        "prices": [
+          0.0,
+          40.67774390000538,
+          63.65354795996411
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            7.495768304604257,
+            12.559945932011141,
+            14.050709090185668,
+            43.72754632773861,
+            3.580711467553994
+          ],
+          [
+            1.4880187222082957,
+            4.429616113315962,
+            5.2541858740617376e-11,
+            85.47951430527367,
+            27.22292322591814
+          ]
+        ]
+      }
+    },
+    {
+      "menu": "improved_call15",
+      "actual_profit": 13.454895780473453,
+      "assignment_counts": [
+        688,
+        62,
+        306
+      ],
+      "menu_record": {
+        "prices": [
+          0.0,
+          39.426265833349056,
+          63.27242930300784
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            5.7669006408368e-16,
+            0.0,
+            1.8711284665187055e-15,
+            42.62514083592466,
+            0.0
+          ],
+          [
+            0.0,
+            1.056837183465944,
+            0.0,
+            70.58116598926398,
+            8.912691859813407
+          ]
+        ]
+      }
+    },
+    {
+      "menu": "kkt_fallback_call15",
+      "actual_profit": 13.454895923903797,
+      "assignment_counts": [
+        688,
+        62,
+        306
+      ],
+      "menu_record": {
+        "prices": [
+          0.0,
+          39.42624421053346,
+          63.27242381653838
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            2.494413846946402e-06,
+            2.5166678076641926e-06,
+            1.1129112943927256e-05,
+            42.62503379331403,
+            1.0898947534854628e-05
+          ],
+          [
+            1.3337906463061623e-05,
+            1.0568636691929516,
+            9.934089326751444e-06,
+            70.58115331817812,
+            8.912584650754646
+          ]
+        ]
+      }
+    }
+  ],
+  "best_observed_improvement_over_final": 0.591778402713766,
+  "best_observed_improvement_percent": 3.8619311356275388
+}

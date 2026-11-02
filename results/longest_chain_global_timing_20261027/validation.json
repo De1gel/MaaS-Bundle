@@ -1,0 +1,293 @@
+{
+  "calls": [
+    {
+      "call": 1,
+      "recomputed_profit": 16.31284594934291,
+      "restricted_violation": 1.4210854715202004e-14,
+      "previous_best_known_feasible_profit": 16.312845998474696,
+      "upper_minus_previous_witness": 0.0009210748347641129
+    },
+    {
+      "call": 2,
+      "recomputed_profit": 15.039405216664894,
+      "restricted_violation": 8.100187187665142e-13,
+      "previous_best_known_feasible_profit": 15.03940521666525,
+      "upper_minus_previous_witness": 0.11343999026471785
+    },
+    {
+      "call": 3,
+      "recomputed_profit": 14.500352841598398,
+      "restricted_violation": 9.414691248821327e-12,
+      "previous_best_known_feasible_profit": 14.500352841602545,
+      "upper_minus_previous_witness": 0.4802665299037816
+    },
+    {
+      "call": 4,
+      "recomputed_profit": 14.299151270368371,
+      "restricted_violation": 1.205329169806646e-10,
+      "previous_best_known_feasible_profit": 14.29915127044825,
+      "upper_minus_previous_witness": 0.6816114185011273
+    },
+    {
+      "call": 5,
+      "recomputed_profit": 15.227028807997495,
+      "restricted_violation": 1.4281908988778014e-12,
+      "previous_best_known_feasible_profit": 15.227028808002354,
+      "upper_minus_previous_witness": 0.13196412843323735
+    },
+    {
+      "call": 6,
+      "recomputed_profit": 14.723526643027835,
+      "restricted_violation": 1.4210854715202004e-14,
+      "previous_best_known_feasible_profit": 14.723527269507075,
+      "upper_minus_previous_witness": 0.5634157994752531
+    },
+    {
+      "call": 7,
+      "recomputed_profit": 14.663558513736211,
+      "restricted_violation": 2.4726887204451486e-12,
+      "previous_best_known_feasible_profit": 14.663558513753369,
+      "upper_minus_previous_witness": 0.4907162314236153
+    },
+    {
+      "call": 8,
+      "recomputed_profit": 18.8277367687554,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 18.82773676875632,
+      "upper_minus_previous_witness": 0.00019769454688045585
+    },
+    {
+      "call": 9,
+      "recomputed_profit": 14.755847884621158,
+      "restricted_violation": 1.5631940186722204e-13,
+      "previous_best_known_feasible_profit": 14.755847886703998,
+      "upper_minus_previous_witness": 0.3872940143114487
+    },
+    {
+      "call": 10,
+      "recomputed_profit": 14.752665250173134,
+      "restricted_violation": 6.431832844100427e-11,
+      "previous_best_known_feasible_profit": 14.75266547637114,
+      "upper_minus_previous_witness": 0.3832313023479852
+    },
+    {
+      "call": 11,
+      "recomputed_profit": 15.774114150771087,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 15.774114161897346,
+      "upper_minus_previous_witness": 0.01747231821799744
+    },
+    {
+      "call": 12,
+      "recomputed_profit": 15.223758465186874,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 15.223758465187576,
+      "upper_minus_previous_witness": 0.04570682100040813
+    },
+    {
+      "call": 13,
+      "recomputed_profit": 14.775211934153091,
+      "restricted_violation": 1.3056222769591841e-11,
+      "previous_best_known_feasible_profit": 14.77521193416297,
+      "upper_minus_previous_witness": 0.47057426190177587
+    },
+    {
+      "call": 14,
+      "recomputed_profit": 14.769385437614547,
+      "restricted_violation": 8.828493491819245e-11,
+      "previous_best_known_feasible_profit": 14.769386332492745,
+      "upper_minus_previous_witness": 0.4521759948416424
+    },
+    {
+      "call": 15,
+      "recomputed_profit": 18.927798696658755,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 18.93078705244411,
+      "upper_minus_previous_witness": 0.019817565652878955
+    },
+    {
+      "call": 16,
+      "recomputed_profit": 14.880312209064266,
+      "restricted_violation": 1.8619772390593425e-11,
+      "previous_best_known_feasible_profit": 14.880312209135944,
+      "upper_minus_previous_witness": 0.3814983223149362
+    },
+    {
+      "call": 17,
+      "recomputed_profit": 14.83241696942402,
+      "restricted_violation": 1.1718626069523452e-10,
+      "previous_best_known_feasible_profit": 14.832416969646763,
+      "upper_minus_previous_witness": 0.35671176001885385
+    },
+    {
+      "call": 18,
+      "recomputed_profit": 15.352465441883693,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 15.352466652529055,
+      "upper_minus_previous_witness": 0.04887587096850332
+    },
+    {
+      "call": 19,
+      "recomputed_profit": 15.166395971003583,
+      "restricted_violation": 1.5631940186722204e-13,
+      "previous_best_known_feasible_profit": 15.166395971004969,
+      "upper_minus_previous_witness": 0.1893551662564672
+    },
+    {
+      "call": 20,
+      "recomputed_profit": 14.950377055408513,
+      "restricted_violation": 8.704148513061227e-13,
+      "previous_best_known_feasible_profit": 14.950377055424765,
+      "upper_minus_previous_witness": 0.32873992008589603
+    },
+    {
+      "call": 21,
+      "recomputed_profit": 15.17621202131128,
+      "restricted_violation": 3.502265144561534e-11,
+      "previous_best_known_feasible_profit": 15.17621202134299,
+      "upper_minus_previous_witness": 0.10333373760240327
+    },
+    {
+      "call": 22,
+      "recomputed_profit": 15.083505212727621,
+      "restricted_violation": 1.4942713733034907e-11,
+      "previous_best_known_feasible_profit": 15.08350530557602,
+      "upper_minus_previous_witness": 0.111423550422872
+    },
+    {
+      "call": 23,
+      "recomputed_profit": 15.013305584295582,
+      "restricted_violation": 3.623767952376511e-13,
+      "previous_best_known_feasible_profit": 15.01330559631381,
+      "upper_minus_previous_witness": 0.14350561846054433
+    },
+    {
+      "call": 24,
+      "recomputed_profit": 15.117881936137751,
+      "restricted_violation": 7.105427357601002e-15,
+      "previous_best_known_feasible_profit": 15.117881936164567,
+      "upper_minus_previous_witness": 0.12050663269127959
+    },
+    {
+      "call": 25,
+      "recomputed_profit": 15.063037941797939,
+      "restricted_violation": 5.648814749292796e-13,
+      "previous_best_known_feasible_profit": 15.063037941798237,
+      "upper_minus_previous_witness": 0.1345657938773872
+    },
+    {
+      "call": 26,
+      "recomputed_profit": 15.105610616969004,
+      "restricted_violation": 8.597567102697212e-13,
+      "previous_best_known_feasible_profit": 15.105610616969637,
+      "upper_minus_previous_witness": 0.0722359160582613
+    },
+    {
+      "call": 27,
+      "recomputed_profit": 15.099332332348865,
+      "restricted_violation": 6.252776074688882e-13,
+      "previous_best_known_feasible_profit": 15.099332332349467,
+      "upper_minus_previous_witness": 0.12515756224097352
+    },
+    {
+      "call": 28,
+      "recomputed_profit": 15.138494876022857,
+      "restricted_violation": 4.3662851112458156e-11,
+      "previous_best_known_feasible_profit": 15.138495116646286,
+      "upper_minus_previous_witness": 0.129995836666847
+    },
+    {
+      "call": 29,
+      "recomputed_profit": 15.969178465141285,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 15.969178467173204,
+      "upper_minus_previous_witness": 0.013651722383876574
+    },
+    {
+      "call": 30,
+      "recomputed_profit": 15.419105875991928,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 15.419105875992365,
+      "upper_minus_previous_witness": 0.03805090307299608
+    },
+    {
+      "call": 31,
+      "recomputed_profit": 15.218602561520719,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 15.218602561520985,
+      "upper_minus_previous_witness": 0.20019610716837732
+    },
+    {
+      "call": 32,
+      "recomputed_profit": 15.187250564762806,
+      "restricted_violation": 6.075140390748857e-13,
+      "previous_best_known_feasible_profit": 15.187250564763774,
+      "upper_minus_previous_witness": 0.08733680938640376
+    },
+    {
+      "call": 33,
+      "recomputed_profit": 15.368255122373117,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 15.368255130296289,
+      "upper_minus_previous_witness": 0.21274888375290502
+    },
+    {
+      "call": 34,
+      "recomputed_profit": 15.23946831906047,
+      "restricted_violation": 2.8453683853513212e-11,
+      "previous_best_known_feasible_profit": 15.239468454834686,
+      "upper_minus_previous_witness": 0.12434162304000651
+    },
+    {
+      "call": 35,
+      "recomputed_profit": 16.06569396421166,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 16.06569412223347,
+      "upper_minus_previous_witness": 0.0166463956806453
+    },
+    {
+      "call": 36,
+      "recomputed_profit": 15.51583776796414,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 15.515838019136712,
+      "upper_minus_previous_witness": 0.02268000893425892
+    },
+    {
+      "call": 37,
+      "recomputed_profit": 15.327973362271837,
+      "restricted_violation": 7.425171588693047e-13,
+      "previous_best_known_feasible_profit": 15.327973373359178,
+      "upper_minus_previous_witness": 0.10569728306948711
+    },
+    {
+      "call": 38,
+      "recomputed_profit": 15.286494627475419,
+      "restricted_violation": 8.379430482818861e-11,
+      "previous_best_known_feasible_profit": 15.286494982589462,
+      "upper_minus_previous_witness": 0.09794648276458418
+    },
+    {
+      "call": 39,
+      "recomputed_profit": 19.44204862846278,
+      "restricted_violation": 0.0,
+      "previous_best_known_feasible_profit": 19.442048628463038,
+      "upper_minus_previous_witness": 0.00010698383463036976
+    },
+    {
+      "call": 40,
+      "recomputed_profit": 15.352671318531335,
+      "restricted_violation": 2.842170943040401e-14,
+      "previous_best_known_feasible_profit": 15.35267131934439,
+      "upper_minus_previous_witness": 0.09738379465396285
+    },
+    {
+      "call": 41,
+      "recomputed_profit": 15.323380503781307,
+      "restricted_violation": 1.4210854715202004e-14,
+      "previous_best_known_feasible_profit": 15.323380549606656,
+      "upper_minus_previous_witness": 0.05287625886716363
+    }
+  ],
+  "all_incumbents_feasible": true,
+  "all_upper_bounds_cover_known_witnesses": true
+}

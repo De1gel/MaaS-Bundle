@@ -1,0 +1,64 @@
+{
+  "scope": "independent final-point integration and full choice checks",
+  "runs": [
+    {
+      "start": 1,
+      "initial_profit": 13.72668080976151,
+      "final_profit": 14.51974269053992,
+      "profit_recomputation_difference": 2.6645352591003757e-14,
+      "final_original_choice_violation": 3.47419870649901e-09,
+      "max_recorded_original_choice_violation": 8.154977138019603e-09,
+      "price_order_violation": 0.0,
+      "minimum_recorded_profit_improvement": 6.820666129669917e-07,
+      "conditional_price_lp_gain": 8.032095877297252e-09,
+      "normalized_kkt_stationarity_residual": 0.041169246446427575,
+      "kkt_is_not_a_local_optimality_proof": true,
+      "outer_iterations": 7,
+      "lp_solves": 239,
+      "elapsed_seconds": 42.9295111669926,
+      "termination": "small_improvement; not a local-optimality certificate"
+    },
+    {
+      "start": 2,
+      "initial_profit": 4.0217655033806885,
+      "final_profit": 11.124883200025426,
+      "profit_recomputation_difference": 7.105427357601002e-15,
+      "final_original_choice_violation": 6.383405803944697e-09,
+      "max_recorded_original_choice_violation": 6.383405803944697e-09,
+      "price_order_violation": 0.0,
+      "minimum_recorded_profit_improvement": 0.00015812664024217327,
+      "conditional_price_lp_gain": 1.1107249875408343e-07,
+      "normalized_kkt_stationarity_residual": 0.00433250136239213,
+      "kkt_is_not_a_local_optimality_proof": true,
+      "outer_iterations": 15,
+      "lp_solves": 803,
+      "elapsed_seconds": 152.81308133300627,
+      "termination": "outer_iteration_limit"
+    },
+    {
+      "start": 3,
+      "initial_profit": 2.078446180394299,
+      "final_profit": 10.567467169937789,
+      "profit_recomputation_difference": 1.4210854715202004e-14,
+      "final_original_choice_violation": 7.68073959989124e-09,
+      "max_recorded_original_choice_violation": 7.968310455908068e-09,
+      "price_order_violation": 0.0,
+      "minimum_recorded_profit_improvement": 7.113522373991543e-05,
+      "conditional_price_lp_gain": -6.666860841164635e-09,
+      "normalized_kkt_stationarity_residual": 0.001459680489067058,
+      "kkt_is_not_a_local_optimality_proof": true,
+      "outer_iterations": 15,
+      "lp_solves": 751,
+      "elapsed_seconds": 139.97602712499793,
+      "termination": "outer_iteration_limit"
+    }
+  ],
+  "nonconvex_constraint_witness": {
+    "endpoint_residuals": [
+      0.0,
+      0.0
+    ],
+    "midpoint_violation": 24.046866136827134
+  },
+  "passed": true
+}

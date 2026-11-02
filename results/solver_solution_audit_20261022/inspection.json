@@ -1,0 +1,1938 @@
+{
+  "scope": "four saved menus; numerical diagnostics, not rigorous SOSC certificates",
+  "units": "USD/representative weighted person/month",
+  "neighborhood_radii_in_relative_infinity_norm": [
+    0.0001,
+    0.01
+  ],
+  "radii_scale": "coordinate scale=max(1, abs(candidate_coordinate))",
+  "cases": [
+    {
+      "name": "recent_fixed_assignment_1",
+      "fixed_assignment_profit": 14.519742752603793,
+      "optimistic_profit_at_same_menu": 14.742386826761562,
+      "classes_reassigned_at_same_menu": 12,
+      "traveler_cost_ties": 22,
+      "double_ties": 0,
+      "primal_violation": 1.4210854715202004e-13,
+      "normalized_stationarity": 3.3257964478057867e-07,
+      "absolute_complementarity": 4.183288980244851e-12,
+      "minimum_nonnegative_multiplier": 0.0,
+      "active_inequalities": 22,
+      "active_lower_bounds": 3,
+      "active_constraint_rank": 10,
+      "active_constraint_count_including_bounds": 25,
+      "active_valuation_geometry": [
+        {
+          "traveler": 111,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 111,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8836487925000256e-10
+        },
+        {
+          "traveler": 135,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 135,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8836487925000256e-10
+        },
+        {
+          "traveler": 235,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 235,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8836487925000256e-10
+        },
+        {
+          "traveler": 243,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 243,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8836487925000256e-10
+        },
+        {
+          "traveler": 248,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 7.578314161263868e-16
+        },
+        {
+          "traveler": 258,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 263,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 269,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 297,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 297,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8836487925000256e-10
+        },
+        {
+          "traveler": 305,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 305,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8836487925000256e-10
+        },
+        {
+          "traveler": 390,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 9.433652891132504e-15
+        },
+        {
+          "traveler": 438,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.1792066113915626e-15
+        },
+        {
+          "traveler": 456,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 5.614275725032396e-16
+        },
+        {
+          "traveler": 502,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 573,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 573,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8836487925000256e-10
+        },
+        {
+          "traveler": 601,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 601,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8836487925000256e-10
+        },
+        {
+          "traveler": 668,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 4,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8846035843012037e-10
+        },
+        {
+          "traveler": 668,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 7.23566940692566e-15
+        },
+        {
+          "traveler": 670,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 6,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8740564655672588e-10
+        },
+        {
+          "traveler": 670,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.6259559170711663e-14
+        },
+        {
+          "traveler": 722,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 4,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8846035843012037e-10
+        },
+        {
+          "traveler": 722,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 734,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 6,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.8816947999766848e-10
+        },
+        {
+          "traveler": 734,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.9371394104691976e-14
+        },
+        {
+          "traveler": 826,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 890,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 5.614275725032396e-16
+        }
+      ],
+      "finite_difference_checks": [
+        {
+          "relative_step": 0.001,
+          "active_constraint_jacobian_max_error": 0.348094465075267,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 2.0566433234417265e-17,
+            "compact_constraint_row": 19,
+            "oracle_derivative": 0.8894761111270421,
+            "finite_difference_derivative": 0.5413816460517751
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 161.5905733347234,
+          "lagrangian_hessian_asymmetry": 0.006194925136589203
+        },
+        {
+          "relative_step": 0.0001,
+          "active_constraint_jacobian_max_error": 0.34809446530264065,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 2.0566433234417265e-17,
+            "compact_constraint_row": 19,
+            "oracle_derivative": 0.8894761111270421,
+            "finite_difference_derivative": 0.5413816458244014
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 1619.2244200959578,
+          "lagrangian_hessian_asymmetry": 0.006194925134831332
+        },
+        {
+          "relative_step": 1e-05,
+          "active_constraint_jacobian_max_error": 0.34809446903299,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 2.0566433234417265e-17,
+            "compact_constraint_row": 19,
+            "oracle_derivative": 0.8894761111270421,
+            "finite_difference_derivative": 0.541381642094052
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 16195.562887708285,
+          "lagrangian_hessian_asymmetry": 0.006194925116362588
+        }
+      ],
+      "directional_additivity_checks": [
+        {
+          "relative_step": 0.0001,
+          "maximum_directional_additivity_error": 0.0013001638166088014,
+          "witness": {
+            "variable_columns": [
+              8,
+              10
+            ],
+            "variable_values": [
+              64.5088495360401,
+              37.40068152058854
+            ],
+            "compact_constraint_row": 17,
+            "signed_additivity_error": 0.0013001638166088014
+          }
+        },
+        {
+          "relative_step": 1e-05,
+          "maximum_directional_additivity_error": 0.00013001795196032617,
+          "witness": {
+            "variable_columns": [
+              8,
+              10
+            ],
+            "variable_values": [
+              64.5088495360401,
+              37.40068152058854
+            ],
+            "compact_constraint_row": 19,
+            "signed_additivity_error": 0.00013001795196032617
+          }
+        },
+        {
+          "relative_step": 1e-06,
+          "maximum_directional_additivity_error": 1.3010037491767434e-05,
+          "witness": {
+            "variable_columns": [
+              8,
+              10
+            ],
+            "variable_values": [
+              64.5088495360401,
+              37.40068152058854
+            ],
+            "compact_constraint_row": 16,
+            "signed_additivity_error": 1.3010037491767434e-05
+          }
+        }
+      ],
+      "selected_branch_conservative_curvature": {
+        "nullspace_dimension": 2,
+        "projected_minimization_hessian_eigenvalues": [
+          0.0002911963262994849,
+          0.0027261753011901687
+        ],
+        "is_not_a_classical_sosc_certificate": true
+      },
+      "neighborhood_probes": [
+        {
+          "assignment": "original_fixed_assignment",
+          "radius": 0.0001,
+          "attempted": 24,
+          "price_lp_feasible": 7,
+          "original_audit_feasible": 7,
+          "baseline_fixed_profit": 14.519742752603793,
+          "best_fixed_improvement": 2.4638069362481474e-12,
+          "best_optimistic_improvement": 2.538413923502958e-12,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              20.68527284348123,
+              43.22984636380383
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                12.011616844355954,
+                23.025207421838584,
+                1.2135782888442594,
+                8.288985506808766,
+                2.0566433234417265e-17
+              ],
+              [
+                9.247124003177337,
+                64.5088495360401,
+                1.8847261802477858e-10,
+                37.40068152058854,
+                0.0
+              ]
+            ],
+            "profit": 14.519742752606257,
+            "original_violation": 2.842170943040401e-14,
+            "optimistic_profit": 14.7423868267641
+          }
+        },
+        {
+          "assignment": "original_fixed_assignment",
+          "radius": 0.01,
+          "attempted": 24,
+          "price_lp_feasible": 7,
+          "original_audit_feasible": 7,
+          "baseline_fixed_profit": 14.519742752603793,
+          "best_fixed_improvement": 2.4638069362481474e-12,
+          "best_optimistic_improvement": 2.538413923502958e-12,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              20.68527284348123,
+              43.22984636380383
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                12.011616844355954,
+                23.025207421838584,
+                1.2135782888442594,
+                8.288985506808766,
+                2.0566433234417265e-17
+              ],
+              [
+                9.247124003177337,
+                64.5088495360401,
+                1.8847261802477858e-10,
+                37.40068152058854,
+                0.0
+              ]
+            ],
+            "profit": 14.519742752606257,
+            "original_violation": 2.842170943040401e-14,
+            "optimistic_profit": 14.7423868267641
+          }
+        },
+        {
+          "assignment": "optimistic_assignment_at_candidate",
+          "radius": 0.0001,
+          "attempted": 24,
+          "price_lp_feasible": 24,
+          "original_audit_feasible": 24,
+          "baseline_fixed_profit": 14.742386826761562,
+          "best_fixed_improvement": 4.7223583168332084e-05,
+          "best_optimistic_improvement": 4.7223583168332084e-05,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              20.68527284348123,
+              43.22946592142982
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                12.011616844355954,
+                23.025207421838584,
+                1.2135782888442594,
+                8.288985506808766,
+                2.0566433234417265e-17
+              ],
+              [
+                9.247124003177337,
+                64.5023986510865,
+                1.8847261802477858e-10,
+                37.40068152058854,
+                2.6958225533392297e-10
+              ]
+            ],
+            "profit": 14.74243405034473,
+            "original_violation": 8.526512829121202e-14,
+            "optimistic_profit": 14.74243405034473
+          }
+        },
+        {
+          "assignment": "optimistic_assignment_at_candidate",
+          "radius": 0.01,
+          "attempted": 24,
+          "price_lp_feasible": 24,
+          "original_audit_feasible": 24,
+          "baseline_fixed_profit": 14.742386826761562,
+          "best_fixed_improvement": 0.004335856711286112,
+          "best_optimistic_improvement": 0.004335856711286112,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              20.68527284348123,
+              43.19069207325196
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                12.011616844355954,
+                23.025207421838584,
+                1.2135782888442594,
+                8.288985506808766,
+                2.0566433234417265e-17
+              ],
+              [
+                9.247124003177337,
+                63.863761040679705,
+                1.8847261802477858e-10,
+                37.40068152058854,
+                2.6958225533392297e-10
+              ]
+            ],
+            "profit": 14.746722683472848,
+            "original_violation": 8.526512829121202e-14,
+            "optimistic_profit": 14.746722683472848
+          }
+        }
+      ],
+      "shrinking_improvement_ray": [
+        {
+          "relative_radius_bound": 0.0001,
+          "price_lp_success": true,
+          "original_choice_violation": 8.526512829121202e-14,
+          "profit_improvement": 4.7223583168332084e-05,
+          "improvement_divided_by_radius": 0.47223583168332084
+        },
+        {
+          "relative_radius_bound": 1e-05,
+          "price_lp_success": true,
+          "original_choice_violation": 8.526512829121202e-14,
+          "profit_improvement": 4.725871892929945e-06,
+          "improvement_divided_by_radius": 0.4725871892929944
+        },
+        {
+          "relative_radius_bound": 1.0000000000000002e-06,
+          "price_lp_success": true,
+          "original_choice_violation": 8.526512829121202e-14,
+          "profit_improvement": 4.7262225244537603e-07,
+          "improvement_divided_by_radius": 0.472622252445376
+        },
+        {
+          "relative_radius_bound": 1.0000000000000001e-07,
+          "price_lp_success": true,
+          "original_choice_violation": 8.526512829121202e-14,
+          "profit_improvement": 4.726250502073981e-08,
+          "improvement_divided_by_radius": 0.47262505020739803
+        }
+      ]
+    },
+    {
+      "name": "recent_fixed_assignment_2",
+      "fixed_assignment_profit": 11.12509838071318,
+      "optimistic_profit_at_same_menu": 11.219434992819313,
+      "classes_reassigned_at_same_menu": 2,
+      "traveler_cost_ties": 20,
+      "double_ties": 0,
+      "primal_violation": 8.100187187665142e-13,
+      "normalized_stationarity": 5.997308737602025e-10,
+      "absolute_complementarity": 7.932313317801053e-11,
+      "minimum_nonnegative_multiplier": 0.0,
+      "active_inequalities": 20,
+      "active_lower_bounds": 3,
+      "active_constraint_rank": 8,
+      "active_constraint_count_including_bounds": 23,
+      "active_valuation_geometry": [
+        {
+          "traveler": 80,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 4,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.530964749176796e-12
+        },
+        {
+          "traveler": 86,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 4,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.530964749176796e-12
+        },
+        {
+          "traveler": 312,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 324,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 470,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 517,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.416070845000621e-12
+        },
+        {
+          "traveler": 517,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 0,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.0314807613885938e-07
+        },
+        {
+          "traveler": 518,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 541,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 3,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.0744637605005093e-12
+        },
+        {
+          "traveler": 541,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 0,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.03150989364076e-07
+        },
+        {
+          "traveler": 626,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 4,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.530964749176796e-12
+        },
+        {
+          "traveler": 660,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 4,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.530964749176796e-12
+        },
+        {
+          "traveler": 680,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 698,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 837,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 0,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.031516999068117e-07
+        },
+        {
+          "traveler": 837,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.4679417688942294e-12
+        },
+        {
+          "traveler": 897,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 0,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.0315223281386355e-07
+        },
+        {
+          "traveler": 897,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.545007141536285e-12
+        },
+        {
+          "traveler": 903,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 0,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.0315184201535885e-07
+        },
+        {
+          "traveler": 903,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.467941768894213e-12
+        },
+        {
+          "traveler": 910,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 928,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 1005,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 0,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.0315191306963243e-07
+        },
+        {
+          "traveler": 1005,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.5450071415362937e-12
+        },
+        {
+          "traveler": 1014,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        },
+        {
+          "traveler": 1034,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.709508837798818e-12
+        }
+      ],
+      "finite_difference_checks": [
+        {
+          "relative_step": 0.001,
+          "active_constraint_jacobian_max_error": 0.08563244318601648,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 3.709508837798818e-12,
+            "compact_constraint_row": 17,
+            "oracle_derivative": 0.8913809715077312,
+            "finite_difference_derivative": 0.8057485283217147
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 11.83443844165772,
+          "lagrangian_hessian_asymmetry": 2.2279926891078774
+        },
+        {
+          "relative_step": 0.0001,
+          "active_constraint_jacobian_max_error": 0.0856324473213752,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 3.709508837798818e-12,
+            "compact_constraint_row": 17,
+            "oracle_derivative": 0.8913809715077312,
+            "finite_difference_derivative": 0.805748524186356
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 118.37485270341523,
+          "lagrangian_hessian_asymmetry": 22.270617136766965
+        },
+        {
+          "relative_step": 1e-05,
+          "active_constraint_jacobian_max_error": 0.08563249236978476,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 3.709508837798818e-12,
+            "compact_constraint_row": 17,
+            "oracle_derivative": 0.8913809715077312,
+            "finite_difference_derivative": 0.8057484791379464
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 1183.7789953210038,
+          "lagrangian_hessian_asymmetry": 222.6968616133639
+        }
+      ],
+      "directional_additivity_checks": [
+        {
+          "relative_step": 0.0001,
+          "maximum_directional_additivity_error": 0.0022244802266868646,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              51.96353055315539,
+              70.04185861074747
+            ],
+            "compact_constraint_row": 12,
+            "signed_additivity_error": 0.0022244802266868646
+          }
+        },
+        {
+          "relative_step": 1e-05,
+          "maximum_directional_additivity_error": 0.00022244819319894302,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              51.96353055315539,
+              70.04185861074747
+            ],
+            "compact_constraint_row": 13,
+            "signed_additivity_error": 0.00022244819319894302
+          }
+        },
+        {
+          "relative_step": 1e-06,
+          "maximum_directional_additivity_error": 2.2254198484006338e-05,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              51.96353055315539,
+              70.04185861074747
+            ],
+            "compact_constraint_row": 12,
+            "signed_additivity_error": 2.2254198484006338e-05
+          }
+        }
+      ],
+      "selected_branch_conservative_curvature": {
+        "nullspace_dimension": 4,
+        "projected_minimization_hessian_eigenvalues": [
+          1.797741853095719e-05,
+          0.00012251323386515726,
+          0.0006169599977181167,
+          0.0011130979694177947
+        ],
+        "is_not_a_classical_sosc_certificate": true
+      },
+      "neighborhood_probes": [
+        {
+          "assignment": "original_fixed_assignment",
+          "radius": 0.0001,
+          "attempted": 24,
+          "price_lp_feasible": 16,
+          "original_audit_feasible": 16,
+          "baseline_fixed_profit": 11.12509838071318,
+          "best_fixed_improvement": 7.929124024030898e-11,
+          "best_optimistic_improvement": 8.548894925297645e-11,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              18.961524291072557,
+              94.79697199787822
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                9.219639647780753,
+                18.621739675720736,
+                1.0915204523330205e-11,
+                24.52931699533913,
+                3.709508837798818e-12
+              ],
+              [
+                62.81896499355836,
+                20.942367446562077,
+                0.0,
+                51.96353055315539,
+                70.04185861074747
+              ]
+            ],
+            "profit": 11.12509838079247,
+            "original_violation": 9.947598300641403e-13,
+            "optimistic_profit": 11.219434992904802
+          }
+        },
+        {
+          "assignment": "original_fixed_assignment",
+          "radius": 0.01,
+          "attempted": 24,
+          "price_lp_feasible": 16,
+          "original_audit_feasible": 16,
+          "baseline_fixed_profit": 11.12509838071318,
+          "best_fixed_improvement": 7.929124024030898e-11,
+          "best_optimistic_improvement": 8.548894925297645e-11,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              18.961524291072557,
+              94.79697199787822
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                9.219639647780753,
+                18.621739675720736,
+                1.0915204523330205e-11,
+                24.52931699533913,
+                3.709508837798818e-12
+              ],
+              [
+                62.81896499355836,
+                20.942367446562077,
+                0.0,
+                51.96353055315539,
+                70.04185861074747
+              ]
+            ],
+            "profit": 11.12509838079247,
+            "original_violation": 9.947598300641403e-13,
+            "optimistic_profit": 11.219434992904802
+          }
+        },
+        {
+          "assignment": "optimistic_assignment_at_candidate",
+          "radius": 0.0001,
+          "attempted": 24,
+          "price_lp_feasible": 24,
+          "original_audit_feasible": 24,
+          "baseline_fixed_profit": 11.219434992819313,
+          "best_fixed_improvement": 3.217401336108594e-05,
+          "best_optimistic_improvement": 3.217401336108594e-05,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              18.961453244506558,
+              94.79990574121054
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                9.219483496376933,
+                18.621694320654157,
+                0.0,
+                24.528959857426816,
+                2.2918132933366185e-05
+              ],
+              [
+                62.82075063711827,
+                20.94409714960964,
+                0.0,
+                51.96480350925039,
+                70.04886279660855
+              ]
+            ],
+            "profit": 11.219467166832674,
+            "original_violation": 2.842170943040401e-14,
+            "optimistic_profit": 11.219467166832674
+          }
+        },
+        {
+          "assignment": "optimistic_assignment_at_candidate",
+          "radius": 0.01,
+          "attempted": 24,
+          "price_lp_feasible": 24,
+          "original_audit_feasible": 24,
+          "baseline_fixed_profit": 11.219434992819313,
+          "best_fixed_improvement": 0.0031575145088353906,
+          "best_optimistic_improvement": 0.0031575145088353906,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              18.954404405472072,
+              95.08802454076309
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                9.204024507398735,
+                18.61720416906271,
+                0.0,
+                24.493603204107885,
+                0.0022918129260952433
+              ],
+              [
+                62.997529349549445,
+                21.115337751318503,
+                0.0,
+                52.09082616265576,
+                70.74227719685494
+              ]
+            ],
+            "profit": 11.222592507328148,
+            "original_violation": 5.684341886080802e-14,
+            "optimistic_profit": 11.222592507328148
+          }
+        }
+      ],
+      "shrinking_improvement_ray": [
+        {
+          "relative_radius_bound": 0.0001,
+          "price_lp_success": true,
+          "original_choice_violation": 2.842170943040401e-14,
+          "profit_improvement": 3.217401336108594e-05,
+          "improvement_divided_by_radius": 0.3217401336108594
+        },
+        {
+          "relative_radius_bound": 1e-05,
+          "price_lp_success": true,
+          "original_choice_violation": 2.842170943040401e-14,
+          "profit_improvement": 3.217948099987211e-06,
+          "improvement_divided_by_radius": 0.3217948099987211
+        },
+        {
+          "relative_radius_bound": 1.0000000000000002e-06,
+          "price_lp_success": true,
+          "original_choice_violation": 1.7053025658242404e-13,
+          "profit_improvement": 3.2180026288131103e-07,
+          "improvement_divided_by_radius": 0.32180026288131097
+        },
+        {
+          "relative_radius_bound": 1.0000000000000001e-07,
+          "price_lp_success": true,
+          "original_choice_violation": 8.526512829121202e-14,
+          "profit_improvement": 3.218006661143136e-08,
+          "improvement_divided_by_radius": 0.3218006661143135
+        }
+      ]
+    },
+    {
+      "name": "recent_fixed_assignment_3",
+      "fixed_assignment_profit": 10.567711290343327,
+      "optimistic_profit_at_same_menu": 10.628600009188323,
+      "classes_reassigned_at_same_menu": 2,
+      "traveler_cost_ties": 22,
+      "double_ties": 0,
+      "primal_violation": 1.5916157281026244e-12,
+      "normalized_stationarity": 2.8450998844821897e-09,
+      "absolute_complementarity": 1.764687485904276e-12,
+      "minimum_nonnegative_multiplier": 0.0,
+      "active_inequalities": 22,
+      "active_lower_bounds": 4,
+      "active_constraint_rank": 8,
+      "active_constraint_count_including_bounds": 26,
+      "active_valuation_geometry": [
+        {
+          "traveler": 102,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 104,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 108,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 128,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 202,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 206,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 282,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 288,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 346,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 356,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 428,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 434,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 586,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 594,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 690,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 713,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 713,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.0362081563168129e-14
+        },
+        {
+          "traveler": 716,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 3,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 753,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.371637969826778e-14
+        },
+        {
+          "traveler": 753,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.0362081563168129e-14
+        },
+        {
+          "traveler": 787,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 787,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.371637969826769e-14
+        },
+        {
+          "traveler": 893,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 893,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.1858189849133828e-13
+        },
+        {
+          "traveler": 949,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 949,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 7.114913909480223e-14
+        },
+        {
+          "traveler": 1007,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 1007,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 2,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 5.967604163718688e-14
+        }
+      ],
+      "finite_difference_checks": [
+        {
+          "relative_step": 0.001,
+          "active_constraint_jacobian_max_error": 0.1686728002429351,
+          "worst_component": {
+            "variable_column": 8,
+            "variable_value": 0.0,
+            "compact_constraint_row": 15,
+            "oracle_derivative": 0.224028871294384,
+            "finite_difference_derivative": 0.05535607105144891
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 97.94504236315063,
+          "lagrangian_hessian_asymmetry": 0.006071322068553405
+        },
+        {
+          "relative_step": 0.0001,
+          "active_constraint_jacobian_max_error": 0.1686727992837024,
+          "worst_component": {
+            "variable_column": 8,
+            "variable_value": 0.0,
+            "compact_constraint_row": 15,
+            "oracle_derivative": 0.224028871294384,
+            "finite_difference_derivative": 0.0553560720106816
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 979.7318213093936,
+          "lagrangian_hessian_asymmetry": 0.006071322064924722
+        },
+        {
+          "relative_step": 1e-05,
+          "active_constraint_jacobian_max_error": 0.1686727917519494,
+          "worst_component": {
+            "variable_column": 8,
+            "variable_value": 0.0,
+            "compact_constraint_row": 15,
+            "oracle_derivative": 0.224028871294384,
+            "finite_difference_derivative": 0.05535607954243459
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 9797.59961077181,
+          "lagrangian_hessian_asymmetry": 0.006071322016225659
+        }
+      ],
+      "directional_additivity_checks": [
+        {
+          "relative_step": 0.0001,
+          "maximum_directional_additivity_error": 0.0033841368463072286,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              115.99176441498273,
+              33.91636529408424
+            ],
+            "compact_constraint_row": 21,
+            "signed_additivity_error": 0.0033841368463072286
+          }
+        },
+        {
+          "relative_step": 1e-05,
+          "maximum_directional_additivity_error": 0.00033842297852970654,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              115.99176441498273,
+              33.91636529408424
+            ],
+            "compact_constraint_row": 21,
+            "signed_additivity_error": 0.00033842297852970654
+          }
+        },
+        {
+          "relative_step": 1e-06,
+          "maximum_directional_additivity_error": 3.396394276933279e-05,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              115.99176441498273,
+              33.91636529408424
+            ],
+            "compact_constraint_row": 21,
+            "signed_additivity_error": 3.396394276933279e-05
+          }
+        }
+      ],
+      "selected_branch_conservative_curvature": {
+        "nullspace_dimension": 4,
+        "projected_minimization_hessian_eigenvalues": [
+          3.830207549375479e-05,
+          0.000279948927315622,
+          0.0014151892373415857,
+          0.018706943384875892
+        ],
+        "is_not_a_classical_sosc_certificate": true
+      },
+      "neighborhood_probes": [
+        {
+          "assignment": "original_fixed_assignment",
+          "radius": 0.0001,
+          "attempted": 22,
+          "price_lp_feasible": 12,
+          "original_audit_feasible": 12,
+          "baseline_fixed_profit": 10.567711290343327,
+          "best_fixed_improvement": 1.5791812302268227e-12,
+          "best_optimistic_improvement": 2.7025414262027425e-07,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              12.484730723077156,
+              96.32435506809188
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                6.586687627696161,
+                5.72770703642417,
+                5.685820143020044e-11,
+                22.41098969322877,
+                0.0
+              ],
+              [
+                13.273177365126369,
+                0.0,
+                0.0,
+                115.99176441498273,
+                33.91636529408424
+              ]
+            ],
+            "profit": 10.567711290344906,
+            "original_violation": 3.694822225952521e-13,
+            "optimistic_profit": 10.628600009189935
+          }
+        },
+        {
+          "assignment": "original_fixed_assignment",
+          "radius": 0.01,
+          "attempted": 22,
+          "price_lp_feasible": 12,
+          "original_audit_feasible": 12,
+          "baseline_fixed_profit": 10.567711290343327,
+          "best_fixed_improvement": 1.5791812302268227e-12,
+          "best_optimistic_improvement": 4.097299667549237e-06,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              12.484730723077156,
+              96.32435506809188
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                6.586687627696161,
+                5.72770703642417,
+                5.685820143020044e-11,
+                22.41098969322877,
+                0.0
+              ],
+              [
+                13.273177365126369,
+                0.0,
+                0.0,
+                115.99176441498273,
+                33.91636529408424
+              ]
+            ],
+            "profit": 10.567711290344906,
+            "original_violation": 3.694822225952521e-13,
+            "optimistic_profit": 10.628600009189935
+          }
+        },
+        {
+          "assignment": "optimistic_assignment_at_candidate",
+          "radius": 0.0001,
+          "attempted": 22,
+          "price_lp_feasible": 22,
+          "original_audit_feasible": 22,
+          "baseline_fixed_profit": 10.628600009188323,
+          "best_fixed_improvement": 0.00011206110742456588,
+          "best_optimistic_improvement": 0.00011206110742456588,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              12.484426977333325,
+              96.32605137974681
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                6.586687627696161,
+                5.72770703642417,
+                5.685820143020044e-11,
+                22.40874859425945,
+                0.0
+              ],
+              [
+                13.273177365126369,
+                0.0,
+                1.7854834663779e-09,
+                115.99176441498273,
+                33.91636529408424
+              ]
+            ],
+            "profit": 10.628712070295748,
+            "original_violation": 0.0,
+            "optimistic_profit": 10.628712070295748
+          }
+        },
+        {
+          "assignment": "optimistic_assignment_at_candidate",
+          "radius": 0.01,
+          "attempted": 22,
+          "price_lp_feasible": 20,
+          "original_audit_feasible": 20,
+          "baseline_fixed_profit": 10.628600009188323,
+          "best_fixed_improvement": 0.010824250013774517,
+          "best_optimistic_improvement": 0.010824250013774517,
+          "best_fixed_witness": {
+            "prices": [
+              0.0,
+              12.45391734327685,
+              96.49357452516946
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                6.586687627696161,
+                5.72770703642417,
+                5.685820143020044e-11,
+                22.186879796296484,
+                0.0
+              ],
+              [
+                13.273177365126369,
+                0.0,
+                1.7854834663779e-09,
+                115.99176441498273,
+                33.91636529408424
+              ]
+            ],
+            "profit": 10.639424259202098,
+            "original_violation": 0.0,
+            "optimistic_profit": 10.639424259202098
+          }
+        }
+      ],
+      "shrinking_improvement_ray": [
+        {
+          "relative_radius_bound": 0.0001,
+          "price_lp_success": true,
+          "original_choice_violation": 0.0,
+          "profit_improvement": 0.00011206110742456588,
+          "improvement_divided_by_radius": 1.1206110742456588
+        },
+        {
+          "relative_radius_bound": 1e-05,
+          "price_lp_success": true,
+          "original_choice_violation": 0.0,
+          "profit_improvement": 1.1209581641580257e-05,
+          "improvement_divided_by_radius": 1.1209581641580257
+        },
+        {
+          "relative_radius_bound": 1.0000000000000002e-06,
+          "price_lp_success": true,
+          "original_choice_violation": 0.0,
+          "profit_improvement": 1.1209927084365745e-06,
+          "improvement_divided_by_radius": 1.1209927084365743
+        },
+        {
+          "relative_radius_bound": 1.0000000000000001e-07,
+          "price_lp_success": true,
+          "original_choice_violation": 0.0,
+          "profit_improvement": 1.1209945149914802e-07,
+          "improvement_divided_by_radius": 1.1209945149914802
+        }
+      ]
+    },
+    {
+      "name": "saved_best_completed_candidate",
+      "fixed_assignment_profit": 17.567399878424993,
+      "optimistic_profit_at_same_menu": 17.567399878424993,
+      "classes_reassigned_at_same_menu": 0,
+      "traveler_cost_ties": 10,
+      "double_ties": 0,
+      "primal_violation": 5.891891419196327e-10,
+      "normalized_stationarity": 8.574483790210226e-07,
+      "absolute_complementarity": 2.4265162545220706e-10,
+      "minimum_nonnegative_multiplier": 0.0,
+      "active_inequalities": 10,
+      "active_lower_bounds": 3,
+      "active_constraint_rank": 6,
+      "active_constraint_count_including_bounds": 13,
+      "active_valuation_geometry": [
+        {
+          "traveler": 81,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 81,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 1,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 87,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 87,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 1,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 3.978402775812439e-14
+        },
+        {
+          "traveler": 578,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.6504802150027096e-15
+        },
+        {
+          "traveler": 592,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 2.1573437447173296e-15
+        },
+        {
+          "traveler": 627,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 627,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 1,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 661,
+          "bundle": 2,
+          "parallel_switch_segments_with_positive_probability": 5,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 661,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 1,
+          "multiple_envelope_intersections_in_support": 0,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 688,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 0.0
+        },
+        {
+          "traveler": 738,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 6,
+          "multiple_envelope_intersections_in_support": 2,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.6504802150027096e-15
+        },
+        {
+          "traveler": 1016,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.2401955145499963e-16
+        },
+        {
+          "traveler": 1046,
+          "bundle": 1,
+          "parallel_switch_segments_with_positive_probability": 4,
+          "multiple_envelope_intersections_in_support": 1,
+          "uniform_support_switches": 0,
+          "minimum_parallel_switch_distance": 1.2401955145499963e-16
+        }
+      ],
+      "finite_difference_checks": [
+        {
+          "relative_step": 0.001,
+          "active_constraint_jacobian_max_error": 0.4967336475156907,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 0.0,
+            "compact_constraint_row": 3,
+            "oracle_derivative": -0.7704669929888945,
+            "finite_difference_derivative": -0.2737333454732038
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 42.09774707350445,
+          "lagrangian_hessian_asymmetry": 5.482096708215617
+        },
+        {
+          "relative_step": 0.0001,
+          "active_constraint_jacobian_max_error": 0.49673364752279614,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 0.0,
+            "compact_constraint_row": 3,
+            "oracle_derivative": -0.7704669929888945,
+            "finite_difference_derivative": -0.2737333454660984
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 421.99000301779944,
+          "lagrangian_hessian_asymmetry": 54.820967082156166
+        },
+        {
+          "relative_step": 1e-05,
+          "active_constraint_jacobian_max_error": 0.4967336455332765,
+          "worst_component": {
+            "variable_column": 6,
+            "variable_value": 0.0,
+            "compact_constraint_row": 3,
+            "oracle_derivative": -0.7704669929888945,
+            "finite_difference_derivative": -0.27373334745561806
+          },
+          "lagrangian_hessian_max_error_against_branch_formula": 4220.91256246075,
+          "lagrangian_hessian_asymmetry": 548.2096708215616
+        }
+      ],
+      "directional_additivity_checks": [
+        {
+          "relative_step": 0.0001,
+          "maximum_directional_additivity_error": 0.0018648462685177947,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              85.66508263374142,
+              22.677591536730755
+            ],
+            "compact_constraint_row": 0,
+            "signed_additivity_error": 0.0018648462685177947
+          }
+        },
+        {
+          "relative_step": 1e-05,
+          "maximum_directional_additivity_error": 0.00018653878441909907,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              85.66508263374142,
+              22.677591536730755
+            ],
+            "compact_constraint_row": 0,
+            "signed_additivity_error": 0.00018653878441909907
+          }
+        },
+        {
+          "relative_step": 1e-06,
+          "maximum_directional_additivity_error": 1.8772539078781847e-05,
+          "witness": {
+            "variable_columns": [
+              10,
+              11
+            ],
+            "variable_values": [
+              85.66508263374142,
+              22.677591536730755
+            ],
+            "compact_constraint_row": 0,
+            "signed_additivity_error": 1.8772539078781847e-05
+          }
+        }
+      ],
+      "selected_branch_conservative_curvature": {
+        "nullspace_dimension": 6,
+        "projected_minimization_hessian_eigenvalues": [
+          0.0001088629941127393,
+          0.0002989314491090863,
+          0.000371626105528262,
+          0.0007672893548402129,
+          0.005274775341888859,
+          0.006899113789279596
+        ],
+        "is_not_a_classical_sosc_certificate": true
+      },
+      "neighborhood_probes": [
+        {
+          "assignment": "original_fixed_assignment",
+          "radius": 0.0001,
+          "attempted": 22,
+          "price_lp_feasible": 22,
+          "original_audit_feasible": 22,
+          "baseline_fixed_profit": 17.567399878424993,
+          "best_fixed_improvement": 0.0,
+          "best_optimistic_improvement": 0.0
+        },
+        {
+          "assignment": "original_fixed_assignment",
+          "radius": 0.01,
+          "attempted": 22,
+          "price_lp_feasible": 22,
+          "original_audit_feasible": 22,
+          "baseline_fixed_profit": 17.567399878424993,
+          "best_fixed_improvement": 0.0,
+          "best_optimistic_improvement": 0.0
+        }
+      ],
+      "shrinking_improvement_ray": []
+    }
+  ]
+}

@@ -1,0 +1,2565 @@
+{
+  "call": 15,
+  "region": 5,
+  "cg_round": 1,
+  "assignment_sha256": "4d715fb7d72cfbb6b9904e7622f70e04c743f826fff57b368d727e405b637e82",
+  "choice_constraints": [
+    [
+      11,
+      1,
+      0
+    ],
+    [
+      15,
+      1,
+      0
+    ],
+    [
+      53,
+      2,
+      0
+    ],
+    [
+      55,
+      2,
+      0
+    ],
+    [
+      213,
+      1,
+      2
+    ],
+    [
+      229,
+      1,
+      2
+    ],
+    [
+      263,
+      0,
+      2
+    ],
+    [
+      269,
+      0,
+      2
+    ],
+    [
+      295,
+      2,
+      1
+    ],
+    [
+      301,
+      2,
+      1
+    ],
+    [
+      604,
+      0,
+      1
+    ],
+    [
+      646,
+      0,
+      1
+    ],
+    [
+      665,
+      2,
+      0
+    ],
+    [
+      685,
+      2,
+      0
+    ],
+    [
+      967,
+      1,
+      2
+    ],
+    [
+      976,
+      0,
+      1
+    ],
+    [
+      1009,
+      1,
+      2
+    ],
+    [
+      1052,
+      0,
+      1
+    ]
+  ],
+  "source_settings": {
+    "wall_seconds": 180,
+    "nlp_max_iterations": 2000,
+    "max_regions": 30,
+    "recovery": true,
+    "slsqp_restarts": 4,
+    "search_restarts": 3,
+    "numerical_constraint_recovery": true,
+    "solver_fallback": false,
+    "check_kkt": false,
+    "seed": 20261102
+  },
+  "source_metrics": {
+    "solver": "scipy-SLSQP",
+    "status": "success",
+    "time_seconds": 2.333389873994747,
+    "iterations": 230,
+    "objective": 17.80074685415743,
+    "max_violation": 0.0,
+    "optimality": null,
+    "kkt_residual": null,
+    "kkt_checked": false,
+    "kkt_satisfied": null,
+    "critical_constraints": 18,
+    "variables": 12,
+    "attempts": 4,
+    "native_success": true,
+    "raw_status": 0,
+    "message": "recovery chain [scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:success]; final: Optimization terminated successfully",
+    "attempt_history": [
+      {
+        "solver": "scipy-SLSQP",
+        "status": "infeasible",
+        "time_seconds": 0.898926833004225,
+        "iterations": 72,
+        "objective": 17.839699154161487,
+        "max_violation": 2.352393528326502e-05,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": false,
+        "raw_status": 8,
+        "message": "Positive directional derivative for linesearch",
+        "initial_prices": [
+          0.0,
+          25.378170232758684,
+          60.762760881776835
+        ],
+        "initial_allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            43.88500410473,
+            24.10139986309014,
+            16.2232372499657,
+            7.141758685240776,
+            1.6607035596338384e-14
+          ],
+          [
+            0.0,
+            1.5436888628824903,
+            1.483327292140421e-17,
+            82.14068251732665,
+            24.135541583649633
+          ]
+        ]
+      },
+      {
+        "solver": "scipy-SLSQP",
+        "status": "infeasible",
+        "time_seconds": 0.5817177499993704,
+        "iterations": 60,
+        "objective": 17.780632431312824,
+        "max_violation": 1.4559666794866644e-05,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": false,
+        "raw_status": 8,
+        "message": "Positive directional derivative for linesearch",
+        "initial_prices": [
+          0.0,
+          25.378170776195887,
+          60.762760983635125
+        ],
+        "initial_allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            43.88500279457762,
+            24.10139942431031,
+            16.22323717085399,
+            7.141759971841493,
+            1.7477137637624964e-07
+          ],
+          [
+            4.5182556437572495e-08,
+            1.5436889601767907,
+            4.0100042238479704e-17,
+            82.14068262641284,
+            24.135541688026436
+          ]
+        ]
+      },
+      {
+        "solver": "scipy-SLSQP",
+        "status": "infeasible",
+        "time_seconds": 0.4988333329965826,
+        "iterations": 52,
+        "objective": 17.785831525346705,
+        "max_violation": 3.595712882997759e-07,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": false,
+        "raw_status": 8,
+        "message": "Positive directional derivative for linesearch",
+        "initial_prices": [
+          0.0,
+          25.378170233995778,
+          60.76276099464271
+        ],
+        "initial_allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            43.885004040337286,
+            24.10139990767781,
+            16.223237237377898,
+            7.141758682982817,
+            1.3512962959567812e-09
+          ],
+          [
+            0.0,
+            1.5436888631981736,
+            1.4833242338948047e-17,
+            82.14068260319321,
+            24.13554158744576
+          ]
+        ]
+      },
+      {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.3539119579945691,
+        "iterations": 46,
+        "objective": 17.80074685415743,
+        "max_violation": 0.0,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "initial_prices": [
+          0.0,
+          25.353970841404905,
+          60.713783943903685
+        ],
+        "initial_allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            43.940163296393166,
+            24.06205827486472,
+            16.22973306829205,
+            7.148287981750622,
+            0.0
+          ],
+          [
+            0.0,
+            1.5422993537602068,
+            0.0006297320595023852,
+            82.16114069347937,
+            24.101757836466906
+          ]
+        ]
+      }
+    ]
+  },
+  "source_return": {
+    "profit": 17.80074685415743,
+    "restricted_violation": 0.0,
+    "full_region_violation": 15.626568186095618,
+    "menu": {
+      "prices": [
+        0.0,
+        40.67774390000538,
+        63.65354795996411
+      ],
+      "allowances": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          7.495768304604257,
+          12.559945932011141,
+          14.050709090185668,
+          43.72754632773861,
+          3.580711467553994
+        ],
+        [
+          1.4880187222082957,
+          4.429616113315962,
+          5.2541858740617376e-11,
+          85.47951430527367,
+          27.22292322591814
+        ]
+      ]
+    },
+    "first_order_checks": [
+      {
+        "active_tolerance": 1e-08,
+        "normalized_stationarity": 0.18820351193156265,
+        "primal_violation": 0.0,
+        "absolute_complementarity": 2.436217077490642e-13,
+        "adapter_first_order_passed": false,
+        "independent_screen_passed": false
+      },
+      {
+        "active_tolerance": 1e-06,
+        "normalized_stationarity": 0.1927131071910019,
+        "primal_violation": 0.0,
+        "absolute_complementarity": 4.976213822835373e-09,
+        "adapter_first_order_passed": false,
+        "independent_screen_passed": false
+      },
+      {
+        "active_tolerance": 0.0001,
+        "normalized_stationarity": 0.02803844035019197,
+        "primal_violation": 0.0,
+        "absolute_complementarity": 0.0007046762577314291,
+        "adapter_first_order_passed": false,
+        "independent_screen_passed": false
+      },
+      {
+        "active_tolerance": 0.001,
+        "normalized_stationarity": 0.02803844035019197,
+        "primal_violation": 0.0,
+        "absolute_complementarity": 0.0007046762577314291,
+        "adapter_first_order_passed": false,
+        "independent_screen_passed": false
+      }
+    ]
+  },
+  "changed_settings": {
+    "check_kkt": true,
+    "enable_fallback": true
+  },
+  "same_source_nlp_options": {
+    "maxiter": 2000,
+    "ftol": 1e-09
+  },
+  "fallback_policy": {
+    "backend": "trust-constr",
+    "gtol": 1e-08,
+    "active_set_tolerance": 0.001,
+    "independent_recheck_active_tolerance": 0.0001
+  },
+  "runs": [
+    {
+      "start": "original_nlp_input",
+      "slsqp_attempts": [
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.8896702919737436,
+            "iterations": 72,
+            "objective": 17.839699154161487,
+            "max_violation": 2.352393528326502e-05,
+            "optimality": null,
+            "kkt_residual": 0.02799861404789217,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "attempt_history": []
+          },
+          "numerical_constraints": false,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              25.378170232758684,
+              60.762760881776835
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                43.88500410473,
+                24.10139986309014,
+                16.2232372499657,
+                7.141758685240776,
+                1.6607035596338384e-14
+              ],
+              [
+                0.0,
+                1.5436888628824903,
+                1.483327292140421e-17,
+                82.14068251732665,
+                24.135541583649633
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.839699154161487,
+            "restricted_violation": 2.352393528326502e-05,
+            "full_region_violation": 15.68492881498895,
+            "menu": {
+              "prices": [
+                0.0,
+                40.79982962620003,
+                63.65329518312239
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  6.705503716910825,
+                  11.649707020328334,
+                  13.978205446540906,
+                  43.65291010137512,
+                  4.959661142900174
+                ],
+                [
+                  1.282190456126411,
+                  4.304706238990898,
+                  7.170203215585824e-10,
+                  85.23633001222863,
+                  27.097546154820606
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.027628153360362756,
+                "primal_violation": 2.352393528326502e-05,
+                "absolute_complementarity": 5.029889715887932e-06,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.027628153360362756,
+                "primal_violation": 2.352393528326502e-05,
+                "absolute_complementarity": 5.029889715887932e-06,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.02799861404789217,
+                "primal_violation": 2.352393528326502e-05,
+                "absolute_complementarity": 0.0012214334865731469,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.02799861404789217,
+                "primal_violation": 2.352393528326502e-05,
+                "absolute_complementarity": 0.0012214334865731469,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        },
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.5735360830440186,
+            "iterations": 60,
+            "objective": 17.780632431312824,
+            "max_violation": 1.4559666794866644e-05,
+            "optimality": null,
+            "kkt_residual": 0.027890883691249948,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "attempt_history": []
+          },
+          "numerical_constraints": false,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              25.378170776195887,
+              60.762760983635125
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                43.88500279457762,
+                24.10139942431031,
+                16.22323717085399,
+                7.141759971841493,
+                1.7477137637624964e-07
+              ],
+              [
+                4.5182556437572495e-08,
+                1.5436889601767907,
+                4.0100042238479704e-17,
+                82.14068262641284,
+                24.135541688026436
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.780632431312824,
+            "restricted_violation": 1.4559666794866644e-05,
+            "full_region_violation": 15.476217867155093,
+            "menu": {
+              "prices": [
+                0.0,
+                40.47569625667933,
+                63.65334418664611
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  8.752078130050085,
+                  13.634561799856867,
+                  14.11188693235779,
+                  43.702218550599326,
+                  1.6831493833160736
+                ],
+                [
+                  1.311528123566137,
+                  4.314379878609996,
+                  5.186142738820474e-11,
+                  85.28595370219524,
+                  27.122342678977297
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.18820351193156265,
+                "primal_violation": 1.4559666794866644e-05,
+                "absolute_complementarity": 3.033145678139237e-06,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.07740706216141731,
+                "primal_violation": 1.4559666794866644e-05,
+                "absolute_complementarity": 5.329330967452292e-06,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.027890883691249948,
+                "primal_violation": 1.4559666794866644e-05,
+                "absolute_complementarity": 0.0007171557029554743,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.027890883691249948,
+                "primal_violation": 1.4559666794866644e-05,
+                "absolute_complementarity": 0.0007171557029554743,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        },
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.48936491704080254,
+            "iterations": 52,
+            "objective": 17.785831525346705,
+            "max_violation": 3.595712882997759e-07,
+            "optimality": null,
+            "kkt_residual": 0.027868251954840134,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "attempt_history": []
+          },
+          "numerical_constraints": false,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              25.378170233995778,
+              60.76276099464271
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                43.885004040337286,
+                24.10139990767781,
+                16.223237237377898,
+                7.141758682982817,
+                1.3512962959567812e-09
+              ],
+              [
+                0.0,
+                1.5436888631981736,
+                1.4833242338948047e-17,
+                82.14068260319321,
+                24.13554158744576
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.785831525346705,
+            "restricted_violation": 3.595712882997759e-07,
+            "full_region_violation": 15.47726570513607,
+            "menu": {
+              "prices": [
+                0.0,
+                40.48220360227959,
+                63.653273074550945
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  8.700877485096536,
+                  13.60155984740187,
+                  14.102154446562817,
+                  43.738925192431324,
+                  1.6884289688517553
+                ],
+                [
+                  1.2912522326026423,
+                  4.281555174506593,
+                  3.7891004781623836e-11,
+                  85.22340826052152,
+                  27.08078998458207
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.028001255655251148,
+                "primal_violation": 3.595712882997759e-07,
+                "absolute_complementarity": 8.337661407705702e-08,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.027868251954840134,
+                "primal_violation": 3.595712882997759e-07,
+                "absolute_complementarity": 0.0005076758477406855,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.027868251954840134,
+                "primal_violation": 3.595712882997759e-07,
+                "absolute_complementarity": 0.0005076758477406855,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.027868251954840134,
+                "primal_violation": 3.595712882997759e-07,
+                "absolute_complementarity": 0.0005076758477406855,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        },
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP",
+            "status": "failed",
+            "time_seconds": 0.34256333397934213,
+            "iterations": 46,
+            "objective": 17.80074685415743,
+            "max_violation": 0.0,
+            "optimality": null,
+            "kkt_residual": 0.02803844035019197,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": true,
+            "raw_status": 0,
+            "message": "Optimization terminated successfully",
+            "attempt_history": []
+          },
+          "numerical_constraints": false,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              25.353970841404905,
+              60.713783943903685
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                43.940163296393166,
+                24.06205827486472,
+                16.22973306829205,
+                7.148287981750622,
+                0.0
+              ],
+              [
+                0.0,
+                1.5422993537602068,
+                0.0006297320595023852,
+                82.16114069347937,
+                24.101757836466906
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.80074685415743,
+            "restricted_violation": 0.0,
+            "full_region_violation": 15.626568186095618,
+            "menu": {
+              "prices": [
+                0.0,
+                40.67774390000538,
+                63.65354795996411
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  7.495768304604257,
+                  12.559945932011141,
+                  14.050709090185668,
+                  43.72754632773861,
+                  3.580711467553994
+                ],
+                [
+                  1.4880187222082957,
+                  4.429616113315962,
+                  5.2541858740617376e-11,
+                  85.47951430527367,
+                  27.22292322591814
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.18820351193156265,
+                "primal_violation": 0.0,
+                "absolute_complementarity": 2.436217077490642e-13,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.1927131071910019,
+                "primal_violation": 0.0,
+                "absolute_complementarity": 4.976213822835373e-09,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.02803844035019197,
+                "primal_violation": 0.0,
+                "absolute_complementarity": 0.0007046762577314291,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.02803844035019197,
+                "primal_violation": 0.0,
+                "absolute_complementarity": 0.0007046762577314291,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        },
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP (numerical constraint Jacobian)",
+            "status": "failed",
+            "time_seconds": 4.422506541013718,
+            "iterations": 157,
+            "objective": 17.856532275481523,
+            "max_violation": 1.9011991980733e-10,
+            "optimality": null,
+            "kkt_residual": 0.06253575162223202,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": true,
+            "raw_status": 0,
+            "message": "Optimization terminated successfully",
+            "attempt_history": []
+          },
+          "numerical_constraints": true,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              40.67773522870145,
+              63.65353934109077
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495769466421487,
+                12.559946462917953,
+                14.050706156281114,
+                43.7275448233306,
+                3.5807114289630166
+              ],
+              [
+                1.4880184617249188,
+                4.429616647894026,
+                5.253735354641174e-11,
+                85.47950952186227,
+                27.222923460370325
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.856532275481523,
+            "restricted_violation": 1.9011991980733e-10,
+            "full_region_violation": 15.61479167444368,
+            "menu": {
+              "prices": [
+                0.0,
+                40.72166913930864,
+                63.65255580605291
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  7.082072800620125,
+                  12.2197260138319,
+                  13.270416345970585,
+                  43.99097249526814,
+                  3.6471403468560397
+                ],
+                [
+                  1.977213522394849,
+                  3.7848058043689745,
+                  9.832852242624979e-05,
+                  84.7283287838364,
+                  26.76028559500582
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.06253575162223202,
+                "primal_violation": 1.9011991980733e-10,
+                "absolute_complementarity": 0.0011580558724117965,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.06253575162223202,
+                "primal_violation": 1.9011991980733e-10,
+                "absolute_complementarity": 0.0011580558724117965,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.06253575162223202,
+                "primal_violation": 1.9011991980733e-10,
+                "absolute_complementarity": 0.0011580558724117963,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.06253575162223202,
+                "primal_violation": 1.9011991980733e-10,
+                "absolute_complementarity": 0.0011580558724117963,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        }
+      ],
+      "complete": true,
+      "initial": {
+        "profit": 14.81647464446579,
+        "restricted_violation": 1.1385736797819845e-10,
+        "full_region_violation": 1.1385736797819845e-10,
+        "menu": {
+          "prices": [
+            0.0,
+            25.378170232758684,
+            60.762760881776835
+          ],
+          "allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              43.88500410473,
+              24.10139986309014,
+              16.2232372499657,
+              7.141758685240776,
+              1.6607035596338384e-14
+            ],
+            [
+              0.0,
+              1.5436888628824903,
+              1.483327292140421e-17,
+              82.14068251732665,
+              24.135541583649633
+            ]
+          ]
+        },
+        "first_order_checks": [
+          {
+            "active_tolerance": 1e-08,
+            "normalized_stationarity": 0.056728796566266344,
+            "primal_violation": 1.1385736797819845e-10,
+            "absolute_complementarity": 4.054254326163657e-11,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 1e-06,
+            "normalized_stationarity": 0.056728796566266344,
+            "primal_violation": 1.1385736797819845e-10,
+            "absolute_complementarity": 4.054254326163657e-11,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 0.0001,
+            "normalized_stationarity": 0.056728796566266344,
+            "primal_violation": 1.1385736797819845e-10,
+            "absolute_complementarity": 4.054254326163657e-11,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 0.001,
+            "normalized_stationarity": 0.056728796566266344,
+            "primal_violation": 1.1385736797819845e-10,
+            "absolute_complementarity": 4.054254326163657e-11,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          }
+        ]
+      },
+      "seconds": 10.467862999998033,
+      "final_metrics": {
+        "solver": "scipy-trust-constr",
+        "status": "success",
+        "time_seconds": 9.083474459010176,
+        "iterations": 563,
+        "objective": 18.930786500397417,
+        "max_violation": 0.0,
+        "optimality": 1.4893488907334818e-09,
+        "kkt_residual": 2.8545882567795025e-08,
+        "kkt_checked": true,
+        "kkt_satisfied": true,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 6,
+        "native_success": true,
+        "raw_status": 1,
+        "message": "recovery chain [scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:failed -> scipy-SLSQP (numerical constraint Jacobian):failed -> scipy-trust-constr:success]; final: `gtol` termination condition is satisfied.",
+        "attempt_history": [
+          {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.8896702919737436,
+            "iterations": 72,
+            "objective": 17.839699154161487,
+            "max_violation": 2.352393528326502e-05,
+            "optimality": null,
+            "kkt_residual": 0.02799861404789217,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "initial_prices": [
+              0.0,
+              25.378170232758684,
+              60.762760881776835
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                43.88500410473,
+                24.10139986309014,
+                16.2232372499657,
+                7.141758685240776,
+                1.6607035596338384e-14
+              ],
+              [
+                0.0,
+                1.5436888628824903,
+                1.483327292140421e-17,
+                82.14068251732665,
+                24.135541583649633
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.5735360830440186,
+            "iterations": 60,
+            "objective": 17.780632431312824,
+            "max_violation": 1.4559666794866644e-05,
+            "optimality": null,
+            "kkt_residual": 0.027890883691249948,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "initial_prices": [
+              0.0,
+              25.378170776195887,
+              60.762760983635125
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                43.88500279457762,
+                24.10139942431031,
+                16.22323717085399,
+                7.141759971841493,
+                1.7477137637624964e-07
+              ],
+              [
+                4.5182556437572495e-08,
+                1.5436889601767907,
+                4.0100042238479704e-17,
+                82.14068262641284,
+                24.135541688026436
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.48936491704080254,
+            "iterations": 52,
+            "objective": 17.785831525346705,
+            "max_violation": 3.595712882997759e-07,
+            "optimality": null,
+            "kkt_residual": 0.027868251954840134,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "initial_prices": [
+              0.0,
+              25.378170233995778,
+              60.76276099464271
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                43.885004040337286,
+                24.10139990767781,
+                16.223237237377898,
+                7.141758682982817,
+                1.3512962959567812e-09
+              ],
+              [
+                0.0,
+                1.5436888631981736,
+                1.4833242338948047e-17,
+                82.14068260319321,
+                24.13554158744576
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-SLSQP",
+            "status": "failed",
+            "time_seconds": 0.34256333397934213,
+            "iterations": 46,
+            "objective": 17.80074685415743,
+            "max_violation": 0.0,
+            "optimality": null,
+            "kkt_residual": 0.02803844035019197,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": true,
+            "raw_status": 0,
+            "message": "Optimization terminated successfully",
+            "initial_prices": [
+              0.0,
+              25.353970841404905,
+              60.713783943903685
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                43.940163296393166,
+                24.06205827486472,
+                16.22973306829205,
+                7.148287981750622,
+                0.0
+              ],
+              [
+                0.0,
+                1.5422993537602068,
+                0.0006297320595023852,
+                82.16114069347937,
+                24.101757836466906
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-SLSQP (numerical constraint Jacobian)",
+            "status": "failed",
+            "time_seconds": 4.422506541013718,
+            "iterations": 157,
+            "objective": 17.856532275481523,
+            "max_violation": 1.9011991980733e-10,
+            "optimality": null,
+            "kkt_residual": 0.06253575162223202,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": true,
+            "raw_status": 0,
+            "message": "Optimization terminated successfully",
+            "initial_prices": [
+              0.0,
+              40.67773522870145,
+              63.65353934109077
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495769466421487,
+                12.559946462917953,
+                14.050706156281114,
+                43.7275448233306,
+                3.5807114289630166
+              ],
+              [
+                1.4880184617249188,
+                4.429616647894026,
+                5.253735354641174e-11,
+                85.47950952186227,
+                27.222923460370325
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-trust-constr",
+            "status": "success",
+            "time_seconds": 2.365833291958552,
+            "iterations": 176,
+            "objective": 18.930786500397417,
+            "max_violation": 0.0,
+            "optimality": 1.4893488907334818e-09,
+            "kkt_residual": 2.8545882567795025e-08,
+            "kkt_checked": true,
+            "kkt_satisfied": true,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": true,
+            "raw_status": 1,
+            "message": "`gtol` termination condition is satisfied.",
+            "initial_prices": [
+              0.0,
+              40.72166913930864,
+              63.65255580605291
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.082072800620125,
+                12.2197260138319,
+                13.270416345970585,
+                43.99097249526814,
+                3.6471403468560397
+              ],
+              [
+                1.977213522394849,
+                3.7848058043689745,
+                9.832852242624979e-05,
+                84.7283287838364,
+                26.76028559500582
+              ]
+            ]
+          }
+        ]
+      },
+      "final": {
+        "profit": 18.930786500397417,
+        "restricted_violation": 0.0,
+        "full_region_violation": 16.68352094707363,
+        "menu": {
+          "prices": [
+            0.0,
+            39.42624421053346,
+            63.27242381653838
+          ],
+          "allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              2.494413846946402e-06,
+              2.5166678076641926e-06,
+              1.1129112943927256e-05,
+              42.62503379331403,
+              1.0898947534854628e-05
+            ],
+            [
+              1.3337906463061623e-05,
+              1.0568636691929516,
+              9.934089326751444e-06,
+              70.58115331817812,
+              8.912584650754646
+            ]
+          ]
+        },
+        "first_order_checks": [
+          {
+            "active_tolerance": 1e-08,
+            "normalized_stationarity": 0.18820351193156265,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 0.0,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 1e-06,
+            "normalized_stationarity": 0.01286176800902955,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 1.9258050294344824e-07,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 0.0001,
+            "normalized_stationarity": 2.528247703300379e-07,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 1.8157773187049961e-07,
+            "adapter_first_order_passed": true,
+            "independent_screen_passed": true
+          },
+          {
+            "active_tolerance": 0.001,
+            "normalized_stationarity": 2.8545882567795025e-08,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 1.9834803658311704e-07,
+            "adapter_first_order_passed": true,
+            "independent_screen_passed": true
+          }
+        ]
+      },
+      "fallback_used": true,
+      "conditional_price_gain": 2.211111436167812e-07,
+      "independent_price_check": {
+        "profit": 18.93078672150856,
+        "violation": 0.0,
+        "menu": {
+          "prices": [
+            0,
+            39.426244597823796,
+            63.27242441916928
+          ],
+          "allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              2.494413846946402e-06,
+              2.5166678076641926e-06,
+              1.1129112943927256e-05,
+              42.62503379331403,
+              1.0898947534854628e-05
+            ],
+            [
+              1.3337906463061623e-05,
+              1.0568636691929516,
+              9.934089326751444e-06,
+              70.58115331817812,
+              8.912584650754646
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "start": "previous_bad_return",
+      "slsqp_attempts": [
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.5033467499888502,
+            "iterations": 42,
+            "objective": 17.828397494746287,
+            "max_violation": 4.347110646563124e-06,
+            "optimality": null,
+            "kkt_residual": 0.027899277252590806,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "attempt_history": []
+          },
+          "numerical_constraints": false,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              40.67774390000538,
+              63.65354795996411
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495768304604257,
+                12.559945932011141,
+                14.050709090185668,
+                43.72754632773861,
+                3.580711467553994
+              ],
+              [
+                1.4880187222082957,
+                4.429616113315962,
+                5.2541858740617376e-11,
+                85.47951430527367,
+                27.22292322591814
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.828397494746287,
+            "restricted_violation": 4.347110646563124e-06,
+            "full_region_violation": 15.608548299993842,
+            "menu": {
+              "prices": [
+                0.0,
+                40.68576241599493,
+                63.65311681585008
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  7.364938992683992,
+                  12.427794384071037,
+                  14.00388647272706,
+                  43.77632695563291,
+                  3.6074777711307955
+                ],
+                [
+                  1.365221093373921,
+                  4.224647436699263,
+                  2.8555081147906697e-09,
+                  85.09960356931742,
+                  26.966900760371438
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.02751749614764092,
+                "primal_violation": 4.347110646563124e-06,
+                "absolute_complementarity": 3.890009966915212e-07,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.02751749614764092,
+                "primal_violation": 4.347110646563124e-06,
+                "absolute_complementarity": 3.890009966915212e-07,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.027899277252590806,
+                "primal_violation": 4.347110646563124e-06,
+                "absolute_complementarity": 0.005352618467043263,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.027899277252590806,
+                "primal_violation": 4.347110646563124e-06,
+                "absolute_complementarity": 0.005352618467043263,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        },
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.49042016704333946,
+            "iterations": 42,
+            "objective": 17.825883653571925,
+            "max_violation": 2.792891748981674e-07,
+            "optimality": null,
+            "kkt_residual": 0.027913033269854292,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "attempt_history": []
+          },
+          "numerical_constraints": false,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              40.67774688701301,
+              63.653547799356986
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495719568883909,
+                12.559896703739668,
+                14.050691648115867,
+                43.72756449919426,
+                3.5807214383706767
+              ],
+              [
+                1.4879729784005018,
+                4.429539759661287,
+                5.358600227080446e-11,
+                85.47937278329275,
+                27.222827854024025
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.825883653571925,
+            "restricted_violation": 2.792891748981674e-07,
+            "full_region_violation": 15.610752579308823,
+            "menu": {
+              "prices": [
+                0.0,
+                40.68565204385782,
+                63.65315874098944
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  7.375506762543461,
+                  12.438033040141148,
+                  14.007914356404342,
+                  43.77617794869406,
+                  3.6040059215892057
+                ],
+                [
+                  1.3771984877090175,
+                  4.250156341072443,
+                  1.48992437734568e-11,
+                  85.13261995985616,
+                  26.98923478610043
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.027531226333622177,
+                "primal_violation": 2.792891748981674e-07,
+                "absolute_complementarity": 5.895383929919944e-08,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.027913033269854292,
+                "primal_violation": 2.792891748981674e-07,
+                "absolute_complementarity": 0.0008626232592152524,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.027913033269854292,
+                "primal_violation": 2.792891748981674e-07,
+                "absolute_complementarity": 0.0008626232592152524,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.027913033269854292,
+                "primal_violation": 2.792891748981674e-07,
+                "absolute_complementarity": 0.0008626232592152524,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        },
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.48530329199275,
+            "iterations": 41,
+            "objective": 17.823782503800985,
+            "max_violation": 7.383462524046536e-06,
+            "optimality": null,
+            "kkt_residual": 0.02792457365673266,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "attempt_history": []
+          },
+          "numerical_constraints": false,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              40.67774390187374,
+              63.65354807137009
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495768294240971,
+                12.559945953904935,
+                14.05070907991328,
+                43.727546314712136,
+                3.5807114721130544
+              ],
+              [
+                1.4880187216833378,
+                4.429616114169492,
+                5.2541756669811155e-11,
+                85.4795143894691,
+                27.222923229952542
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.823782503800985,
+            "restricted_violation": 7.383462524046536e-06,
+            "full_region_violation": 15.612258499145867,
+            "menu": {
+              "prices": [
+                0.0,
+                40.68517143817758,
+                63.65319996713201
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  7.385866592883579,
+                  12.448129178678371,
+                  14.011842178830527,
+                  43.773938508917595,
+                  3.6007483206756548
+                ],
+                [
+                  1.3820217257037326,
+                  4.25991397612543,
+                  1.9641722481697587e-11,
+                  85.16470561928823,
+                  27.010842775575597
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.027542758015430747,
+                "primal_violation": 7.383462524046536e-06,
+                "absolute_complementarity": 6.200080681491078e-08,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.027542758015430747,
+                "primal_violation": 7.383462524046536e-06,
+                "absolute_complementarity": 6.200080681491078e-08,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.02792457365673266,
+                "primal_violation": 7.383462524046536e-06,
+                "absolute_complementarity": 0.008623105913094445,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.02792457365673266,
+                "primal_violation": 7.383462524046536e-06,
+                "absolute_complementarity": 0.008623105913094445,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        },
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.5198312500142492,
+            "iterations": 40,
+            "objective": 17.824951801183268,
+            "max_violation": 1.1020751728096911e-05,
+            "optimality": null,
+            "kkt_residual": 0.027918314004249847,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "attempt_history": []
+          },
+          "numerical_constraints": false,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              40.67774283063641,
+              63.65354654546288
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495768564347637,
+                12.559945366782744,
+                14.050709245289017,
+                43.72754742989421,
+                3.580711344314991
+              ],
+              [
+                1.488018649210145,
+                4.429616003391511,
+                1.7413847668122093e-08,
+                85.47951489221843,
+                27.222922175379306
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.824951801183268,
+            "restricted_violation": 1.1020751728096911e-05,
+            "full_region_violation": 15.611399150194913,
+            "menu": {
+              "prices": [
+                0.0,
+                40.68543142095985,
+                63.65317932995203
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  7.380468678243262,
+                  12.442758153092818,
+                  14.009858296472585,
+                  43.775615909547305,
+                  3.60176631180781
+                ],
+                [
+                  1.3766935094967774,
+                  4.251130647103375,
+                  3.484652893914647e-11,
+                  85.14855713100017,
+                  26.99996841756252
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.027536512161584665,
+                "primal_violation": 1.1020751728096911e-05,
+                "absolute_complementarity": 5.949486324510828e-08,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.027536512161584665,
+                "primal_violation": 1.1020751728096911e-05,
+                "absolute_complementarity": 5.949486324510828e-08,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.027918314004249847,
+                "primal_violation": 1.1020751728096911e-05,
+                "absolute_complementarity": 0.012740715887739415,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.027918314004249847,
+                "primal_violation": 1.1020751728096911e-05,
+                "absolute_complementarity": 0.012740715887739415,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        },
+        {
+          "metrics": {
+            "solver": "scipy-SLSQP (numerical constraint Jacobian)",
+            "status": "failed",
+            "time_seconds": 4.443664416961838,
+            "iterations": 157,
+            "objective": 17.856532275481523,
+            "max_violation": 1.9011991980733e-10,
+            "optimality": null,
+            "kkt_residual": 0.06253575162223202,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": true,
+            "raw_status": 0,
+            "message": "Optimization terminated successfully",
+            "attempt_history": []
+          },
+          "numerical_constraints": true,
+          "initial_menu": {
+            "prices": [
+              0.0,
+              40.67773522870145,
+              63.65353934109077
+            ],
+            "allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495769466421487,
+                12.559946462917953,
+                14.050706156281114,
+                43.7275448233306,
+                3.5807114289630166
+              ],
+              [
+                1.4880184617249188,
+                4.429616647894026,
+                5.253735354641174e-11,
+                85.47950952186227,
+                27.222923460370325
+              ]
+            ]
+          },
+          "returned": {
+            "profit": 17.856532275481523,
+            "restricted_violation": 1.9011991980733e-10,
+            "full_region_violation": 15.61479167444368,
+            "menu": {
+              "prices": [
+                0.0,
+                40.72166913930864,
+                63.65255580605291
+              ],
+              "allowances": [
+                [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  7.082072800620125,
+                  12.2197260138319,
+                  13.270416345970585,
+                  43.99097249526814,
+                  3.6471403468560397
+                ],
+                [
+                  1.977213522394849,
+                  3.7848058043689745,
+                  9.832852242624979e-05,
+                  84.7283287838364,
+                  26.76028559500582
+                ]
+              ]
+            },
+            "first_order_checks": [
+              {
+                "active_tolerance": 1e-08,
+                "normalized_stationarity": 0.06253575162223202,
+                "primal_violation": 1.9011991980733e-10,
+                "absolute_complementarity": 0.0011580558724117965,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 1e-06,
+                "normalized_stationarity": 0.06253575162223202,
+                "primal_violation": 1.9011991980733e-10,
+                "absolute_complementarity": 0.0011580558724117965,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.0001,
+                "normalized_stationarity": 0.06253575162223202,
+                "primal_violation": 1.9011991980733e-10,
+                "absolute_complementarity": 0.0011580558724117963,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              },
+              {
+                "active_tolerance": 0.001,
+                "normalized_stationarity": 0.06253575162223202,
+                "primal_violation": 1.9011991980733e-10,
+                "absolute_complementarity": 0.0011580558724117963,
+                "adapter_first_order_passed": false,
+                "independent_screen_passed": false
+              }
+            ]
+          }
+        }
+      ],
+      "complete": true,
+      "initial": {
+        "profit": 17.80074685415743,
+        "restricted_violation": 0.0,
+        "full_region_violation": 15.626568186095618,
+        "menu": {
+          "prices": [
+            0.0,
+            40.67774390000538,
+            63.65354795996411
+          ],
+          "allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              7.495768304604257,
+              12.559945932011141,
+              14.050709090185668,
+              43.72754632773861,
+              3.580711467553994
+            ],
+            [
+              1.4880187222082957,
+              4.429616113315962,
+              5.2541858740617376e-11,
+              85.47951430527367,
+              27.22292322591814
+            ]
+          ]
+        },
+        "first_order_checks": [
+          {
+            "active_tolerance": 1e-08,
+            "normalized_stationarity": 0.18820351193156265,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 2.436217077490642e-13,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 1e-06,
+            "normalized_stationarity": 0.1927131071910019,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 4.976213822835373e-09,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 0.0001,
+            "normalized_stationarity": 0.02803844035019197,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 0.0007046762577314291,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 0.001,
+            "normalized_stationarity": 0.02803844035019197,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 0.0007046762577314291,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          }
+        ]
+      },
+      "seconds": 10.20145454199519,
+      "final_metrics": {
+        "solver": "scipy-trust-constr",
+        "status": "success",
+        "time_seconds": 8.781956541992258,
+        "iterations": 498,
+        "objective": 18.930786500397417,
+        "max_violation": 0.0,
+        "optimality": 1.4893488907334818e-09,
+        "kkt_residual": 2.8545882567795025e-08,
+        "kkt_checked": true,
+        "kkt_satisfied": true,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 6,
+        "native_success": true,
+        "raw_status": 1,
+        "message": "recovery chain [scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP:infeasible -> scipy-SLSQP (numerical constraint Jacobian):failed -> scipy-trust-constr:success]; final: `gtol` termination condition is satisfied.",
+        "attempt_history": [
+          {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.5033467499888502,
+            "iterations": 42,
+            "objective": 17.828397494746287,
+            "max_violation": 4.347110646563124e-06,
+            "optimality": null,
+            "kkt_residual": 0.027899277252590806,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "initial_prices": [
+              0.0,
+              40.67774390000538,
+              63.65354795996411
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495768304604257,
+                12.559945932011141,
+                14.050709090185668,
+                43.72754632773861,
+                3.580711467553994
+              ],
+              [
+                1.4880187222082957,
+                4.429616113315962,
+                5.2541858740617376e-11,
+                85.47951430527367,
+                27.22292322591814
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.49042016704333946,
+            "iterations": 42,
+            "objective": 17.825883653571925,
+            "max_violation": 2.792891748981674e-07,
+            "optimality": null,
+            "kkt_residual": 0.027913033269854292,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "initial_prices": [
+              0.0,
+              40.67774688701301,
+              63.653547799356986
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495719568883909,
+                12.559896703739668,
+                14.050691648115867,
+                43.72756449919426,
+                3.5807214383706767
+              ],
+              [
+                1.4879729784005018,
+                4.429539759661287,
+                5.358600227080446e-11,
+                85.47937278329275,
+                27.222827854024025
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.48530329199275,
+            "iterations": 41,
+            "objective": 17.823782503800985,
+            "max_violation": 7.383462524046536e-06,
+            "optimality": null,
+            "kkt_residual": 0.02792457365673266,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "initial_prices": [
+              0.0,
+              40.67774390187374,
+              63.65354807137009
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495768294240971,
+                12.559945953904935,
+                14.05070907991328,
+                43.727546314712136,
+                3.5807114721130544
+              ],
+              [
+                1.4880187216833378,
+                4.429616114169492,
+                5.2541756669811155e-11,
+                85.4795143894691,
+                27.222923229952542
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-SLSQP",
+            "status": "infeasible",
+            "time_seconds": 0.5198312500142492,
+            "iterations": 40,
+            "objective": 17.824951801183268,
+            "max_violation": 1.1020751728096911e-05,
+            "optimality": null,
+            "kkt_residual": 0.027918314004249847,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": false,
+            "raw_status": 8,
+            "message": "Positive directional derivative for linesearch",
+            "initial_prices": [
+              0.0,
+              40.67774283063641,
+              63.65354654546288
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495768564347637,
+                12.559945366782744,
+                14.050709245289017,
+                43.72754742989421,
+                3.580711344314991
+              ],
+              [
+                1.488018649210145,
+                4.429616003391511,
+                1.7413847668122093e-08,
+                85.47951489221843,
+                27.222922175379306
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-SLSQP (numerical constraint Jacobian)",
+            "status": "failed",
+            "time_seconds": 4.443664416961838,
+            "iterations": 157,
+            "objective": 17.856532275481523,
+            "max_violation": 1.9011991980733e-10,
+            "optimality": null,
+            "kkt_residual": 0.06253575162223202,
+            "kkt_checked": true,
+            "kkt_satisfied": false,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": true,
+            "raw_status": 0,
+            "message": "Optimization terminated successfully",
+            "initial_prices": [
+              0.0,
+              40.67773522870145,
+              63.65353934109077
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.495769466421487,
+                12.559946462917953,
+                14.050706156281114,
+                43.7275448233306,
+                3.5807114289630166
+              ],
+              [
+                1.4880184617249188,
+                4.429616647894026,
+                5.253735354641174e-11,
+                85.47950952186227,
+                27.222923460370325
+              ]
+            ]
+          },
+          {
+            "solver": "scipy-trust-constr",
+            "status": "success",
+            "time_seconds": 2.339390665991232,
+            "iterations": 176,
+            "objective": 18.930786500397417,
+            "max_violation": 0.0,
+            "optimality": 1.4893488907334818e-09,
+            "kkt_residual": 2.8545882567795025e-08,
+            "kkt_checked": true,
+            "kkt_satisfied": true,
+            "critical_constraints": 18,
+            "variables": 12,
+            "attempts": 1,
+            "native_success": true,
+            "raw_status": 1,
+            "message": "`gtol` termination condition is satisfied.",
+            "initial_prices": [
+              0.0,
+              40.72166913930864,
+              63.65255580605291
+            ],
+            "initial_allowances": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                7.082072800620125,
+                12.2197260138319,
+                13.270416345970585,
+                43.99097249526814,
+                3.6471403468560397
+              ],
+              [
+                1.977213522394849,
+                3.7848058043689745,
+                9.832852242624979e-05,
+                84.7283287838364,
+                26.76028559500582
+              ]
+            ]
+          }
+        ]
+      },
+      "final": {
+        "profit": 18.930786500397417,
+        "restricted_violation": 0.0,
+        "full_region_violation": 16.68352094707363,
+        "menu": {
+          "prices": [
+            0.0,
+            39.42624421053346,
+            63.27242381653838
+          ],
+          "allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              2.494413846946402e-06,
+              2.5166678076641926e-06,
+              1.1129112943927256e-05,
+              42.62503379331403,
+              1.0898947534854628e-05
+            ],
+            [
+              1.3337906463061623e-05,
+              1.0568636691929516,
+              9.934089326751444e-06,
+              70.58115331817812,
+              8.912584650754646
+            ]
+          ]
+        },
+        "first_order_checks": [
+          {
+            "active_tolerance": 1e-08,
+            "normalized_stationarity": 0.18820351193156265,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 0.0,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 1e-06,
+            "normalized_stationarity": 0.01286176800902955,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 1.9258050294344824e-07,
+            "adapter_first_order_passed": false,
+            "independent_screen_passed": false
+          },
+          {
+            "active_tolerance": 0.0001,
+            "normalized_stationarity": 2.528247703300379e-07,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 1.8157773187049961e-07,
+            "adapter_first_order_passed": true,
+            "independent_screen_passed": true
+          },
+          {
+            "active_tolerance": 0.001,
+            "normalized_stationarity": 2.8545882567795025e-08,
+            "primal_violation": 0.0,
+            "absolute_complementarity": 1.9834803658311704e-07,
+            "adapter_first_order_passed": true,
+            "independent_screen_passed": true
+          }
+        ]
+      },
+      "fallback_used": true,
+      "conditional_price_gain": 2.211111436167812e-07,
+      "independent_price_check": {
+        "profit": 18.93078672150856,
+        "violation": 0.0,
+        "menu": {
+          "prices": [
+            0,
+            39.426244597823796,
+            63.27242441916928
+          ],
+          "allowances": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              2.494413846946402e-06,
+              2.5166678076641926e-06,
+              1.1129112943927256e-05,
+              42.62503379331403,
+              1.0898947534854628e-05
+            ],
+            [
+              1.3337906463061623e-05,
+              1.0568636691929516,
+              9.934089326751444e-06,
+              70.58115331817812,
+              8.912584650754646
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "complete": true,
+  "local_or_global_optimality_certificate": false
+}

@@ -1,0 +1,3124 @@
+{
+  "calls": [
+    {
+      "call": 1,
+      "region": 1,
+      "wall_seconds": 0.5057559169945307,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.5055250829900615,
+        "iterations": 147,
+        "objective": 16.31284594935484,
+        "max_violation": 5.1457504923746455e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          26.613295533908058,
+          62.95281420017023
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            51.02779999313242,
+            40.20078497367932,
+            4.919479445618894e-17,
+            1.3276268497986467e-06,
+            1.500086236700964e-08
+          ],
+          [
+            5.627934801792624e-18,
+            2.7574144007239175e-17,
+            0.0,
+            70.21826254584579,
+            5.619642255970542
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1933.8940135181992,
+          1208.6837584488744,
+          4834.735033795498,
+          644.6313378393997,
+          966.9470067590996
+        ],
+        [
+          1716.7935910676156,
+          1072.9959944172597,
+          4291.983977669039,
+          572.2645303558719,
+          858.3967955338078
+        ]
+      ],
+      "incumbent_for_bounds": 16.31284594935484
+    },
+    {
+      "call": 2,
+      "region": 1,
+      "wall_seconds": 0.3554392500082031,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.3553082090220414,
+        "iterations": 121,
+        "objective": 15.039405216665216,
+        "max_violation": 9.379164112033322e-13,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 21,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.776012026194078,
+          63.55691270946685
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            38.52486882028602,
+            15.220267754539831,
+            29.382215521760152,
+            8.104994414974403,
+            0.0
+          ],
+          [
+            3.804025735395625e-12,
+            4.064446522222222,
+            3.5069326969860957e-13,
+            75.72136427035974,
+            28.29909214746706
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1987.7128717565276,
+          1242.3205448478298,
+          4969.282179391319,
+          662.570957252176,
+          993.8564358782638
+        ],
+        [
+          1764.5707030790693,
+          1102.8566894244182,
+          4411.426757697673,
+          588.1902343596897,
+          882.2853515395346
+        ]
+      ],
+      "incumbent_for_bounds": 15.039405216665216
+    },
+    {
+      "call": 3,
+      "region": 1,
+      "wall_seconds": 0.5485103329992853,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.5483848340227269,
+        "iterations": 139,
+        "objective": 14.500352841602545,
+        "max_violation": 1.0459189070388675e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 23,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          25.923848449906085,
+          60.07031818545072
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            55.148809084404824,
+            13.81717935796223,
+            12.567881812981538,
+            12.29464209960988,
+            1.8629510080289155e-10
+          ],
+          [
+            0.0,
+            3.5489234324911574,
+            7.586025112994829e-18,
+            84.15669584532037,
+            23.412592754898068
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          2040.0964293790028,
+          1275.0602683618768,
+          5100.241073447507,
+          680.0321431263343,
+          1020.0482146895014
+        ],
+        [
+          1811.0736424206,
+          1131.921026512875,
+          4527.6841060515,
+          603.6912141402,
+          905.5368212103
+        ]
+      ],
+      "incumbent_for_bounds": 14.500352841602545
+    },
+    {
+      "call": 4,
+      "region": 1,
+      "wall_seconds": 0.40013679198455065,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.40001254196977243,
+        "iterations": 107,
+        "objective": 14.29915127044825,
+        "max_violation": 1.2251177849975647e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 24,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          26.961945472829353,
+          58.625228057739285
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            49.45121681331441,
+            24.61683508998435,
+            10.218133906634531,
+            10.465989379143238,
+            3.097685834765981e-14
+          ],
+          [
+            0.0,
+            3.4546577380808383,
+            0.0,
+            85.31895855252986,
+            22.899335772553158
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          2059.648618709526,
+          1287.2803866934537,
+          5149.121546773815,
+          686.5495395698421,
+          1029.824309354763
+        ],
+        [
+          1828.4308880086955,
+          1142.7693050054347,
+          4571.077220021739,
+          609.4769626695652,
+          914.2154440043478
+        ]
+      ],
+      "incumbent_for_bounds": 14.29915127044825
+    },
+    {
+      "call": 5,
+      "region": 2,
+      "wall_seconds": 0.4214755840366706,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.42135012499056756,
+        "iterations": 90,
+        "objective": 15.227028808002354,
+        "max_violation": 8.483880264975596e-12,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 24,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.73137142529493,
+          63.49834214236871
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            44.310573134545294,
+            23.56205657535532,
+            15.273755498883975,
+            1.2111870263648134e-17,
+            3.0598800453864637e-12
+          ],
+          [
+            0.0,
+            4.497615902486924,
+            0.0,
+            73.63642117249726,
+            27.402116101227133
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2035.7794325929694,
+          1272.3621453706062,
+          5089.448581482425,
+          678.5931441976567,
+          1017.8897162964847
+        ],
+        [
+          1813.8161607259192,
+          1133.6351004536994,
+          4534.540401814797,
+          604.6053869086397,
+          906.9080803629596
+        ]
+      ],
+      "incumbent_for_bounds": 15.227028808002354
+    },
+    {
+      "call": 6,
+      "region": 2,
+      "wall_seconds": 0.31149358296534047,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.3113726250012405,
+        "iterations": 63,
+        "objective": 14.723526643027872,
+        "max_violation": 1.5631940186722204e-13,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 25,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          24.22361054270153,
+          62.38958147192406
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            55.882063258246696,
+            1.6650224451822868e-17,
+            19.915368820033255,
+            16.7227054410329,
+            7.743476429345997e-17
+          ],
+          [
+            0.0,
+            3.384630163771714,
+            0.0,
+            85.49917951105203,
+            22.88750131689034
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2084.5309612738574,
+          1302.831850796161,
+          5211.327403184644,
+          694.8436537579526,
+          1042.2654806369287
+        ],
+        [
+          1857.252256584722,
+          1160.7826603654512,
+          4643.130641461805,
+          619.0840855282407,
+          928.626128292361
+        ]
+      ],
+      "incumbent_for_bounds": 14.723526643027872
+    },
+    {
+      "call": 7,
+      "region": 2,
+      "wall_seconds": 0.2282655829912983,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.22813766699982807,
+        "iterations": 57,
+        "objective": 14.663558513753369,
+        "max_violation": 6.529887741635321e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 27,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          25.584570878485316,
+          60.398090267263434
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            48.96662037665921,
+            18.936992386653397,
+            13.662250203361868,
+            9.593554792201122,
+            3.3471350810218102e-15
+          ],
+          [
+            7.924598589250932e-16,
+            3.8456606391860917,
+            0.0,
+            80.52660850464447,
+            24.99996765080718
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2090.337367239189,
+          1306.4608545244935,
+          5225.843418097974,
+          696.7791224130632,
+          1045.1686836195945
+        ],
+        [
+          1862.4255837178289,
+          1164.015989823643,
+          4656.063959294572,
+          620.8085279059429,
+          931.2127918589144
+        ]
+      ],
+      "incumbent_for_bounds": 14.663558513753369
+    },
+    {
+      "call": 8,
+      "region": 3,
+      "wall_seconds": 0.33801804098766297,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.33789837500080466,
+        "iterations": 90,
+        "objective": 18.82773676875632,
+        "max_violation": 3.780087354243733e-12,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 22,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          39.416688777585485,
+          63.2706443289515
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            2.99864873811184e-14,
+            2.105699055304284e-14,
+            7.176535474585322e-15,
+            42.58056055703649,
+            4.500899286256703e-14
+          ],
+          [
+            2.915680325961569e-16,
+            1.0353001122444079,
+            7.169866571305654e-16,
+            70.57814037305705,
+            8.890604561931292
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        70.43199999999993,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2056.5356729890796,
+          1285.334795618175,
+          5141.3391824727,
+          685.51189099636,
+          1028.2678364945398
+        ],
+        [
+          1836.7372730111138,
+          1147.960795631946,
+          4591.843182527784,
+          612.2457576703713,
+          918.3686365055569
+        ]
+      ],
+      "incumbent_for_bounds": 18.82773676875632
+    },
+    {
+      "call": 9,
+      "region": 3,
+      "wall_seconds": 0.2903405830147676,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.2902110409922898,
+        "iterations": 58,
+        "objective": 14.755847884647192,
+        "max_violation": 1.1186784831807017e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 25,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          25.443030270701463,
+          60.74475607525829
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            43.20346325792634,
+            25.42774090664336,
+            16.25270005094011,
+            6.689884183038144,
+            9.886559259743937e-08
+          ],
+          [
+            5.0638214552046085e-15,
+            3.844441574503425,
+            7.799576402253893e-18,
+            80.5398854361173,
+            24.994668413410253
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          2009.3763109345034,
+          1255.8601943340648,
+          5023.440777336259,
+          669.7921036448346,
+          1004.6881554672517
+        ],
+        [
+          1794.618208802921,
+          1121.6363805018254,
+          4486.545522007302,
+          598.2060696009737,
+          897.3091044014604
+        ]
+      ],
+      "incumbent_for_bounds": 14.755847884647192
+    },
+    {
+      "call": 10,
+      "region": 3,
+      "wall_seconds": 0.3834597500390373,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.3833341670106165,
+        "iterations": 59,
+        "objective": 14.752665250208658,
+        "max_violation": 6.966160981392022e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 26,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          25.392379502657782,
+          60.766670238734996
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            43.8758157206495,
+            24.203102281569592,
+            16.32223585597943,
+            7.118365933041704,
+            1.0759368091997138e-05
+          ],
+          [
+            5.7278792699802266e-12,
+            1.3584833062875556,
+            1.1130439971005676e-17,
+            82.37793551032004,
+            24.11870299791117
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          2009.6837261835587,
+          1256.0523288647244,
+          5024.209315458897,
+          669.8945753945196,
+          1004.8418630917794
+        ],
+        [
+          1794.8927681279295,
+          1121.8079800799558,
+          4487.231920319823,
+          598.2975893759765,
+          897.4463840639647
+        ]
+      ],
+      "incumbent_for_bounds": 14.752665250208658
+    },
+    {
+      "call": 11,
+      "region": 4,
+      "wall_seconds": 0.640648250002414,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.6405249170493335,
+        "iterations": 136,
+        "objective": 15.774114150815063,
+        "max_violation": 1.4787815416639205e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.866550419964167,
+          63.492989863061524
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            61.666461744779234,
+            16.138338031110493,
+            5.965451291375338,
+            5.002211402906804e-10,
+            2.9474310305698217e-07
+          ],
+          [
+            8.526646410187451e-18,
+            2.949078906832786e-07,
+            8.20792883540745e-09,
+            75.99919653063499,
+            5.2162763842112785
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1977.1322819019422,
+          1235.707676188714,
+          4942.830704754856,
+          659.0440939673141,
+          988.5661409509711
+        ],
+        [
+          1772.2058318698748,
+          1107.6286449186716,
+          4430.5145796746865,
+          590.7352772899583,
+          886.1029159349374
+        ]
+      ],
+      "incumbent_for_bounds": 15.774114150815063
+    },
+    {
+      "call": 12,
+      "region": 4,
+      "wall_seconds": 0.2537497919984162,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.25362491700798273,
+        "iterations": 73,
+        "objective": 15.223758465187576,
+        "max_violation": 1.1510792319313623e-12,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 22,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.841640290465808,
+          63.52662092086856
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            37.6278758024679,
+            27.592524537097958,
+            18.200089159535427,
+            8.025718838163475e-20,
+            0.0
+          ],
+          [
+            0.0,
+            4.2484513666601185,
+            0.0,
+            74.56243122822234,
+            28.19134065557607
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1960.8418595992184,
+          1225.5261622495116,
+          4902.104648998046,
+          653.6139531997395,
+          980.4209297996092
+        ],
+        [
+          1757.603884558217,
+          1098.5024278488856,
+          4394.009711395543,
+          585.8679615194056,
+          878.8019422791085
+        ]
+      ],
+      "incumbent_for_bounds": 15.223758465187576
+    },
+    {
+      "call": 13,
+      "region": 4,
+      "wall_seconds": 0.1332783750258386,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.13315391697688028,
+        "iterations": 37,
+        "objective": 14.77521193416297,
+        "max_violation": 2.219024963778793e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 24,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          25.28968285408945,
+          61.087792615372784
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            45.14357489516412,
+            21.693709656119513,
+            17.31764540586219,
+            8.035327968027856,
+            3.447577389870376e-14
+          ],
+          [
+            0.0,
+            0.0,
+            8.84523491876105e-17,
+            85.58313631990892,
+            22.17747657394572
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          2004.0115077175808,
+          1252.507192323488,
+          5010.028769293952,
+          668.0038359058602,
+          1002.0057538587904
+        ],
+        [
+          1796.29907094278,
+          1122.6869193392374,
+          4490.74767735695,
+          598.7663569809266,
+          898.14953547139
+        ]
+      ],
+      "incumbent_for_bounds": 14.77521193416297
+    },
+    {
+      "call": 14,
+      "region": 4,
+      "wall_seconds": 0.059612917015329,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.059496083995327353,
+        "iterations": 16,
+        "objective": 14.7693854376867,
+        "max_violation": 1.1385736797819845e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 25,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          25.378170232758684,
+          60.762760881776835
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            43.88500410473,
+            24.10139986309014,
+            16.2232372499657,
+            7.141758685240776,
+            1.6607035596338384e-14
+          ],
+          [
+            0.0,
+            1.5436888628824903,
+            1.483327292140421e-17,
+            82.14068251732665,
+            24.135541583649633
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          2004.5722696123808,
+          1252.857668507738,
+          5011.430674030952,
+          668.1907565374602,
+          1002.2861348061904
+        ],
+        [
+          1796.8017108062588,
+          1123.0010692539117,
+          4492.004277015647,
+          598.9339036020863,
+          898.4008554031294
+        ]
+      ],
+      "incumbent_for_bounds": 14.7693854376867
+    },
+    {
+      "call": 15,
+      "region": 5,
+      "wall_seconds": 0.9307246660464443,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "infeasible",
+        "time_seconds": 0.9306073340121657,
+        "iterations": 72,
+        "objective": 17.839699154161487,
+        "max_violation": 2.352393528326502e-05,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": false,
+        "raw_status": 8,
+        "message": "Positive directional derivative for linesearch",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          40.79982962620003,
+          63.65329518312239
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            6.705503716910825,
+            11.649707020328334,
+            13.978205446540906,
+            43.65291010137512,
+            4.959661142900174
+          ],
+          [
+            1.282190456126411,
+            4.304706238990898,
+            7.170203215585824e-10,
+            85.23633001222863,
+            27.097546154820606
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        70.43199999999993,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          3838.5221480406435,
+          2399.076342525402,
+          9596.305370101609,
+          1279.5073826802147,
+          1919.2610740203218
+        ],
+        [
+          3479.923368421046,
+          2174.9521052631535,
+          8699.808421052614,
+          1159.9744561403486,
+          1739.961684210523
+        ]
+      ],
+      "incumbent_for_bounds": 0
+    },
+    {
+      "call": 16,
+      "region": 5,
+      "wall_seconds": 0.6276509159943089,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.6275298330001533,
+        "iterations": 109,
+        "objective": 14.880312209135944,
+        "max_violation": 2.721947112149792e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 20,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          25.617518030144485,
+          61.23535553127063
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            25.50131201069102,
+            46.41615495018947,
+            20.247884872272166,
+            3.4826349623210166e-16,
+            4.6078431883779175e-10
+          ],
+          [
+            0.0,
+            3.437075596143818,
+            0.0,
+            85.53194370135294,
+            22.807380293193567
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2051.5862719054207,
+          1282.2414199408881,
+          5128.9656797635525,
+          683.8620906351405,
+          1025.7931359527104
+        ],
+        [
+          1859.9249228195138,
+          1162.4530767621961,
+          4649.8123070487845,
+          619.9749742731713,
+          929.9624614097569
+        ]
+      ],
+      "incumbent_for_bounds": 14.880312209135944
+    },
+    {
+      "call": 17,
+      "region": 5,
+      "wall_seconds": 0.55986324994592,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.5597391669871286,
+        "iterations": 63,
+        "objective": 14.832416969486827,
+        "max_violation": 1.2400391824485268e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 22,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          25.350881974388702,
+          60.894554099823104
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            42.245623155464564,
+            26.036044463555914,
+            16.54986732173854,
+            6.3301709042295045,
+            1.8193472953426577e-10
+          ],
+          [
+            1.5135559530317714e-07,
+            7.999485214768944e-07,
+            0.0,
+            84.14798568491801,
+            23.126841072263712
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2056.1438714350347,
+          1285.0899196468968,
+          5140.359678587587,
+          685.381290478345,
+          1028.0719357175174
+        ],
+        [
+          1864.0567466035977,
+          1165.0354666272485,
+          4660.141866508994,
+          621.3522488678659,
+          932.0283733017989
+        ]
+      ],
+      "incumbent_for_bounds": 14.832416969486827
+    },
+    {
+      "call": 18,
+      "region": 6,
+      "wall_seconds": 0.25084804196376354,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.25072016596095636,
+        "iterations": 72,
+        "objective": 15.352465441899177,
+        "max_violation": 2.8563817977556027e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 16,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.64691253318927,
+          63.48121257980309
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            51.45218051607796,
+            19.666251769308246,
+            11.81252191390217,
+            2.498789539699184e-07,
+            5.549924064387715e-05
+          ],
+          [
+            0.0,
+            4.640261395868642,
+            4.8624857971340293e-14,
+            73.1290209107733,
+            26.940866466898402
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1994.1632929541993,
+          1246.3520580963745,
+          4985.408232385498,
+          664.7210976513998,
+          997.0816464770996
+        ],
+        [
+          1831.4815506342454,
+          1144.6759691464033,
+          4578.703876585613,
+          610.4938502114152,
+          915.7407753171227
+        ]
+      ],
+      "incumbent_for_bounds": 15.352465441899177
+    },
+    {
+      "call": 19,
+      "region": 6,
+      "wall_seconds": 0.2067419580416754,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.20661620900500566,
+        "iterations": 68,
+        "objective": 15.166395971004969,
+        "max_violation": 4.831690603168681e-12,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.83675986988831,
+          63.56674065770399
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            38.67459451652113,
+            15.336376980831893,
+            29.112913652564636,
+            8.112643817156965,
+            3.1532601979849455e-14
+          ],
+          [
+            8.156997657539863e-15,
+            4.011854389723648,
+            0.0,
+            76.14867654882066,
+            28.233831244730606
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2011.6409306735147,
+          1257.2755816709468,
+          5029.102326683787,
+          670.5469768911717,
+          1005.8204653367574
+        ],
+        [
+          1847.5333810659326,
+          1154.7083631662078,
+          4618.833452664831,
+          615.8444603553108,
+          923.7666905329663
+        ]
+      ],
+      "incumbent_for_bounds": 15.166395971004969
+    },
+    {
+      "call": 20,
+      "region": 6,
+      "wall_seconds": 0.1928130840533413,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.1926860410021618,
+        "iterations": 59,
+        "objective": 14.950377055424765,
+        "max_violation": 6.81126266499632e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 20,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          24.654951260899953,
+          60.82932190272482
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            40.01442951634014,
+            24.36553579838723,
+            20.854456534007394,
+            6.146835500856439,
+            3.449232329078461e-14
+          ],
+          [
+            1.0056423948758622e-15,
+            4.595249794927854,
+            1.1339598935939527e-17,
+            74.48344727558457,
+            25.882963314711915
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2031.931741029915,
+          1269.957338143697,
+          5079.829352574788,
+          677.310580343305,
+          1015.9658705149575
+        ],
+        [
+          1866.1688884722053,
+          1166.3555552951282,
+          4665.422221180513,
+          622.0562961574018,
+          933.0844442361026
+        ]
+      ],
+      "incumbent_for_bounds": 14.950377055424765
+    },
+    {
+      "call": 21,
+      "region": 7,
+      "wall_seconds": 0.18413750000763685,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.18401354202069342,
+        "iterations": 62,
+        "objective": 15.17621202134299,
+        "max_violation": 4.8252957185468404e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.985044280937657,
+          63.600632546626294
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            39.03115613681208,
+            15.951938042375414,
+            24.35541450910977,
+            7.9786168435733815,
+            2.2267080417536846e-17
+          ],
+          [
+            1.194296014653484e-14,
+            3.8435952467661045,
+            7.730819743475268e-17,
+            77.93051472767385,
+            27.610145646363698
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2009.5796604927104,
+          1255.987287807944,
+          5023.949151231776,
+          669.8598868309035,
+          1004.7898302463552
+        ],
+        [
+          1847.803690216198,
+          1154.8773063851236,
+          4619.509225540494,
+          615.9345634053993,
+          923.901845108099
+        ]
+      ],
+      "incumbent_for_bounds": 15.17621202134299
+    },
+    {
+      "call": 22,
+      "region": 7,
+      "wall_seconds": 0.394030749972444,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.39389429200673476,
+        "iterations": 68,
+        "objective": 15.083505212736233,
+        "max_violation": 4.0813574742060155e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 20,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          24.37529924181857,
+          61.6519038515624
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            24.657789251531007,
+            41.36867206008661,
+            20.207787939691265,
+            2.2211588479583376e-05,
+            5.32147009670209e-13
+          ],
+          [
+            0.0,
+            4.236698083246241,
+            4.386307848062386e-15,
+            76.70129956669699,
+            26.113204984596234
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2018.2774815369662,
+          1261.4234259606037,
+          5045.693703842415,
+          672.7591605123221,
+          1009.1387407684831
+        ],
+        [
+          1855.8013158582066,
+          1159.875822411379,
+          4639.503289645516,
+          618.6004386194022,
+          927.9006579291033
+        ]
+      ],
+      "incumbent_for_bounds": 15.083505212736233
+    },
+    {
+      "call": 23,
+      "region": 7,
+      "wall_seconds": 0.3143452910007909,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.3142210000078194,
+        "iterations": 51,
+        "objective": 15.013305584297198,
+        "max_violation": 5.5990767577895895e-12,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 22,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          24.435423169382386,
+          61.24449602230538
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            35.922945169934046,
+            28.930078960595214,
+            16.21921663122423,
+            4.090163833778517,
+            8.450607602612978e-15
+          ],
+          [
+            1.2430524510569309e-05,
+            0.8358177489251092,
+            2.6583666806236632e-18,
+            77.99420960701676,
+            25.464133037111345
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2024.863662365668,
+          1265.5397889785424,
+          5062.15915591417,
+          674.9545541218894,
+          1012.431831182834
+        ],
+        [
+          1861.8572933737846,
+          1163.6608083586152,
+          4654.643233434461,
+          620.6190977912615,
+          930.9286466868923
+        ]
+      ],
+      "incumbent_for_bounds": 15.013305584297198
+    },
+    {
+      "call": 24,
+      "region": 8,
+      "wall_seconds": 0.4474466250394471,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.4473229580326006,
+        "iterations": 91,
+        "objective": 15.117881936164567,
+        "max_violation": 4.668265773943858e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 20,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.851241278538758,
+          63.08879059024656
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            39.006669236778464,
+            15.176505635061686,
+            25.602908481999435,
+            8.19224959594981,
+            9.806908377505738e-14
+          ],
+          [
+            1.2146049329561725e-17,
+            3.818684612744951e-13,
+            4.942808267208902e-12,
+            85.62803442521657,
+            16.522798608871945
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2008.2342368735494,
+          1255.1463980459685,
+          5020.585592183874,
+          669.4114122911832,
+          1004.1171184367747
+        ],
+        [
+          1859.5384243586236,
+          1162.2115152241397,
+          4648.846060896559,
+          619.8461414528745,
+          929.7692121793118
+        ]
+      ],
+      "incumbent_for_bounds": 15.117881936164567
+    },
+    {
+      "call": 25,
+      "region": 8,
+      "wall_seconds": 0.15512966696405783,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.1550037079723552,
+        "iterations": 38,
+        "objective": 15.063037941798237,
+        "max_violation": 6.394884621840902e-13,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 22,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          24.271361809117828,
+          61.52390196281942
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            33.43785416958682,
+            30.840449289523896,
+            20.07264430768755,
+            3.2141118596726854,
+            2.024578406924383e-14
+          ],
+          [
+            0.0,
+            0.0,
+            6.644787032173224e-18,
+            80.70895563800238,
+            22.681275062586742
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          2013.343846579918,
+          1258.3399041124485,
+          5033.359616449794,
+          671.1146155266392,
+          1006.671923289959
+        ],
+        [
+          1864.2697029156807,
+          1165.1685643223002,
+          4660.674257289201,
+          621.4232343052269,
+          932.1348514578403
+        ]
+      ],
+      "incumbent_for_bounds": 15.063037941798237
+    },
+    {
+      "call": 26,
+      "region": 9,
+      "wall_seconds": 0.25627337500918657,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.2561515829875134,
+        "iterations": 57,
+        "objective": 15.105610616969637,
+        "max_violation": 9.805489753489383e-13,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 22,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          23.626647794974108,
+          61.6990405394401
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            30.86122908335469,
+            30.84624213148073,
+            21.04506565019244,
+            2.5231842903272184,
+            9.569704205414262e-21
+          ],
+          [
+            0.0,
+            1.2484261472701181,
+            0.0,
+            75.70409548841393,
+            25.508448074879265
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        49.67199999999998,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1962.8832817426899,
+          1226.802051089181,
+          4907.208204356724,
+          654.2944272475632,
+          981.4416408713449
+        ],
+        [
+          1821.7716965360617,
+          1138.6073103350384,
+          4554.429241340154,
+          607.2572321786872,
+          910.8858482680308
+        ]
+      ],
+      "incumbent_for_bounds": 15.105610616969637
+    },
+    {
+      "call": 27,
+      "region": 9,
+      "wall_seconds": 0.1683093750034459,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.1681853749905713,
+        "iterations": 44,
+        "objective": 15.099332332349467,
+        "max_violation": 9.947598300641403e-13,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 23,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          23.838871847061153,
+          61.64728654889483
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            31.644446535390355,
+            30.9814801199666,
+            19.89297369859348,
+            2.6907951468941556,
+            4.439556163268558e-14
+          ],
+          [
+            0.0,
+            0.13011015358579162,
+            0.0,
+            77.15065941685873,
+            25.472838232532464
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        49.67199999999998,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1963.4668490668378,
+          1227.1667806667735,
+          4908.667122667094,
+          654.4889496889459,
+          981.7334245334189
+        ],
+        [
+          1822.3133112331984,
+          1138.945819520749,
+          4555.783278082996,
+          607.4377704110661,
+          911.1566556165992
+        ]
+      ],
+      "incumbent_for_bounds": 15.099332332349467
+    },
+    {
+      "call": 28,
+      "region": 10,
+      "wall_seconds": 0.24302779097342864,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.24290608300361782,
+        "iterations": 30,
+        "objective": 15.138494876054212,
+        "max_violation": 5.2445159326452995e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 24,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          23.63916343842472,
+          61.69965964507037
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            30.898174285744755,
+            30.8763787443828,
+            20.857200488239776,
+            2.524500180961753,
+            2.7253545152536575e-13
+          ],
+          [
+            2.7018099547020583e-13,
+            1.15897162726568,
+            7.424153302228536e-18,
+            75.86228396149725,
+            25.459050565378686
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1996.2832083085827,
+          1247.6770051928643,
+          4990.708020771457,
+          665.427736102861,
+          998.1416041542914
+        ],
+        [
+          1867.8142649987653,
+          1167.3839156242282,
+          4669.535662496913,
+          622.6047549995884,
+          933.9071324993827
+        ]
+      ],
+      "incumbent_for_bounds": 15.138494876054212
+    },
+    {
+      "call": 29,
+      "region": 11,
+      "wall_seconds": 0.5187492910190485,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.5186265420052223,
+        "iterations": 100,
+        "objective": 15.969178465151954,
+        "max_violation": 2.8137492336099967e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 16,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.909149288744583,
+          63.51005654029104
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            61.71233362567332,
+            16.293387703714803,
+            5.687068148689198,
+            8.981650511804127e-10,
+            5.437448575593848e-11
+          ],
+          [
+            2.0741315501296394e-10,
+            2.6917100363854813e-07,
+            3.2684108183021655e-10,
+            76.39244586700319,
+            5.10472253850414
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1913.6456286100097,
+          1196.0285178812562,
+          4784.114071525025,
+          637.8818762033367,
+          956.8228143050048
+        ],
+        [
+          1802.8556185325817,
+          1126.7847615828634,
+          4507.139046331454,
+          600.9518728441939,
+          901.4278092662909
+        ]
+      ],
+      "incumbent_for_bounds": 15.969178465151954
+    },
+    {
+      "call": 30,
+      "region": 11,
+      "wall_seconds": 0.19063616602215916,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.1905150410020724,
+        "iterations": 61,
+        "objective": 15.419105875992365,
+        "max_violation": 1.6342482922482304e-12,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 20,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.90894337202265,
+          63.53708231627695
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            37.90016492431551,
+            27.69891963751554,
+            17.747110901391114,
+            2.0014971385294698e-15,
+            6.890134481868404e-14
+          ],
+          [
+            0.0,
+            4.180334452272123,
+            1.749469967873832e-17,
+            74.93963617826341,
+            28.283052252429755
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1898.1204319749022,
+          1186.325269984314,
+          4745.301079937256,
+          632.7068106583008,
+          949.0602159874511
+        ],
+        [
+          1788.2292490710856,
+          1117.6432806694283,
+          4470.573122677713,
+          596.0764163570285,
+          894.1146245355428
+        ]
+      ],
+      "incumbent_for_bounds": 15.419105875992365
+    },
+    {
+      "call": 31,
+      "region": 11,
+      "wall_seconds": 0.3256358330254443,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.3255135409999639,
+        "iterations": 65,
+        "objective": 15.218602561520985,
+        "max_violation": 5.115907697472721e-13,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 21,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          23.08981971939642,
+          62.89701788896472
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            31.638519383723427,
+            27.013351299129244,
+            24.105975438322236,
+            3.433462146691065,
+            3.7808313823558037e-14
+          ],
+          [
+            2.084567603776541e-17,
+            1.0970776929494132e-13,
+            9.79125943521776e-13,
+            85.62552617269817,
+            16.966488901543457
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1916.4803850471164,
+          1197.8002406544479,
+          4791.200962617791,
+          638.8267950157056,
+          958.2401925235582
+        ],
+        [
+          1805.5262574917506,
+          1128.453910932344,
+          4513.815643729376,
+          601.8420858305835,
+          902.7631287458753
+        ]
+      ],
+      "incumbent_for_bounds": 15.218602561520985
+    },
+    {
+      "call": 32,
+      "region": 11,
+      "wall_seconds": 0.2430846670176834,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.2429595420253463,
+        "iterations": 48,
+        "objective": 15.187250564763774,
+        "max_violation": 2.6290081223123707e-12,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 23,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          23.176095563383672,
+          62.14982586700824
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            27.52367078253325,
+            33.01126783244398,
+            19.689902800085974,
+            1.3335424487258487,
+            6.727511620682059e-21
+          ],
+          [
+            0.0,
+            3.4199830698969506e-14,
+            0.0,
+            79.44491327755946,
+            22.14800784920555
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1919.351266212848,
+          1199.5945413830302,
+          4798.378165532121,
+          639.7837554042828,
+          959.675633106424
+        ],
+        [
+          1808.230929747887,
+          1130.1443310924294,
+          4520.577324369718,
+          602.7436432492957,
+          904.1154648739436
+        ]
+      ],
+      "incumbent_for_bounds": 15.187250564763774
+    },
+    {
+      "call": 33,
+      "region": 12,
+      "wall_seconds": 0.5830547499936074,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.5829296669689938,
+        "iterations": 78,
+        "objective": 15.368255122446811,
+        "max_violation": 1.1721112969098613e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 24,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.58447791031524,
+          61.978849763818594
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            31.276098803908933,
+            25.718750269881593,
+            18.37116114767242,
+            3.450854866464763,
+            4.149370381655815e-07
+          ],
+          [
+            0.0,
+            8.859340489132176e-08,
+            1.0535170804822373e-18,
+            85.01579700949048,
+            1.826690666849371
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        49.615999999999985,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1911.754633942494,
+          1194.8466462140586,
+          4779.386584856235,
+          637.2515446474981,
+          955.877316971247
+        ],
+        [
+          1823.7133021161885,
+          1139.8208138226178,
+          4559.283255290471,
+          607.9044340387295,
+          911.8566510580943
+        ]
+      ],
+      "incumbent_for_bounds": 15.368255122446811
+    },
+    {
+      "call": 34,
+      "region": 12,
+      "wall_seconds": 0.45460325002204627,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.45447433297522366,
+        "iterations": 36,
+        "objective": 15.239468319082631,
+        "max_violation": 4.143174692217144e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 27,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          23.091904801250685,
+          62.16853149368564
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            27.363652542684942,
+            32.95807238919697,
+            18.641763185088433,
+            1.2658660412306468,
+            2.2757076619996842e-12
+          ],
+          [
+            0.0,
+            1.54574960237437e-13,
+            1.6379717064085068e-18,
+            78.94256863627714,
+            22.64532931295041
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        49.615999999999985,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1923.4011596586377,
+          1202.1257247866486,
+          4808.502899146594,
+          641.1337198862127,
+          961.7005798293188
+        ],
+        [
+          1834.8234746743517,
+          1146.7646716714698,
+          4587.058686685879,
+          611.6078248914506,
+          917.4117373371759
+        ]
+      ],
+      "incumbent_for_bounds": 15.239468319082631
+    },
+    {
+      "call": 35,
+      "region": 13,
+      "wall_seconds": 0.573193792020902,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.5730740409926511,
+        "iterations": 134,
+        "objective": 16.065693964233486,
+        "max_violation": 8.913048077374697e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 14,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.9302089774638,
+          63.518071213532174
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            61.73525931263659,
+            16.370446371304155,
+            5.5486798227136305,
+            5.544033063433862e-09,
+            4.90893337884031e-06
+          ],
+          [
+            6.78680884450956e-20,
+            4.390687364115264e-14,
+            0.0,
+            76.58921639768087,
+            5.047186241234796
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1884.4869823924164,
+          1177.8043639952605,
+          4711.217455981042,
+          628.1623274641389,
+          942.2434911962082
+        ],
+        [
+          1817.9889369610987,
+          1136.2430856006865,
+          4544.972342402746,
+          605.9963123203662,
+          908.9944684805494
+        ]
+      ],
+      "incumbent_for_bounds": 16.065693964233486
+    },
+    {
+      "call": 36,
+      "region": 13,
+      "wall_seconds": 0.14602187497075647,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.14590320800198242,
+        "iterations": 52,
+        "objective": 15.515837768006428,
+        "max_violation": 1.5307932699215598e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 18,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.940499296250675,
+          63.54266511889143
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            38.032119891601525,
+            27.749071270391223,
+            17.49139065799105,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            4.140858802602748,
+            0.0,
+            75.15018015072728,
+            28.30317055575525
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1869.3062618367996,
+          1168.316413648,
+          4673.265654592,
+          623.1020872789333,
+          934.6531309183998
+        ],
+        [
+          1803.3438997265234,
+          1127.089937329077,
+          4508.359749316308,
+          601.1146332421745,
+          901.6719498632617
+        ]
+      ],
+      "incumbent_for_bounds": 15.515837768006428
+    },
+    {
+      "call": 37,
+      "region": 13,
+      "wall_seconds": 0.38704341696575284,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.3869219580083154,
+        "iterations": 78,
+        "objective": 15.32797336230112,
+        "max_violation": 1.2460077414289117e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 19,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.571079319164898,
+          63.2798192781285
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            31.55427759667001,
+            24.76028233846934,
+            22.615147208732004,
+            3.843208486442562,
+            6.550644457686216e-12
+          ],
+          [
+            1.8361742575969017e-15,
+            4.168877244977928e-06,
+            1.2208725743877382e-17,
+            85.62625969872965,
+            16.69407973971769
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1886.1057422329145,
+          1178.8160888955717,
+          4715.264355582287,
+          628.7019140776382,
+          943.0528711164573
+        ],
+        [
+          1819.5505754914357,
+          1137.219109682147,
+          4548.876438728588,
+          606.5168584971452,
+          909.7752877457178
+        ]
+      ],
+      "incumbent_for_bounds": 15.32797336230112
+    },
+    {
+      "call": 38,
+      "region": 13,
+      "wall_seconds": 0.09334758296608925,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.09322129201609641,
+        "iterations": 18,
+        "objective": 15.286494627557959,
+        "max_violation": 1.3868373116565635e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 21,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.972673105411374,
+          62.232895671842726
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            26.888662289309913,
+            33.13418326253401,
+            17.66891800335949,
+            1.090836654439123,
+            6.539133765547341e-07
+          ],
+          [
+            0.0,
+            9.363379799175235e-14,
+            3.1122873160482353e-19,
+            79.10765678368129,
+            22.391093040777783
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1889.8149131562586,
+          1181.1343207226619,
+          4724.5372828906475,
+          629.9383043854195,
+          944.9074565781293
+        ],
+        [
+          1823.128860598705,
+          1139.4555378741904,
+          4557.822151496762,
+          607.7096201995682,
+          911.5644302993525
+        ]
+      ],
+      "incumbent_for_bounds": 15.286494627557959
+    },
+    {
+      "call": 39,
+      "region": 14,
+      "wall_seconds": 0.4228942079935223,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.42277325002942234,
+        "iterations": 129,
+        "objective": 19.44204862846289,
+        "max_violation": 4.831690603168681e-13,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 14,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          39.47385134017071,
+          63.28108559079072
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0474034107963983e-16,
+            0.0,
+            0.0,
+            42.84798985926893,
+            0.0
+          ],
+          [
+            0.0,
+            1.1652206875782416,
+            0.0,
+            70.59619452848278,
+            9.023072720463663
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        70.43199999999993,
+        110.14399999999992
+      ],
+      "allowance_caps": [
+        [
+          1948.7003821006,
+          1217.937738812875,
+          4871.7509552515,
+          649.5667940335335,
+          974.3501910503
+        ],
+        [
+          1896.7194987024552,
+          1185.4496866890345,
+          4741.798746756138,
+          632.2398329008184,
+          948.3597493512276
+        ]
+      ],
+      "incumbent_for_bounds": 19.44204862846289
+    },
+    {
+      "call": 40,
+      "region": 14,
+      "wall_seconds": 0.3015840419684537,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.30146262497873977,
+        "iterations": 68,
+        "objective": 15.352671318536903,
+        "max_violation": 1.2022383089060895e-11,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 17,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          23.38722551518146,
+          62.03028746705016
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            24.442000794146434,
+            37.830608238879556,
+            16.31707133471005,
+            1.316876243223755e-07,
+            2.0503979917211104e-09
+          ],
+          [
+            0.0,
+            4.606734923173128,
+            1.5281375696784448e-17,
+            74.42716437567354,
+            25.860287006851557
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        51.88399999999997,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1876.4094389911777,
+          1172.755899369486,
+          4691.023597477944,
+          625.4698129970593,
+          938.2047194955888
+        ],
+        [
+          1826.3568905587508,
+          1141.4730565992193,
+          4565.892226396877,
+          608.7856301862503,
+          913.1784452793754
+        ]
+      ],
+      "incumbent_for_bounds": 15.352671318536903
+    },
+    {
+      "call": 41,
+      "region": 14,
+      "wall_seconds": 0.23326716700103134,
+      "metrics": {
+        "solver": "scipy-SLSQP",
+        "status": "success",
+        "time_seconds": 0.233142500044778,
+        "iterations": 40,
+        "objective": 15.323380503976981,
+        "max_violation": 3.5552716326492373e-10,
+        "optimality": null,
+        "kkt_residual": null,
+        "kkt_checked": false,
+        "kkt_satisfied": null,
+        "critical_constraints": 19,
+        "variables": 12,
+        "attempts": 1,
+        "native_success": true,
+        "raw_status": 0,
+        "message": "Optimization terminated successfully",
+        "attempt_history": []
+      },
+      "menu": {
+        "prices": [
+          0.0,
+          22.945635377512563,
+          62.24813039294034
+        ],
+        "allowances": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            26.78614814642385,
+            33.17693947536872,
+            17.39001852023555,
+            1.0499388394836837,
+            9.533679115340147e-09
+          ],
+          [
+            3.734566749430002e-07,
+            6.755392245742066e-06,
+            0.0,
+            79.17724448546903,
+            22.305353532262114
+          ]
+        ]
+      },
+      "price_caps": [
+        0.0,
+        47.40399999999999,
+        107.0399999999999
+      ],
+      "allowance_caps": [
+        [
+          1789.405547564438,
+          1118.3784672277736,
+          4473.5138689110945,
+          596.4685158548127,
+          894.702773782219
+        ],
+        [
+          1741.6737967143276,
+          1088.5461229464547,
+          4354.184491785819,
+          580.5579322381092,
+          870.8368983571638
+        ]
+      ],
+      "incumbent_for_bounds": 15.323380503976981
+    }
+  ],
+  "complete": true,
+  "scope": "41 fixed original NLP inputs; exactly one SLSQP call, no recovery, restart or fallback",
+  "total_wall_seconds": 14.274643081065733,
+  "total_backend_seconds": 14.269449334067758
+}
