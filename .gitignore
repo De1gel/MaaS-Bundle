@@ -27,7 +27,8 @@ sdist/
 var/
 wheels/
 share/python-wheels/
-Paper/
+Paper/build/
+Paper/Maas bundle design/
 
 *.egg-info/
 .installed.cfg
